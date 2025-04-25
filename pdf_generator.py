@@ -4,6 +4,7 @@ Module for generating PDF files from processed book content.
 """
 import os
 import logging
+import traceback
 from fpdf import FPDF
 import re
 import cv2
@@ -74,12 +75,28 @@ class PDFGenerator:
         pdf.set_author("Poker Book Processor")
         
         # Add built-in fonts that support Cyrillic
-        pdf.add_font('DejaVu', '', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
-        pdf.add_font('DejaVu', 'B', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', uni=True)
-        pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf', uni=True)
+        try:
+            # Use DejaVuSans for everything if Oblique isn't available
+            pdf.add_font('DejaVu', '', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
+            pdf.add_font('DejaVu', 'B', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', uni=True)
+            
+            # Try to add oblique font, fallback to regular if not available
+            try:
+                pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf', uni=True)
+            except Exception as e:
+                logger.warning(f"Failed to load italic font, using regular: {e}")
+                pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
+        except Exception as e:
+            logger.error(f"Error loading DejaVu fonts: {e}")
+            # Fall back to built-in fonts if needed
+            pass
         
-        # Set default font
-        pdf.set_font('DejaVu', '', 12)
+        # Set default font - catch any error and use built-in fonts as fallback
+        try:
+            pdf.set_font('DejaVu', '', 12)
+        except Exception as e:
+            logger.warning(f"Failed to set DejaVu font, using Arial instead: {e}")
+            pdf.set_font('Arial', '', 12)
         
         return pdf
     
@@ -265,11 +282,27 @@ class PDFGenerator:
                     pdf.add_page()
                     current_page_height = 0
             
+            # Make sure the output directory exists
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+                
             # Save PDF
-            pdf.output(output_path)
-            
-            logger.info(f"Generated PDF: {output_path}")
-            return output_path
+            try:
+                pdf.output(output_path)
+                logger.info(f"Generated PDF: {output_path}")
+                
+                # Verify the file was created
+                if os.path.exists(output_path):
+                    logger.info(f"Verified PDF exists at: {output_path}, size: {os.path.getsize(output_path)} bytes")
+                    return output_path
+                else:
+                    logger.error(f"PDF file was not created at: {output_path}")
+                    return None
+            except Exception as e:
+                logger.error(f"Error outputting PDF: {str(e)}")
+                traceback.print_exc()
+                return None
             
         except Exception as e:
             logger.error(f"Error generating PDF: {str(e)}")

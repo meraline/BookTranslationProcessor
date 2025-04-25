@@ -251,8 +251,15 @@ def process_book(book_id, job_id, is_pdf=False):
             
             # Generate English PDF
             try:
+                logger.info(f"Generating English PDF for book: {book.title}")
                 english_pdf = generate_pdf(pdf_generator, book_structure, 'en')
-                job.result_file_en = english_pdf
+                
+                # Verify the file exists and update job
+                if english_pdf and os.path.exists(english_pdf):
+                    job.result_file_en = english_pdf
+                    logger.info(f"Successfully generated English PDF: {english_pdf}")
+                else:
+                    logger.error(f"English PDF was not created at expected path: {english_pdf}")
             except Exception as e:
                 logger.error(f"Error generating English PDF: {str(e)}")
                 traceback.print_exc()
@@ -260,6 +267,7 @@ def process_book(book_id, job_id, is_pdf=False):
             # Generate Russian PDF if translations available
             if openai_api_key:
                 try:
+                    logger.info(f"Generating Russian PDF for book: {book.title}")
                     # Create translated book structure
                     translated_pages = []
                     for document in processed_documents:
@@ -273,7 +281,13 @@ def process_book(book_id, job_id, is_pdf=False):
                     }
                     
                     russian_pdf = generate_pdf(pdf_generator, translated_book, 'ru')
-                    job.result_file_ru = russian_pdf
+                    
+                    # Verify the file exists and update job
+                    if russian_pdf and os.path.exists(russian_pdf):
+                        job.result_file_ru = russian_pdf
+                        logger.info(f"Successfully generated Russian PDF: {russian_pdf}")
+                    else:
+                        logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
                 except Exception as e:
                     logger.error(f"Error generating Russian PDF: {str(e)}")
                     traceback.print_exc()
