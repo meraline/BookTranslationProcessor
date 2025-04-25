@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="ru" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Poker Book OCR Processor{% endblock %}</title>
+    <title>{% block title %}OCR Процессор Книг по Покеру{% endblock %}</title>
     <!-- Replit dark theme Bootstrap -->
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -16,7 +16,7 @@
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="bi bi-book me-2"></i>
-                Poker Book OCR Processor
+                OCR Процессор Книг по Покеру
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -24,10 +24,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('index') }}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('upload_book') }}">Upload Book</a>
+                        <a class="nav-link" href="{{ url_for('upload_book') }}">Загрузить книгу</a>
                     </li>
                 </ul>
             </div>
@@ -51,7 +51,7 @@
 
     <footer class="py-3 mt-auto bg-body-tertiary">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2025 Poker Book OCR Processor</p>
+            <p class="mb-0">&copy; 2025 OCR Процессор Книг по Покеру</p>
         </div>
     </footer>
 

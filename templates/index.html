@@ -1,18 +1,18 @@
 {% extends "layout.html" %}
 
-{% block title %}Poker Book OCR Processor - Home{% endblock %}
+{% block title %}OCR Процессор Книг по Покеру - Главная{% endblock %}
 
 {% block content %}
 <div class="row mb-4">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title">Welcome to Poker Book OCR Processor</h1>
+                <h1 class="card-title">Добро пожаловать в OCR Процессор Книг по Покеру</h1>
                 <p class="card-text">
-                    This application helps you extract text and diagrams from poker book images, 
-                    translates the content to Russian, and generates organized PDF files in both languages.
+                    Это приложение помогает извлекать текст и диаграммы из изображений страниц книг по покеру, 
+                    переводит контент на русский язык и создает организованные PDF-файлы на обоих языках.
                 </p>
-                <a href="{{ url_for('upload_book') }}" class="btn btn-primary">Upload New Book</a>
+                <a href="{{ url_for('upload_book') }}" class="btn btn-primary">Загрузить новую книгу</a>
             </div>
         </div>
     </div>
@@ -21,17 +21,17 @@
 {% if books %}
 <div class="row">
     <div class="col-md-12">
-        <h2>Your Books</h2>
+        <h2>Ваши книги</h2>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Title</th>
-                        <th>Created</th>
-                        <th>Status</th>
-                        <th>Pages</th>
-                        <th>Actions</th>
+                        <th>Название</th>
+                        <th>Создано</th>
+                        <th>Статус</th>
+                        <th>Страницы</th>
+                        <th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,18 +42,18 @@
                         <td>{{ book.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
                         <td>
                             {% if book.status == 'new' %}
-                                <span class="badge bg-secondary">New</span>
+                                <span class="badge bg-secondary">Новая</span>
                             {% elif book.status == 'processing' %}
-                                <span class="badge bg-primary">Processing</span>
+                                <span class="badge bg-primary">Обработка</span>
                             {% elif book.status == 'completed' %}
-                                <span class="badge bg-success">Completed</span>
+                                <span class="badge bg-success">Завершено</span>
                             {% elif book.status == 'error' %}
-                                <span class="badge bg-danger">Error</span>
+                                <span class="badge bg-danger">Ошибка</span>
                             {% endif %}
                         </td>
                         <td>{{ book.pages|length }}</td>
                         <td>
-                            <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-info">View</a>
+                            <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-info">Просмотр</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -66,8 +66,8 @@
 <div class="row">
     <div class="col-md-12 text-center py-5">
         <div class="alert alert-info">
-            <h3>No books yet</h3>
-            <p>Upload your first book to get started!</p>
+            <h3>Пока нет книг</h3>
+            <p>Загрузите вашу первую книгу, чтобы начать!</p>
         </div>
     </div>
 </div>
