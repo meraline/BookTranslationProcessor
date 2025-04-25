@@ -30,6 +30,7 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload
 
 # Ensure upload folder exists
