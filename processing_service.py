@@ -245,6 +245,10 @@ def process_book(book_id, job_id, is_pdf=False):
             book_structure_path = os.path.join(text_dir, f"{book.title.replace(' ', '_')}_structure.json")
             utils.save_to_json(book_structure, book_structure_path)
             
+            # Ensure PDF output directory exists
+            pdf_dir = os.path.join(output_dir, 'pdf')
+            os.makedirs(pdf_dir, exist_ok=True)
+            
             # Generate PDFs
             english_pdf = None
             russian_pdf = None
@@ -256,8 +260,11 @@ def process_book(book_id, job_id, is_pdf=False):
                 
                 # Verify the file exists and update job
                 if english_pdf and os.path.exists(english_pdf):
+                    # Save path to job
                     job.result_file_en = english_pdf
-                    logger.info(f"Successfully generated English PDF: {english_pdf}")
+                    # Commit immediately to ensure it's saved
+                    db.session.commit()
+                    logger.info(f"Successfully generated and saved English PDF path: {english_pdf}")
                 else:
                     logger.error(f"English PDF was not created at expected path: {english_pdf}")
             except Exception as e:
@@ -284,8 +291,11 @@ def process_book(book_id, job_id, is_pdf=False):
                     
                     # Verify the file exists and update job
                     if russian_pdf and os.path.exists(russian_pdf):
+                        # Save path to job
                         job.result_file_ru = russian_pdf
-                        logger.info(f"Successfully generated Russian PDF: {russian_pdf}")
+                        # Commit immediately to ensure it's saved
+                        db.session.commit()
+                        logger.info(f"Successfully generated and saved Russian PDF path: {russian_pdf}")
                     else:
                         logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
                 except Exception as e:
@@ -299,7 +309,13 @@ def process_book(book_id, job_id, is_pdf=False):
             # Update book status
             book.status = 'completed'
             
+            # Final commit to ensure all changes are saved
             db.session.commit()
+            
+            # Double-check PDF paths were correctly saved to the job
+            job = ProcessingJob.query.get(job.id)
+            logger.info(f"Final verification - English PDF path: {job.result_file_en}")
+            logger.info(f"Final verification - Russian PDF path: {job.result_file_ru}")
             
             logger.info(f"Processing completed for book ID: {book_id}")
             

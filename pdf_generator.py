@@ -120,7 +120,13 @@ class PDFGenerator:
             else:
                 filename = f"poker_book_{language}.pdf"
                 
-            output_path = os.path.join(self.output_dir, filename)
+            # Make sure the PDF directory exists
+            pdf_dir = os.path.join(self.output_dir, 'pdf')
+            os.makedirs(pdf_dir, exist_ok=True)
+            
+            # Create the full output path
+            output_path = os.path.join(pdf_dir, filename)
+            logger.info(f"PDF will be saved to: {output_path}")
             
             # Setup PDF
             pdf = self._setup_pdf(book_title)
