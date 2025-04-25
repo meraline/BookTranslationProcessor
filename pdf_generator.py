@@ -64,6 +64,12 @@ class PDFGenerator:
         # Create styles for different text elements with proper Unicode/Russian support
         styles = getSampleStyleSheet()
         
+        # Override default styles to use DejaVu Sans for better Unicode support in both languages
+        # This ensures all text displays correctly regardless of language
+        for style_name in ['Normal', 'Heading1', 'Heading2', 'Title', 'Italic']:
+            if style_name in styles:
+                styles[style_name].fontName = 'DejaVuSans'
+        
         # Add custom styles for Russian text
         # Use DejaVuSans for proper Cyrillic support
         styles.add(ParagraphStyle(
