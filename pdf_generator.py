@@ -92,7 +92,8 @@ class PDFGenerator:
         try:
             # Create output filename
             if book_title:
-                filename = f"{book_title}_{language}.pdf"
+                sanitized_title = re.sub(r'[^\w\s-]', '', book_title).replace(' ', '_')
+                filename = f"{sanitized_title}_{language}.pdf"
             else:
                 filename = f"poker_book_{language}.pdf"
                 
@@ -111,13 +112,152 @@ class PDFGenerator:
             # Add title if available
             if 'title' in document_structure:
                 title = document_structure['title']
-                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
-                pdf.cell(0, 10, title, 0, 1, 'C')
-                current_page_height += 15
+                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 20)
+                pdf.cell(0, 12, title, 0, 1, 'C')
+                current_page_height += 20
+                
+                # Add date
+                from datetime import datetime
+                date_str = datetime.now().strftime("%d.%m.%Y")
+                pdf.set_font(self.fonts['italic']['name'], self.fonts['italic']['style'], 10)
+                pdf.cell(0, 5, f"Создано: {date_str}", 0, 1, 'R')
+                current_page_height += 10
+                
+                # Reset font
                 pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                
+                # Add a small gap
+                pdf.ln(5)
+                current_page_height += 5
             
-            # Add content (paragraphs, figures, tables)
-            self._process_content(pdf, document_structure, current_page_height, max_page_height)
+            # Create a table of contents
+            toc_page = pdf.page_no()
+            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 14)
+            pdf.cell(0, 10, "Содержание" if language == 'ru' else "Table of Contents", 0, 1)
+            current_page_height += 15
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            
+            # We'll add TOC entries after we know the page numbers
+            toc_entries = []
+            
+            # Add a new page for the content
+            pdf.add_page()
+            
+            # Process all text content first - deduplicate and organize paragraphs
+            all_paragraphs = []
+            seen_paragraphs = set()
+            
+            if 'paragraphs' in document_structure:
+                for paragraph in document_structure['paragraphs']:
+                    # Skip empty paragraphs
+                    paragraph = paragraph.strip()
+                    if not paragraph:
+                        continue
+                        
+                    # Skip very short paragraphs that are likely artifacts
+                    if len(paragraph) < 10 and not (paragraph.endswith(':') or paragraph.strip().isupper()):
+                        continue
+                        
+                    # Skip if we've seen this paragraph before
+                    paragraph_hash = paragraph[:100]  # Use first 100 chars as "hash"
+                    if paragraph_hash in seen_paragraphs:
+                        continue
+                        
+                    # Add to our list and mark as seen
+                    all_paragraphs.append(paragraph)
+                    seen_paragraphs.add(paragraph_hash)
+            
+            # Look for sections and add TOC entries
+            section_count = 0
+            current_section = None
+            
+            # Start with main text content
+            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+            main_text_title = "Текст" if language == 'ru' else "Text"
+            pdf.cell(0, 10, main_text_title, 0, 1)
+            toc_entries.append((main_text_title, pdf.page_no()))
+            current_page_height = 15
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            
+            # Process paragraphs
+            for paragraph in all_paragraphs:
+                # Check if this looks like a heading
+                is_heading = False
+                if len(paragraph) < 100 and paragraph.strip().endswith(':'):
+                    is_heading = True
+                elif len(paragraph) < 60 and paragraph.strip().isupper():
+                    is_heading = True
+                    
+                if is_heading:
+                    # This is a heading - start a new section
+                    section_count += 1
+                    current_section = paragraph.strip().rstrip(':')
+                    
+                    # Add to TOC
+                    toc_entries.append((f"    {current_section}", pdf.page_no()))
+                    
+                    # Add the heading
+                    current_page_height = self._add_heading(pdf, paragraph, current_page_height, max_page_height)
+                else:
+                    # Regular paragraph
+                    current_page_height = self._add_paragraph(pdf, paragraph, current_page_height, max_page_height)
+            
+            # Now add a section for figures/diagrams
+            pdf.add_page()
+            current_page_height = 0
+            
+            # Add figures section if we have any
+            figures_title = "Диаграммы и графики" if language == 'ru' else "Diagrams and Charts"
+            if 'figures' in document_structure and document_structure['figures']:
+                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+                pdf.cell(0, 10, figures_title, 0, 1)
+                toc_entries.append((figures_title, pdf.page_no()))
+                current_page_height = 15
+                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                
+                # Process figures
+                figure_count = 0
+                for figure in document_structure['figures']:
+                    figure_count += 1
+                    figure_caption = f"Figure {figure_count}: {figure.get('description', '')}" if language == 'en' else f"Рисунок {figure_count}: {figure.get('description', '')}"
+                    current_page_height = self._add_figure(pdf, figure, current_page_height, max_page_height, caption=figure_caption)
+            
+            # Add tables section if we have any
+            pdf.add_page()
+            current_page_height = 0
+            
+            tables_title = "Таблицы" if language == 'ru' else "Tables"
+            if 'tables' in document_structure and document_structure['tables']:
+                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+                pdf.cell(0, 10, tables_title, 0, 1)
+                toc_entries.append((tables_title, pdf.page_no()))
+                current_page_height = 15
+                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                
+                # Process tables
+                table_count = 0
+                for table in document_structure['tables']:
+                    table_count += 1
+                    table_caption = f"Table {table_count}: {table.get('description', '')}" if language == 'en' else f"Таблица {table_count}: {table.get('description', '')}"
+                    current_page_height = self._add_table(pdf, table, current_page_height, max_page_height, caption=table_caption)
+            
+            # Now go back and fill in the TOC
+            pdf.page = toc_page
+            current_page_height = 15  # Start after the TOC title
+            
+            for title, page_num in toc_entries:
+                pdf.set_font(self.fonts['normal' if not title.startswith('    ') else 'italic']['name'], 
+                             self.fonts['normal' if not title.startswith('    ') else 'italic']['style'], 12)
+                
+                # Calculate dot leaders
+                dots = '.' * (60 - len(title) - len(str(page_num)))
+                
+                pdf.cell(0, 8, f"{title} {dots} {page_num}", 0, 1)
+                current_page_height += 8
+                
+                if current_page_height > max_page_height:
+                    pdf.add_page()
+                    current_page_height = 0
             
             # Save PDF
             pdf.output(output_path)
@@ -208,7 +348,39 @@ class PDFGenerator:
             
             return current_page_height + paragraph_height
     
-    def _add_figure(self, pdf, figure, current_page_height, max_page_height):
+    def _add_heading(self, pdf, heading, current_page_height, max_page_height):
+        """
+        Add a heading to the PDF.
+        
+        Args:
+            pdf: FPDF object
+            heading: Heading text
+            current_page_height: Current height used on page
+            max_page_height: Maximum height before new page
+            
+        Returns:
+            float: Updated current page height
+        """
+        # Remove excessive whitespace
+        heading = heading.strip()
+        if not heading:
+            return current_page_height
+            
+        # Check if we need a new page
+        if current_page_height + 20 > max_page_height:
+            pdf.add_page()
+            current_page_height = 0
+        
+        # Add heading
+        pdf.ln(5)
+        pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 14)
+        pdf.multi_cell(0, 8, heading)
+        pdf.ln(5)
+        pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+        
+        return current_page_height + 20
+        
+    def _add_figure(self, pdf, figure, current_page_height, max_page_height, caption=None):
         """
         Add a figure to the PDF.
         
@@ -217,12 +389,13 @@ class PDFGenerator:
             figure: Figure data
             current_page_height: Current height used on page
             max_page_height: Maximum height before new page
+            caption: Optional custom caption to use
             
         Returns:
             float: Updated current page height
         """
         figure_type = figure.get('type', 'image')
-        description = figure.get('description', '')
+        description = caption or figure.get('description', '')
         image_path = figure.get('image_path', '')
         
         if not image_path or not os.path.exists(image_path):
@@ -270,7 +443,7 @@ class PDFGenerator:
             pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             return current_page_height + 15
     
-    def _add_table(self, pdf, table, current_page_height, max_page_height):
+    def _add_table(self, pdf, table, current_page_height, max_page_height, caption=None):
         """
         Add a table to the PDF.
         
@@ -279,12 +452,14 @@ class PDFGenerator:
             table: Table data
             current_page_height: Current height used on page
             max_page_height: Maximum height before new page
+            caption: Optional custom caption to use
             
         Returns:
             float: Updated current page height
         """
         table_data = table.get('data', '')
         image_path = table.get('image_path', '')
+        description = caption or table.get('description', '')
         
         # If we have the table as an image
         if image_path and os.path.exists(image_path):
