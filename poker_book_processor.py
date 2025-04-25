@@ -268,6 +268,172 @@ class PokerBookProcessor:
             logger.error(f"Error generating PDFs: {str(e)}")
             return None
     
+    def process_pdf(self, pdf_path, book_title):
+        """
+        Process a PDF file, extract text and images, and translate content.
+        
+        Args:
+            pdf_path (str): Path to the PDF file
+            book_title (str): Title of the book
+            
+        Returns:
+            dict: Processing results
+        """
+        logger.info(f"Processing PDF: {pdf_path}")
+        
+        try:
+            # Create timestamp for unique filenames
+            timestamp = utils.create_timestamp()
+            base_filename = os.path.splitext(os.path.basename(pdf_path))[0]
+            output_basename = f"{base_filename}_{timestamp}"
+            
+            # Open PDF document
+            pdf_document = fitz.open(pdf_path)
+            num_pages = len(pdf_document)
+            
+            logger.info(f"PDF has {num_pages} pages")
+            
+            # Initialize lists to store processed data
+            processed_documents = []
+            
+            # Process each page
+            for page_idx in tqdm(range(num_pages), desc="Processing PDF pages"):
+                try:
+                    page = pdf_document[page_idx]
+                    page_num = page_idx + 1
+                    
+                    # Extract text
+                    page_text = page.get_text()
+                    
+                    # Save raw page text
+                    page_filename = f"{output_basename}_page{page_num:04d}"
+                    text_path = os.path.join(self.text_dir, f"{page_filename}_raw.txt")
+                    with open(text_path, 'w', encoding='utf-8') as f:
+                        f.write(page_text)
+                    
+                    # Improve text with OpenAI if available
+                    if self.openai_api_key and page_text.strip():
+                        enhanced_text = self.translation_manager.translate_text(page_text, purpose="ocr_correction")
+                        corrected_text_path = os.path.join(self.text_dir, f"{page_filename}_corrected.txt")
+                        with open(corrected_text_path, 'w', encoding='utf-8') as f:
+                            f.write(enhanced_text)
+                    else:
+                        enhanced_text = page_text
+                    
+                    # Extract images
+                    processed_figures = []
+                    image_list = page.get_images(full=True)
+                    
+                    # Process images from the page
+                    for img_idx, image_info in enumerate(image_list):
+                        try:
+                            # Extract image
+                            xref = image_info[0]  # Get the xref of the image
+                            base_image = pdf_document.extract_image(xref)
+                            image_bytes = base_image["image"]
+                            
+                            # Save image to file
+                            img_filename = f"{page_filename}_img{img_idx:03d}.png"
+                            img_path = os.path.join(self.images_dir, img_filename)
+                            with open(img_path, 'wb') as img_file:
+                                img_file.write(image_bytes)
+                            
+                            # Add image to processed figures
+                            processed_figures.append({
+                                'type': 'image',
+                                'region': None,
+                                'description': f"Image from page {page_num}",
+                                'image_path': img_path
+                            })
+                        except Exception as e:
+                            logger.error(f"Error extracting image {img_idx} from page {page_num}: {str(e)}")
+                    
+                    # Create document structure for this page
+                    document_structure = {
+                        'page_number': page_num,
+                        'original_page': f"Page {page_num} from {pdf_path}",
+                        'paragraphs': enhanced_text.split('\n\n'),
+                        'figures': processed_figures
+                    }
+                    
+                    # Save document structure
+                    structure_path = os.path.join(self.text_dir, f"{page_filename}_structure.json")
+                    utils.save_to_json(document_structure, structure_path)
+                    
+                    # Translate content
+                    if self.target_language != 'en':
+                        translated_structure = self.translation_manager.translate_document(document_structure)
+                        
+                        # Save translated structure
+                        translated_path = os.path.join(self.translated_dir, f"{page_filename}_translated.json")
+                        utils.save_to_json(translated_structure, translated_path)
+                        
+                        document_structure['translated'] = translated_structure
+                    
+                    processed_documents.append(document_structure)
+                    
+                except Exception as e:
+                    logger.error(f"Error processing page {page_idx} of PDF: {str(e)}")
+            
+            pdf_document.close()
+            
+            # Create book structure
+            book_structure = {
+                'title': book_title,
+                'pages': processed_documents,
+                'language': 'en',
+                'source_file': pdf_path
+            }
+            
+            # Create translated book structure if needed
+            if self.target_language != 'en' and processed_documents:
+                translated_pages = []
+                
+                for document in processed_documents:
+                    if 'translated' in document:
+                        translated_pages.append(document['translated'])
+                
+                translated_book = {
+                    'title': self.translation_manager.translate_text(book_title),
+                    'pages': translated_pages,
+                    'language': self.target_language,
+                    'source_file': pdf_path
+                }
+            else:
+                translated_book = None
+            
+            # Generate PDFs
+            try:
+                # Generate English PDF
+                english_pdf = self.generate_pdf(book_structure, 'en')
+                
+                # Generate translated PDF if available
+                translated_pdf = None
+                if translated_book:
+                    translated_pdf = self.generate_pdf(translated_book, self.target_language)
+                
+                # Prepare result summary
+                result = {
+                    'processed_pages': len(processed_documents),
+                    'total_pages': num_pages,
+                    'english_pdf': english_pdf,
+                    'translated_pdf': translated_pdf,
+                    'book_structure': os.path.join(self.text_dir, f"{book_title.replace(' ', '_')}_structure.json")
+                }
+                
+                # Save book structure
+                utils.save_to_json(book_structure, result['book_structure'])
+                
+                return result
+                
+            except Exception as e:
+                logger.error(f"Error generating PDFs: {str(e)}")
+                return None
+            
+        except Exception as e:
+            logger.error(f"Error processing PDF {pdf_path}: {str(e)}")
+            return None
+    
     def generate_pdf(self, book_structure, language):
         """
         Generate a PDF from the book structure.

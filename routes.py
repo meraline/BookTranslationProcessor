@@ -31,55 +31,106 @@ def index():
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_book():
-    """Handle book image upload"""
+    """Handle book file upload (images or PDF)"""
     if request.method == 'POST':
         # Check if book title is provided
         book_title = request.form.get('book_title', 'Untitled Book')
         description = request.form.get('description', '')
+        file_type = request.form.get('file_type', 'images')
         
         # Create new book record
         new_book = Book(title=book_title, description=description)
         db.session.add(new_book)
         db.session.commit()
         
-        # Get uploaded files
-        if 'book_images' not in request.files:
-            flash('No file part', 'error')
-            return redirect(request.url)
-        
-        files = request.files.getlist('book_images')
-        
-        # Check if at least one file is selected
-        if len(files) == 0 or files[0].filename == '':
-            flash('No selected file', 'error')
-            return redirect(request.url)
-        
-        # Process each file
         uploaded_count = 0
-        for idx, file in enumerate(files):
-            if file and allowed_file(file.filename):
+        is_pdf = False
+        
+        # Обработка в зависимости от типа файла (изображения или PDF)
+        if file_type == 'images':
+            # Обработка загруженных изображений
+            if 'book_images' not in request.files:
+                flash('Файлы не выбраны', 'error')
+                return redirect(request.url)
+            
+            files = request.files.getlist('book_images')
+            
+            # Check if at least one file is selected
+            if len(files) == 0 or files[0].filename == '':
+                flash('Не выбрано ни одного файла', 'error')
+                return redirect(request.url)
+            
+            # Process each file
+            for idx, file in enumerate(files):
+                if file and allowed_file(file.filename):
+                    # Secure filename and save file
+                    filename = secure_filename(file.filename)
+                    # Add book ID and index to filename to prevent conflicts
+                    filename = f"{new_book.id}_{idx}_{filename}"
+                    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                    file.save(file_path)
+                    
+                    # Try to extract page number from filename
+                    page_number = idx + 1  # Default to the order of upload
+                    
+                    # Create book page record
+                    new_page = BookPage(
+                        book_id=new_book.id,
+                        page_number=page_number,
+                        image_path=file_path,
+                        status='pending'
+                    )
+                    db.session.add(new_page)
+                    uploaded_count += 1
+            
+            # Save all pages
+            db.session.commit()
+            
+            if uploaded_count > 0:
+                flash_message = f'Загружено {uploaded_count} изображений, начата обработка'
+            else:
+                flash('Не загружено ни одного подходящего файла', 'error')
+                return redirect(request.url)
+                
+        elif file_type == 'pdf':
+            # Обработка загруженного PDF-файла
+            if 'book_pdf' not in request.files:
+                flash('PDF файл не выбран', 'error')
+                return redirect(request.url)
+                
+            pdf_file = request.files['book_pdf']
+            
+            if pdf_file.filename == '':
+                flash('PDF файл не выбран', 'error')
+                return redirect(request.url)
+                
+            if pdf_file and allowed_file(pdf_file.filename):
                 # Secure filename and save file
-                filename = secure_filename(file.filename)
-                # Add book ID and index to filename to prevent conflicts
-                filename = f"{new_book.id}_{idx}_{filename}"
+                filename = secure_filename(pdf_file.filename)
+                # Add book ID to filename to prevent conflicts
+                filename = f"{new_book.id}_pdf_{filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                file.save(file_path)
+                pdf_file.save(file_path)
                 
-                # Try to extract page number from filename
-                page_number = idx + 1  # Default to the order of upload
-                
-                # Create book page record
+                # Create single book page record for PDF
                 new_page = BookPage(
                     book_id=new_book.id,
-                    page_number=page_number,
+                    page_number=1,  # Since we don't know the page count yet
                     image_path=file_path,
                     status='pending'
                 )
                 db.session.add(new_page)
-                uploaded_count += 1
-        
-        # Save all pages
-        db.session.commit()
+                db.session.commit()
+                
+                is_pdf = True
+                uploaded_count = 1
+                flash_message = 'PDF файл загружен, начата обработка'
+            else:
+                flash('Загруженный файл не является PDF', 'error')
+                return redirect(request.url)
+        else:
+            flash('Неизвестный тип файла', 'error')
+            return redirect(request.url)
         
         if uploaded_count > 0:
             # Create processing job
@@ -88,14 +139,14 @@ def upload_book():
             db.session.commit()
             
             # Start processing in background
-            thread = threading.Thread(target=process_book, args=(new_book.id, job.id))
+            thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf))
             thread.daemon = True
             thread.start()
             
-            flash(f'Uploaded {uploaded_count} pages successfully and started processing', 'success')
+            flash(flash_message, 'success')
             return redirect(url_for('view_book', book_id=new_book.id))
         else:
-            flash('No valid files were uploaded', 'error')
+            flash('Не загружено ни одного файла', 'error')
         
         return redirect(url_for('index'))
     

@@ -98,7 +98,23 @@ class FigureAnalyzer:
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
         else:
             gray = roi
-            
+        
+        # Get image dimensions
+        height, width = gray.shape[:2]
+        
+        # Extract text to help with classification
+        text = pytesseract.image_to_string(roi)
+        text_length = len(text.strip())
+        
+        # ИСПРАВЛЕНИЕ: Если это похоже на большой блок текста, не классифицировать его как фигуру
+        # Проверим, много ли текста и есть ли много слов
+        if text_length > 100 and len(text.split()) > 20:
+            # Текстовые блоки не являются фигурами
+            if "\n" in text and not text.count("\n") > text.count(" ") / 5:
+                # Если не слишком много переносов строк относительно пробелов,
+                # то это, вероятно, обычный текст, а не таблица или диаграмма
+                return ("text_block", False)
+        
         # Edge detection
         edges = cv2.Canny(gray, 50, 150)
         
@@ -107,9 +123,16 @@ class FigureAnalyzer:
         vertical_lines = self._detect_lines(gray, False)
         
         # If we have a good number of horizontal and vertical lines, it's probably a table
-        if len(horizontal_lines) > 3 and len(vertical_lines) > 3:
-            return ("table", True)
+        # ИСПРАВЛЕНИЕ: Увеличим требуемое количество линий для более точного определения таблиц
+        if len(horizontal_lines) > 4 and len(vertical_lines) > 4:
+            # Также убедимся, что линии формируют сетку
+            horizontal_coverage = sum([line[2] for line in horizontal_lines]) / width
+            vertical_coverage = sum([line[2] for line in vertical_lines]) / height
             
+            # Если хорошее покрытие линиями
+            if horizontal_coverage > 0.4 and vertical_coverage > 0.4:
+                return ("table", True)
+        
         # Check for charts - look for axes, points, and lines
         # More complex detection based on edge density and distribution
         edge_density = np.sum(edges > 0) / (edges.shape[0] * edges.shape[1])
@@ -117,19 +140,31 @@ class FigureAnalyzer:
         # Hough line transform to detect straight lines
         lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=50, minLineLength=50, maxLineGap=10)
         
-        # If a lot of clean lines, might be a diagram
-        if lines is not None and len(lines) > 10:
-            return ("diagram", True)
-            
-        # If moderate edge density without many lines, might be a chart or graph
-        if edge_density > 0.05 and (lines is None or len(lines) < 10):
-            return ("chart", True)
-            
         # Check if it's an image or photo (high color variance)
         if len(roi.shape) == 3:  # Color image
             variance = np.var(roi)
-            if variance > 1000:  # This threshold might need tuning
+            if variance > 2000:  # Повышенное значение для фото
                 return ("image", True)
+        
+        # ИСПРАВЛЕНИЕ: Более строгие критерии для диаграмм
+        if lines is not None and len(lines) > 15:
+            # Проверяем, что линии образуют структуру
+            line_angles = []
+            for line in lines:
+                x1, y1, x2, y2 = line[0]
+                angle = np.arctan2(y2 - y1, x2 - x1) * 180 / np.pi
+                line_angles.append(angle)
+            
+            # Если много горизонтальных/вертикальных линий
+            horizontal_lines = sum(1 for angle in line_angles if abs(angle) < 10 or abs(angle) > 170)
+            vertical_lines = sum(1 for angle in line_angles if abs(abs(angle) - 90) < 10)
+            
+            if (horizontal_lines > 5 and vertical_lines > 3) or edge_density > 0.1:
+                return ("diagram", True)
+            
+        # If moderate edge density without many lines, might be a chart or graph
+        if edge_density > 0.08 and (lines is None or len(lines) < 15):
+            return ("chart", True)
         
         # If nothing matches, assume it's not a valid figure
         return ("unknown", False)
