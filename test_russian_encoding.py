@@ -30,7 +30,7 @@ def test_json_encoding(output_dir="output/encoding_test"):
     
     # Вывод информации в консоль
     logger.info("Тестовый текст (консоль):")
-    logger.info(f""{test_text}"")
+    logger.info(f'"{test_text}"')
     
     # Создаем структуру JSON с русским текстом
     test_data = {
@@ -59,7 +59,7 @@ def test_json_encoding(output_dir="output/encoding_test"):
         loaded_data = json.load(f)
     
     logger.info("Текст из загруженного JSON файла:")
-    logger.info(f""{loaded_data['paragraphs'][0]}"")
+    logger.info(f'"{loaded_data["paragraphs"][0]}"')
     
     return json_path, test_data
 
@@ -145,7 +145,7 @@ def test_file_encoding(test_data, output_dir="output/encoding_test"):
         content = f.read()
     
     logger.info("Текст из созданного файла:")
-    logger.info(f""{content[:100]}..."")
+    logger.info(f'"{content[:100]}..."')
     
     return txt_path
 
