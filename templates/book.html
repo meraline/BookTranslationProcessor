@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 
-{% block title %}{{ book.title }} - Poker Book OCR Processor{% endblock %}
+{% block title %}{{ book.title }} - OCR Процессор Книг по Покеру{% endblock %}
 
 {% block content %}
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center">
         <h1>{{ book.title }}</h1>
         <div>
-            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Books</a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Назад к книгам</a>
             {% if book.status == 'completed' or book.status == 'error' %}
             <form class="d-inline" method="POST" action="{{ url_for('reprocess_book', book_id=book.id) }}">
-                <button type="submit" class="btn btn-warning">Reprocess Book</button>
+                <button type="submit" class="btn btn-warning">Обработать снова</button>
             </form>
             {% endif %}
         </div>
@@ -22,12 +22,12 @@
     <div class="col-md-6">
         <div class="card mb-4 h-100">
             <div class="card-header">
-                <h4>Book Information</h4>
+                <h4>Информация о книге</h4>
             </div>
             <div class="card-body">
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Title:</div>
+                        <div class="col-md-4 fw-bold">Название:</div>
                         <div class="col-md-8">{{ book.title }}</div>
                     </div>
                 </div>
@@ -35,7 +35,7 @@
                 {% if book.description %}
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Description:</div>
+                        <div class="col-md-4 fw-bold">Описание:</div>
                         <div class="col-md-8">{{ book.description }}</div>
                     </div>
                 </div>
@@ -43,23 +43,23 @@
                 
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Created:</div>
+                        <div class="col-md-4 fw-bold">Создано:</div>
                         <div class="col-md-8">{{ book.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
                     </div>
                 </div>
                 
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Status:</div>
+                        <div class="col-md-4 fw-bold">Статус:</div>
                         <div class="col-md-8">
                             {% if book.status == 'new' %}
-                                <span class="badge bg-secondary">New</span>
+                                <span class="badge bg-secondary">Новая</span>
                             {% elif book.status == 'processing' %}
-                                <span class="badge bg-primary">Processing</span>
+                                <span class="badge bg-primary">Обработка</span>
                             {% elif book.status == 'completed' %}
-                                <span class="badge bg-success">Completed</span>
+                                <span class="badge bg-success">Завершено</span>
                             {% elif book.status == 'error' %}
-                                <span class="badge bg-danger">Error</span>
+                                <span class="badge bg-danger">Ошибка</span>
                             {% endif %}
                         </div>
                     </div>
@@ -67,7 +67,7 @@
                 
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Pages:</div>
+                        <div class="col-md-4 fw-bold">Страницы:</div>
                         <div class="col-md-8">{{ pages|length }}</div>
                     </div>
                 </div>
@@ -79,26 +79,26 @@
     <div class="col-md-6">
         <div class="card mb-4 h-100">
             <div class="card-header">
-                <h4>Processing Status</h4>
+                <h4>Статус обработки</h4>
             </div>
             <div class="card-body">
                 {% if job %}
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Job Status:</div>
+                        <div class="col-md-4 fw-bold">Статус задачи:</div>
                         <div class="col-md-8">
                             {% if job.status == 'queued' %}
-                                <span class="badge bg-secondary">Queued</span>
+                                <span class="badge bg-secondary">В очереди</span>
                             {% elif job.status == 'processing' %}
-                                <span class="badge bg-primary">Processing</span>
+                                <span class="badge bg-primary">Обработка</span>
                                 <div class="progress mt-2">
                                     <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                          role="progressbar" style="width: 100%"></div>
                                 </div>
                             {% elif job.status == 'completed' %}
-                                <span class="badge bg-success">Completed</span>
+                                <span class="badge bg-success">Завершено</span>
                             {% elif job.status == 'failed' %}
-                                <span class="badge bg-danger">Failed</span>
+                                <span class="badge bg-danger">Ошибка</span>
                             {% endif %}
                         </div>
                     </div>
@@ -106,7 +106,7 @@
                 
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Started:</div>
+                        <div class="col-md-4 fw-bold">Начато:</div>
                         <div class="col-md-8">{{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                 {% if job.completed_at %}
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Completed:</div>
+                        <div class="col-md-4 fw-bold">Завершено:</div>
                         <div class="col-md-8">{{ job.completed_at.strftime('%Y-%m-%d %H:%M') }}</div>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                 {% if job.error_message %}
                 <div class="mb-3">
                     <div class="row">
-                        <div class="col-md-4 fw-bold">Error:</div>
+                        <div class="col-md-4 fw-bold">Ошибка:</div>
                         <div class="col-md-8 text-danger">{{ job.error_message }}</div>
                     </div>
                 </div>
@@ -131,19 +131,19 @@
                 
                 {% if job.status == 'completed' %}
                 <div class="mt-4">
-                    <h5>Download Results</h5>
+                    <h5>Скачать результаты</h5>
                     <div class="d-flex gap-2">
                         {% if job.result_file_en %}
                         <a href="{{ url_for('download_pdf', job_id=job.id, language='en') }}" 
                            class="btn btn-outline-primary">
-                            <i class="bi bi-file-earmark-pdf"></i> English PDF
+                            <i class="bi bi-file-earmark-pdf"></i> PDF на английском
                         </a>
                         {% endif %}
                         
                         {% if job.result_file_ru %}
                         <a href="{{ url_for('download_pdf', job_id=job.id, language='ru') }}" 
                            class="btn btn-outline-primary">
-                            <i class="bi bi-file-earmark-pdf"></i> Russian PDF
+                            <i class="bi bi-file-earmark-pdf"></i> PDF на русском
                         </a>
                         {% endif %}
                     </div>
@@ -152,7 +152,7 @@
                 
                 {% else %}
                 <div class="alert alert-info">
-                    No processing job has been started for this book.
+                    Для этой книги не была запущена обработка.
                 </div>
                 {% endif %}
             </div>
@@ -163,7 +163,7 @@
 <!-- List of pages -->
 <div class="card mb-4">
     <div class="card-header">
-        <h4>Book Pages</h4>
+        <h4>Страницы книги</h4>
     </div>
     <div class="card-body">
         {% if pages %}
@@ -172,23 +172,23 @@
             <div class="col-md-3 col-sm-4 col-6">
                 <div class="card h-100">
                     {% if page.image_path %}
-                    <img src="{{ page.image_path }}" class="card-img-top" alt="Page {{ page.page_number }}" style="height: 150px; object-fit: cover;">
+                    <img src="{{ page.image_path }}" class="card-img-top" alt="Страница {{ page.page_number }}" style="height: 150px; object-fit: cover;">
                     {% endif %}
                     <div class="card-body p-2">
-                        <h5 class="card-title">Page {{ page.page_number }}</h5>
+                        <h5 class="card-title">Страница {{ page.page_number }}</h5>
                         <p class="card-text small">
-                            Status: 
+                            Статус: 
                             {% if page.status == 'pending' %}
-                                <span class="badge bg-secondary">Pending</span>
+                                <span class="badge bg-secondary">Ожидание</span>
                             {% elif page.status == 'processing' %}
-                                <span class="badge bg-primary">Processing</span>
+                                <span class="badge bg-primary">Обработка</span>
                             {% elif page.status == 'processed' %}
-                                <span class="badge bg-success">Processed</span>
+                                <span class="badge bg-success">Обработано</span>
                             {% elif page.status == 'error' %}
-                                <span class="badge bg-danger">Error</span>
+                                <span class="badge bg-danger">Ошибка</span>
                             {% endif %}
                         </p>
-                        <a href="{{ url_for('view_page', page_id=page.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                        <a href="{{ url_for('view_page', page_id=page.id) }}" class="btn btn-sm btn-outline-primary">Детали</a>
                     </div>
                 </div>
             </div>
@@ -196,7 +196,7 @@
         </div>
         {% else %}
         <div class="alert alert-warning">
-            No pages have been uploaded for this book.
+            Для этой книги не загружено страниц.
         </div>
         {% endif %}
     </div>
