@@ -117,6 +117,7 @@ def process_book(book_id, job_id, is_pdf=False):
                         if not os.path.exists(page.image_path):
                             logger.error(f"Image file not found: {page.image_path}")
                             page.status = 'error'
+                            db.session.commit()
                             continue
                         
                         # Generate base filename
