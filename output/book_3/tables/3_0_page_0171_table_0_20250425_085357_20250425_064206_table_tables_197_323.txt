@@ -1,6 +1,0 @@
-Table content: Statistically - I think this is kind of a wash. It could mean they understand
-EV, or pot odds, or something, but it could also just be a really poor
-interpretation of how to play the game. They could be thinking that
-statistics are what drives decisions, and not combinatorics, enumeration,
-
-and hand ranges.

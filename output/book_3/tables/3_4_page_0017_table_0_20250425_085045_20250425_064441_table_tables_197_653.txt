@@ -1,6 +1,0 @@
-Table content: The best poker player would be a very well designed computer program
-using the power of 100 of today’s supercomputers. We could call it the
-Deep Blue of poker. (Deep Blue was a super computer designed to play chess
-perfectly.) It would take in average expected plays based on data mined
-
-sources, and all statistics on every opponent, then output the best decision

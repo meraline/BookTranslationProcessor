@@ -1,7 +1,0 @@
-Table content: This is a graph that has 20 sample runs of what it could look like if you
-are a 3bb/100 (estimated) winner in the same game. Notice all samples
-have made money, and a good amount at that! The difference in variance
-is staggering between a marginal winner and a strong winner. The strong
-winner is pretty much guaranteed money at the end of the year, while the
-
-marginal winner is much more likely to go broke and be forced to quit
