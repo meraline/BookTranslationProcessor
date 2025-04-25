@@ -373,14 +373,14 @@ class PDFGenerator:
         # Detect potential headings
         if len(paragraph) < 100 and paragraph.strip().endswith(':'):
             # Probably a heading
-            pdf.set_font('DejaVu', 'B', 14)
+            pdf.set_font('Times', 'B', 14)
             pdf.multi_cell(0, 8, paragraph)
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font('Times', '', 12)
             return current_page_height + 15
         else:
             # Normal paragraph
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font('Times', '', 12)
             
             # Check for bullet points
             if paragraph.lstrip().startswith('•') or paragraph.lstrip().startswith('-'):
