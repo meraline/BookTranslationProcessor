@@ -61,7 +61,7 @@
                                 </a>
                                 
                                 <!-- Кнопки скачивания PDF только для книг со статусом "Завершено" -->
-                                {% if book.id in book_jobs and book_jobs[book.id] %}
+                                {% if book.id in book_jobs and book_jobs[book.id] and book_jobs[book.id].status == 'completed' %}
                                     {% if book_jobs[book.id].result_file_en %}
                                     <a href="{{ url_for('download_pdf', job_id=book_jobs[book.id].id, language='en') }}" 
                                         class="btn btn-sm btn-primary">

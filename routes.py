@@ -269,11 +269,21 @@ def download_pdf(job_id, language):
     job = ProcessingJob.query.get_or_404(job_id)
     
     if language == 'en' and job.result_file_en:
+        logger.debug(f"Sending English PDF file: {job.result_file_en}")
+        if not os.path.exists(job.result_file_en):
+            logger.error(f"Файл не существует: {job.result_file_en}")
+            flash('Файл не найден на сервере', 'error')
+            return redirect(url_for('view_book', book_id=job.book_id))
         return send_file(job.result_file_en, as_attachment=True)
     elif language == 'ru' and job.result_file_ru:
+        logger.debug(f"Sending Russian PDF file: {job.result_file_ru}")
+        if not os.path.exists(job.result_file_ru):
+            logger.error(f"Файл не существует: {job.result_file_ru}")
+            flash('Файл не найден на сервере', 'error')
+            return redirect(url_for('view_book', book_id=job.book_id))
         return send_file(job.result_file_ru, as_attachment=True)
     else:
-        flash('Requested file is not available', 'error')
+        flash('Файл не доступен', 'error')
         return redirect(url_for('view_book', book_id=job.book_id))
 
 @app.route('/page/<int:page_id>')
