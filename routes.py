@@ -200,7 +200,51 @@ def get_image(filename):
 def get_output_file(filename):
     """Serve output files"""
     output_dir = 'output'
-    return send_file(os.path.join(output_dir, filename))
+    output_path = os.path.join(output_dir, filename)
+    if os.path.exists(output_path):
+        return send_file(output_path)
+    else:
+        # Return a placeholder image if the requested file doesn't exist
+        return send_file(os.path.join('static', 'img', 'image-not-found.png'))
+        
+@app.route('/book/<int:book_id>/read')
+def read_book(book_id):
+    """Sequential reading mode for the entire book"""
+    book = Book.query.get_or_404(book_id)
+    pages = BookPage.query.filter_by(book_id=book_id).order_by(BookPage.page_number).all()
+    page_count = len(pages)
+    
+    # Get current page number from query parameters, default to 1
+    current_page_num = request.args.get('page', 1, type=int)
+    
+    # Ensure page number is valid
+    if current_page_num < 1:
+        current_page_num = 1
+    elif current_page_num > page_count:
+        current_page_num = page_count
+    
+    # Get the current page (index is page_num - 1)
+    current_page = pages[current_page_num - 1] if pages else None
+    
+    # Get figures for the current page
+    figures = []
+    if current_page:
+        figures = Figure.query.filter_by(page_id=current_page.id).all()
+    
+    # Calculate previous and next page numbers
+    prev_page = current_page_num - 1 if current_page_num > 1 else None
+    next_page = current_page_num + 1 if current_page_num < page_count else None
+    
+    return render_template(
+        'read.html', 
+        book=book, 
+        page=current_page,
+        figures=figures,
+        current_page_num=current_page_num,
+        total_pages=page_count,
+        prev_page=prev_page,
+        next_page=next_page
+    )
 
 @app.errorhandler(404)
 def page_not_found(e):

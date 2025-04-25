@@ -1,0 +1,271 @@
+{% extends "layout.html" %}
+
+{% block title %}Чтение книги: {{ book.title }} - OCR Процессор Книг по Покеру{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>{{ book.title }} - Страница {{ current_page_num }}</h1>
+        <div>
+            <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-outline-secondary">Назад к обзору книги</a>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% if prev_page %}
+                <a href="{{ url_for('read_book', book_id=book.id, page=prev_page) }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Предыдущая страница
+                </a>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    <i class="bi bi-arrow-left"></i> Предыдущая страница
+                </button>
+                {% endif %}
+            </div>
+            
+            <div class="text-center">
+                <span class="badge bg-info fs-5">{{ current_page_num }} из {{ total_pages }}</span>
+            </div>
+            
+            <div>
+                {% if next_page %}
+                <a href="{{ url_for('read_book', book_id=book.id, page=next_page) }}" class="btn btn-primary">
+                    Следующая страница <i class="bi bi-arrow-right"></i>
+                </a>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    Следующая страница <i class="bi bi-arrow-right"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if page %}
+<div class="row mb-4">
+    <!-- Original image and processed image -->
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Оригинальное изображение</h4>
+            </div>
+            <div class="card-body text-center">
+                {% if page.image_path %}
+                <img src="{{ url_for('get_image', filename=page.image_path.split('/')[-1]) }}" class="img-fluid" alt="Оригинальное изображение">
+                {% else %}
+                <div class="alert alert-warning">Изображение недоступно</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Обработанное изображение</h4>
+            </div>
+            <div class="card-body text-center">
+                {% if page.processed_image_path %}
+                <img src="{{ url_for('get_output_file', filename=page.processed_image_path.split('output/')[-1]) }}" class="img-fluid" alt="Обработанное изображение">
+                {% else %}
+                <div class="alert alert-warning">
+                    {% if page.status == 'pending' or page.status == 'processing' %}
+                    Обработка еще не завершена
+                    {% else %}
+                    Обработанное изображение недоступно
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Text content -->
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="english-tab" data-bs-toggle="tab" data-bs-target="#english" type="button" role="tab" aria-controls="english" aria-selected="true">
+                            Английский текст
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="russian-tab" data-bs-toggle="tab" data-bs-target="#russian" type="button" role="tab" aria-controls="russian" aria-selected="false">
+                            Русский перевод
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="english" role="tabpanel" aria-labelledby="english-tab">
+                        {% if page.text_content %}
+                        <div class="text-content p-3" style="white-space: pre-wrap;">{{ page.text_content }}</div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            {% if page.status == 'pending' or page.status == 'processing' %}
+                            Обработка еще не завершена
+                            {% else %}
+                            Текст не извлечен
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="tab-pane fade" id="russian" role="tabpanel" aria-labelledby="russian-tab">
+                        {% if page.translated_content %}
+                        <div class="text-content p-3" style="white-space: pre-wrap;">{{ page.translated_content }}</div>
+                        {% else %}
+                        <div class="alert alert-warning">
+                            {% if page.status == 'pending' or page.status == 'processing' %}
+                            Обработка еще не завершена
+                            {% else %}
+                            Перевод недоступен
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detected Figures -->
+{% if figures %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Обнаруженные изображения и таблицы</h4>
+    </div>
+    <div class="card-body">
+        <div class="row g-4">
+            {% for figure in figures %}
+            <div class="col-md-6">
+                <div class="card h-100">
+                    {% if figure.image_path %}
+                    <div class="text-center p-3">
+                        <img src="{{ url_for('get_output_file', filename=figure.image_path.split('output/')[-1]) }}" class="img-fluid" alt="{{ figure.figure_type }}" style="max-height: 300px;">
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {% if figure.figure_type == 'table' %}
+                                Таблица
+                            {% elif figure.figure_type == 'chart' %}
+                                График
+                            {% elif figure.figure_type == 'diagram' %}
+                                Диаграмма
+                            {% else %}
+                                {{ figure.figure_type|title }}
+                            {% endif %}
+                        </h5>
+                        <div class="card-text">
+                            <ul class="nav nav-tabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" 
+                                            id="desc-en-{{ loop.index }}-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#desc-en-{{ loop.index }}" 
+                                            type="button" role="tab">
+                                        Английский
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" 
+                                            id="desc-ru-{{ loop.index }}-tab" 
+                                            data-bs-toggle="tab" 
+                                            data-bs-target="#desc-ru-{{ loop.index }}" 
+                                            type="button" role="tab">
+                                        Русский
+                                    </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content pt-3">
+                                <div class="tab-pane fade show active" id="desc-en-{{ loop.index }}" role="tabpanel">
+                                    {% if figure.description %}
+                                    <p>{{ figure.description }}</p>
+                                    {% else %}
+                                    <p class="text-muted">Описание отсутствует</p>
+                                    {% endif %}
+                                </div>
+                                <div class="tab-pane fade" id="desc-ru-{{ loop.index }}" role="tabpanel">
+                                    {% if figure.translated_description %}
+                                    <p>{{ figure.translated_description }}</p>
+                                    {% else %}
+                                    <p class="text-muted">Перевод отсутствует</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Обнаруженные изображения и таблицы</h4>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-info">
+            {% if page.status == 'pending' or page.status == 'processing' %}
+            Обработка еще не завершена
+            {% else %}
+            На этой странице не обнаружено изображений или таблиц
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Bottom Navigation -->
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% if prev_page %}
+                <a href="{{ url_for('read_book', book_id=book.id, page=prev_page) }}" class="btn btn-primary">
+                    <i class="bi bi-arrow-left"></i> Предыдущая страница
+                </a>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    <i class="bi bi-arrow-left"></i> Предыдущая страница
+                </button>
+                {% endif %}
+            </div>
+            
+            <div class="text-center">
+                <span class="badge bg-info fs-5">{{ current_page_num }} из {{ total_pages }}</span>
+            </div>
+            
+            <div>
+                {% if next_page %}
+                <a href="{{ url_for('read_book', book_id=book.id, page=next_page) }}" class="btn btn-primary">
+                    Следующая страница <i class="bi bi-arrow-right"></i>
+                </a>
+                {% else %}
+                <button class="btn btn-secondary" disabled>
+                    Следующая страница <i class="bi bi-arrow-right"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="alert alert-warning">
+    Страницы не найдены для этой книги
+</div>
+{% endif %}
+{% endblock %}

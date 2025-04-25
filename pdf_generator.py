@@ -27,15 +27,15 @@ class PDFGenerator:
         self.output_dir = output_dir
         self.fonts_dir = fonts_dir
         
-        # Custom Russian-friendly font paths
+        # Use standard fonts
         self.fonts = {
-            'normal': {'path': None, 'name': 'DejaVu'},
-            'bold': {'path': None, 'name': 'DejaVuB'},
-            'italic': {'path': None, 'name': 'DejaVuI'},
-            'bold_italic': {'path': None, 'name': 'DejaVuBI'}
+            'normal': {'name': 'Arial', 'style': ''},
+            'bold': {'name': 'Arial', 'style': 'B'},
+            'italic': {'name': 'Arial', 'style': 'I'},
+            'bold_italic': {'name': 'Arial', 'style': 'BI'}
         }
         
-        # If custom fonts directory specified, look for font files
+        # Use custom fonts if provided
         if fonts_dir and os.path.exists(fonts_dir):
             for font_file in os.listdir(fonts_dir):
                 if font_file.endswith('.ttf'):
@@ -66,24 +66,14 @@ class PDFGenerator:
             pdf.set_title(title)
         pdf.set_author("Poker Book Processor")
         
-        # Add fonts
+        # Add fonts - use custom fonts if available, otherwise standard fonts
         for font_type, font_data in self.fonts.items():
-            if font_data['path']:
+            if 'path' in font_data and font_data['path']:
                 # If we have the font file, add it
                 pdf.add_font(font_data['name'], '', font_data['path'], uni=True)
-            else:
-                # Otherwise, use built-in fonts
-                if font_type == 'normal':
-                    pass  # Default font is already added
-                elif font_type == 'bold':
-                    pdf.add_font('DejaVuB', '', '', uni=True)
-                elif font_type == 'italic':
-                    pdf.add_font('DejaVuI', '', '', uni=True)
-                elif font_type == 'bold_italic':
-                    pdf.add_font('DejaVuBI', '', '', uni=True)
         
-        # Set default font
-        pdf.set_font('DejaVu', '', 12)
+        # Set default font (Arial supports cyrillic)
+        pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
         
         return pdf
     
@@ -121,10 +111,10 @@ class PDFGenerator:
             # Add title if available
             if 'title' in document_structure:
                 title = document_structure['title']
-                pdf.set_font('DejaVuB', '', 16)
+                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
                 pdf.cell(0, 10, title, 0, 1, 'C')
                 current_page_height += 15
-                pdf.set_font('DejaVu', '', 12)
+                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             
             # Add content (paragraphs, figures, tables)
             self._process_content(pdf, document_structure, current_page_height, max_page_height)
@@ -193,14 +183,14 @@ class PDFGenerator:
         # Detect potential headings
         if len(paragraph) < 100 and paragraph.strip().endswith(':'):
             # Probably a heading
-            pdf.set_font('DejaVuB', '', 14)
+            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 14)
             pdf.multi_cell(0, 8, paragraph)
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             return current_page_height + 15
         else:
             # Normal paragraph
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             
             # Check for bullet points
             if paragraph.lstrip().startswith('•') or paragraph.lstrip().startswith('-'):
