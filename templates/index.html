@@ -53,7 +53,14 @@
                         </td>
                         <td>{{ book.pages|length }}</td>
                         <td>
-                            <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-info">Просмотр</a>
+                            <div class="d-flex gap-1">
+                                <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-info">Просмотр</a>
+                                {% if book.status == 'completed' %}
+                                <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-book"></i> Читать
+                                </a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

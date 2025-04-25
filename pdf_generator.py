@@ -227,10 +227,10 @@ class PDFGenerator:
         
         if not image_path or not os.path.exists(image_path):
             # If image doesn't exist, just add the description
-            pdf.set_font('DejaVuI', '', 11)
+            pdf.set_font(self.fonts['italic']['name'], self.fonts['italic']['style'], 11)
             pdf.multi_cell(0, 6, f"[Figure description: {description}]")
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             return current_page_height + 15
         
         # Load image to get dimensions
@@ -253,10 +253,10 @@ class PDFGenerator:
             
             # Add caption
             pdf.set_y(pdf.get_y() + figure_height + 5)
-            pdf.set_font('DejaVuI', '', 10)
+            pdf.set_font(self.fonts['italic']['name'], self.fonts['italic']['style'], 10)
             pdf.multi_cell(0, 5, description)
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             
             # Update the height
             return current_page_height + figure_height + 20
@@ -264,10 +264,10 @@ class PDFGenerator:
         except Exception as e:
             logger.error(f"Error adding figure to PDF: {str(e)}")
             # Just add the description on error
-            pdf.set_font('DejaVuI', '', 11)
+            pdf.set_font(self.fonts['italic']['name'], self.fonts['italic']['style'], 11)
             pdf.multi_cell(0, 6, f"[Figure: {description}]")
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             return current_page_height + 15
     
     def _add_table(self, pdf, table, current_page_height, max_page_height):
@@ -329,7 +329,7 @@ class PDFGenerator:
             pdf.set_font('Courier', '', 10)  # Monospaced font for tables
             pdf.multi_cell(0, 6, table_data)
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             
             return current_page_height + estimated_height
             
@@ -352,7 +352,7 @@ class PDFGenerator:
                 current_page_height = 0
             
             # Add table
-            pdf.set_font('DejaVu', '', 10)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 10)
             
             for row in table_data:
                 for cell in row:
@@ -360,7 +360,7 @@ class PDFGenerator:
                 pdf.ln()
             
             pdf.ln(5)
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
             
             return current_page_height + table_height
             
