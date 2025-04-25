@@ -12,7 +12,12 @@ from datetime import datetime
 import glob
 import json
 import cv2
+import numpy as np
 from tqdm import tqdm
+import tempfile
+import fitz  # PyMuPDF для работы с PDF
+from PIL import Image
+import io
 
 # Import custom modules
 from image_preprocessor import ImagePreprocessor

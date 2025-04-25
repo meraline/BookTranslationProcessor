@@ -7,7 +7,7 @@
     <div class="col-lg-8 offset-lg-2">
         <div class="card">
             <div class="card-header">
-                <h2>Загрузка изображений книги</h2>
+                <h2>Загрузка книги</h2>
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('upload_book') }}" enctype="multipart/form-data">
@@ -24,34 +24,78 @@
                     </div>
                     
                     <div class="mb-3">
+                        <label class="form-label">Тип загружаемых файлов</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="file_type" id="type_images" value="images" checked>
+                            <label class="form-check-label" for="type_images">
+                                Изображения страниц (PNG, JPEG)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="file_type" id="type_pdf" value="pdf">
+                            <label class="form-check-label" for="type_pdf">
+                                PDF-файл
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div id="images-upload-section" class="mb-3">
                         <label for="book_images" class="form-label">Загрузите изображения</label>
-                        <input class="form-control" type="file" id="book_images" name="book_images" multiple accept="image/png, image/jpeg" required>
+                        <input class="form-control" type="file" id="book_images" name="book_images" multiple accept="image/png, image/jpeg">
                         <div class="form-text">
                             Выберите несколько файлов изображений из вашей книги. Страницы будут обработаны в выбранном порядке.
                             Поддерживаемые форматы: PNG, JPG/JPEG.
                         </div>
+                        
+                        <div id="image-preview" class="row g-2 mt-2">
+                            <!-- Здесь будут отображаться предварительные изображения -->
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <div id="image-preview" class="row g-2">
-                            <!-- Здесь будут отображаться предварительные изображения -->
+                    <div id="pdf-upload-section" class="mb-3" style="display: none;">
+                        <label for="book_pdf" class="form-label">Загрузите PDF-файл</label>
+                        <input class="form-control" type="file" id="book_pdf" name="book_pdf" accept="application/pdf">
+                        <div class="form-text">
+                            Выберите PDF-файл для обработки и перевода на русский язык.
+                        </div>
+                        
+                        <div id="pdf-info" class="mt-2">
+                            <!-- Информация о загруженном PDF -->
                         </div>
                     </div>
                     
                     <div class="alert alert-info">
                         <h5>Информация об обработке</h5>
-                        <p>
-                            После загрузки ваши изображения будут обработаны для:
-                        </p>
-                        <ul>
-                            <li>Извлечения текста с помощью OCR</li>
-                            <li>Обнаружения и анализа фигур, графиков и таблиц</li>
-                            <li>Перевода содержимого на русский язык</li>
-                            <li>Создания организованных PDF-файлов на обоих языках</li>
-                        </ul>
-                        <p>
-                            Обработка может занять несколько минут в зависимости от количества и сложности изображений.
-                        </p>
+                        
+                        <div id="images-info" class="mt-2">
+                            <p>
+                                После загрузки ваши <strong>изображения</strong> будут обработаны для:
+                            </p>
+                            <ul>
+                                <li>Извлечения текста с помощью OCR</li>
+                                <li>Обнаружения и анализа фигур, графиков и таблиц</li>
+                                <li>Перевода содержимого на русский язык</li>
+                                <li>Создания организованных PDF-файлов на обоих языках</li>
+                            </ul>
+                            <p>
+                                Обработка может занять несколько минут в зависимости от количества и сложности изображений.
+                            </p>
+                        </div>
+                        
+                        <div id="pdf-info-text" class="mt-2" style="display: none;">
+                            <p>
+                                После загрузки ваш <strong>PDF-файл</strong> будет обработан для:
+                            </p>
+                            <ul>
+                                <li>Извлечения текста со всех страниц</li>
+                                <li>Преобразования изображений и таблиц из PDF в отдельные элементы</li>
+                                <li>Перевода содержимого на русский язык</li>
+                                <li>Создания нового PDF-файла на русском языке</li>
+                            </ul>
+                            <p>
+                                Обработка может занять несколько минут в зависимости от размера и сложности PDF-файла.
+                            </p>
+                        </div>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
@@ -68,11 +112,53 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('book_images');
-    const preview = document.getElementById('image-preview');
+    // Переключение между изображениями и PDF
+    const typeImages = document.getElementById('type_images');
+    const typePdf = document.getElementById('type_pdf');
+    const imagesSection = document.getElementById('images-upload-section');
+    const pdfSection = document.getElementById('pdf-upload-section');
+    const bookImagesInput = document.getElementById('book_images');
+    const bookPdfInput = document.getElementById('book_pdf');
     
-    input.addEventListener('change', function() {
-        preview.innerHTML = '';
+    // Получаем элементы информации
+    const imagesInfoElement = document.getElementById('images-info');
+    const pdfInfoTextElement = document.getElementById('pdf-info-text');
+    
+    function toggleUploadType() {
+        if (typeImages.checked) {
+            // Показываем раздел изображений
+            imagesSection.style.display = 'block';
+            pdfSection.style.display = 'none';
+            bookPdfInput.removeAttribute('required');
+            bookImagesInput.setAttribute('required', 'required');
+            
+            // Переключаем информацию
+            imagesInfoElement.style.display = 'block';
+            pdfInfoTextElement.style.display = 'none';
+        } else {
+            // Показываем раздел PDF
+            imagesSection.style.display = 'none';
+            pdfSection.style.display = 'block';
+            bookImagesInput.removeAttribute('required');
+            bookPdfInput.setAttribute('required', 'required');
+            
+            // Переключаем информацию
+            imagesInfoElement.style.display = 'none';
+            pdfInfoTextElement.style.display = 'block';
+        }
+    }
+    
+    // Вызвать при загрузке
+    toggleUploadType();
+    
+    // Слушатели событий
+    typeImages.addEventListener('change', toggleUploadType);
+    typePdf.addEventListener('change', toggleUploadType);
+    
+    // Обработка изображений
+    const imagePreview = document.getElementById('image-preview');
+    bookImagesInput.addEventListener('change', function() {
+        imagePreview.innerHTML = '';
         
         if (this.files) {
             for (let i = 0; i < Math.min(this.files.length, 12); i++) {
@@ -104,7 +190,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     card.appendChild(img);
                     card.appendChild(cardBody);
                     col.appendChild(card);
-                    preview.appendChild(col);
+                    imagePreview.appendChild(col);
                 };
                 
                 reader.readAsDataURL(file);
@@ -119,8 +205,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 moreText.textContent = `+ ${this.files.length - 12} ещё файлов выбрано`;
                 
                 moreCol.appendChild(moreText);
-                preview.appendChild(moreCol);
+                imagePreview.appendChild(moreCol);
             }
+        }
+    });
+    
+    // Обработка PDF
+    const pdfInfo = document.getElementById('pdf-info');
+    bookPdfInput.addEventListener('change', function() {
+        pdfInfo.innerHTML = '';
+        
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            const fileSize = (file.size / 1024 / 1024).toFixed(2); // в МБ
+            
+            const infoCard = document.createElement('div');
+            infoCard.className = 'card';
+            
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body';
+            
+            const icon = document.createElement('i');
+            icon.className = 'bi bi-file-earmark-pdf fs-1 text-danger';
+            
+            const title = document.createElement('h5');
+            title.className = 'card-title mt-2';
+            title.textContent = file.name;
+            
+            const sizeText = document.createElement('p');
+            sizeText.className = 'card-text';
+            sizeText.innerHTML = `Размер: <strong>${fileSize} МБ</strong>`;
+            
+            cardBody.appendChild(icon);
+            cardBody.appendChild(title);
+            cardBody.appendChild(sizeText);
+            infoCard.appendChild(cardBody);
+            pdfInfo.appendChild(infoCard);
         }
     });
 });
