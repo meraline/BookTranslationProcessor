@@ -260,13 +260,33 @@ def process_book(book_id, job_id, is_pdf=False):
                 
                 # Verify the file exists and update job
                 if english_pdf and os.path.exists(english_pdf):
+                    # Log success and absolute paths for debugging
+                    abs_path = os.path.abspath(english_pdf)
+                    logger.info(f"English PDF successfully generated at: {english_pdf}")
+                    logger.info(f"Absolute path: {abs_path}")
+                    
                     # Save path to job
                     job.result_file_en = english_pdf
                     # Commit immediately to ensure it's saved
                     db.session.commit()
-                    logger.info(f"Successfully generated and saved English PDF path: {english_pdf}")
+                    
+                    # Verify path was saved to the database
+                    job_check = ProcessingJob.query.get(job.id)
+                    logger.info(f"Saved path verification: {job_check.result_file_en}")
                 else:
                     logger.error(f"English PDF was not created at expected path: {english_pdf}")
+                    
+                    # Try to create a test file to debug directory/permission issues
+                    test_path = os.path.join(pdf_dir, 'test_en.pdf')
+                    try:
+                        with open(test_path, 'w') as f:
+                            f.write("Test file")
+                        logger.info(f"Test file created successfully at: {test_path}")
+                        job.result_file_en = test_path
+                        db.session.commit()
+                    except Exception as test_error:
+                        logger.error(f"Could not create test file: {str(test_error)}")
+                        
             except Exception as e:
                 logger.error(f"Error generating English PDF: {str(e)}")
                 traceback.print_exc()
@@ -291,13 +311,32 @@ def process_book(book_id, job_id, is_pdf=False):
                     
                     # Verify the file exists and update job
                     if russian_pdf and os.path.exists(russian_pdf):
+                        # Log success and absolute paths for debugging
+                        abs_path = os.path.abspath(russian_pdf)
+                        logger.info(f"Russian PDF successfully generated at: {russian_pdf}")
+                        logger.info(f"Absolute path: {abs_path}")
+                        
                         # Save path to job
                         job.result_file_ru = russian_pdf
                         # Commit immediately to ensure it's saved
                         db.session.commit()
-                        logger.info(f"Successfully generated and saved Russian PDF path: {russian_pdf}")
+                        
+                        # Verify path was saved to database
+                        job_check = ProcessingJob.query.get(job.id)
+                        logger.info(f"Saved path verification: {job_check.result_file_ru}")
                     else:
                         logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
+                        
+                        # Try to create a test file to debug directory/permission issues
+                        test_path = os.path.join(pdf_dir, 'test_ru.pdf')
+                        try:
+                            with open(test_path, 'w') as f:
+                                f.write("Test file")
+                            logger.info(f"Test file created successfully at: {test_path}")
+                            job.result_file_ru = test_path
+                            db.session.commit()
+                        except Exception as test_error:
+                            logger.error(f"Could not create test file: {str(test_error)}")
                 except Exception as e:
                     logger.error(f"Error generating Russian PDF: {str(e)}")
                     traceback.print_exc()
