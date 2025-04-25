@@ -1,0 +1,362 @@
+#!/usr/bin/env python3
+"""
+Module for managing translations using OpenAI.
+"""
+import os
+import logging
+import re
+import json
+import time
+import openai
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class TranslationManager:
+    """Handles translation from English to Russian using OpenAI API."""
+    
+    def __init__(self, openai_api_key=None, target_language='ru', cache_dir=None):
+        """
+        Initialize translation manager.
+        
+        Args:
+            openai_api_key (str): OpenAI API key
+            target_language (str): Target language for translations (default: ru)
+            cache_dir (str): Directory for caching translations
+        """
+        self.target_language = target_language
+        self.cache = {}
+        self.cache_dir = cache_dir
+        
+        # Setup OpenAI API
+        self.openai_api_key = openai_api_key
+        if openai_api_key:
+            try:
+                # Try to use new API client
+                openai.api_key = openai_api_key
+                # Test if API key is valid
+                self._test_openai_connection()
+            except Exception as e:
+                logger.error(f"Error setting up OpenAI API: {str(e)}")
+        
+        # Create cache directory if specified
+        if cache_dir and not os.path.exists(cache_dir):
+            os.makedirs(cache_dir)
+            
+        # Load existing cache if available
+        self._load_cache()
+    
+    def _test_openai_connection(self):
+        """
+        Test if the OpenAI connection is working.
+        
+        Returns:
+            bool: True if connection works, False otherwise
+        """
+        try:
+            # Try to use the new API client with a minimal request
+            client = openai.OpenAI(api_key=self.openai_api_key)
+            response = client.chat.completions.create(
+                model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": "Say hello"}
+                ],
+                max_tokens=10,
+                temperature=0.1
+            )
+            return True
+        except Exception as e:
+            logger.error(f"OpenAI API connection test failed: {str(e)}")
+            return False
+    
+    def _load_cache(self):
+        """Load translation cache from disk if available."""
+        if not self.cache_dir:
+            return
+            
+        cache_file = os.path.join(self.cache_dir, 'translation_cache.json')
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, 'r', encoding='utf-8') as f:
+                    self.cache = json.load(f)
+                logger.info(f"Loaded {len(self.cache)} cached translations")
+            except Exception as e:
+                logger.error(f"Error loading translation cache: {str(e)}")
+                self.cache = {}
+    
+    def _save_cache(self):
+        """Save translation cache to disk."""
+        if not self.cache_dir:
+            return
+            
+        cache_file = os.path.join(self.cache_dir, 'translation_cache.json')
+        try:
+            with open(cache_file, 'w', encoding='utf-8') as f:
+                json.dump(self.cache, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Error saving translation cache: {str(e)}")
+    
+    def translate_text(self, text, purpose="translation", retry_count=3):
+        """
+        Translate text using OpenAI.
+        
+        Args:
+            text (str): Text to translate
+            purpose (str): Purpose of translation (translation, figure_description)
+            retry_count (int): Number of retries on failure
+            
+        Returns:
+            str: Translated text
+        """
+        if not text.strip():
+            return ""
+            
+        if not self.openai_api_key:
+            logger.warning("No OpenAI API key provided. Cannot translate text.")
+            return text
+        
+        # Check cache first
+        cache_key = f"{purpose}:{text}"
+        if cache_key in self.cache:
+            logger.debug("Using cached translation")
+            return self.cache[cache_key]
+        
+        # Clean text for better translations
+        cleaned_text = self._clean_text_for_translation(text)
+        if not cleaned_text.strip():
+            return ""
+            
+        # Build prompt based on purpose
+        prompt = self._build_translation_prompt(cleaned_text, purpose)
+        
+        # Try translation with retries
+        for attempt in range(retry_count):
+            try:
+                # Try to use new API client
+                try:
+                    client = openai.OpenAI(api_key=self.openai_api_key)
+                    response = client.chat.completions.create(
+                        model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                        messages=[
+                            {"role": "system", "content": "Вы специалист по переводу текстов по покеру с английского на русский."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=4000,
+                        temperature=0.1
+                    )
+                    translated_text = response.choices[0].message.content.strip()
+                # If new API doesn't work, try old API
+                except Exception as new_api_error:
+                    logger.error(f"Error with new API: {str(new_api_error)}. Trying old API.")
+                    response = openai.ChatCompletion.create(
+                        model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                        messages=[
+                            {"role": "system", "content": "Вы специалист по переводу текстов по покеру с английского на русский."},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=4000,
+                        temperature=0.1
+                    )
+                    translated_text = response.choices[0].message.content.strip()
+                
+                # Post-process the translation
+                processed_translation = self._post_process_translation(translated_text)
+                
+                # Cache the result
+                self.cache[cache_key] = processed_translation
+                self._save_cache()
+                
+                return processed_translation
+                
+            except Exception as e:
+                logger.error(f"Translation attempt {attempt+1} failed: {str(e)}")
+                if attempt < retry_count - 1:
+                    # Wait before retrying (exponential backoff)
+                    time.sleep(2 ** attempt)
+                else:
+                    logger.error("All translation attempts failed")
+                    return text  # Return original text on complete failure
+    
+    def _clean_text_for_translation(self, text):
+        """
+        Clean text before translation.
+        
+        Args:
+            text (str): Text to clean
+            
+        Returns:
+            str: Cleaned text
+        """
+        # Remove excessively repeated characters
+        text = re.sub(r'(.)\1{3,}', r'\1\1', text)
+        
+        # Remove lines with mostly special characters
+        lines = text.split('\n')
+        cleaned_lines = []
+        for line in lines:
+            # Count special characters
+            special_chars = sum(1 for c in line if not c.isalnum() and not c.isspace())
+            total_chars = len(line)
+            
+            # Keep if less than 40% special characters
+            if total_chars == 0 or special_chars / total_chars < 0.4:
+                cleaned_lines.append(line)
+        
+        return '\n'.join(cleaned_lines)
+    
+    def _build_translation_prompt(self, text, purpose):
+        """
+        Build a translation prompt based on purpose.
+        
+        Args:
+            text (str): Text to translate
+            purpose (str): Purpose of translation
+            
+        Returns:
+            str: Prompt for the translation
+        """
+        if purpose == "translation":
+            return f"""Переведите следующий текст на русский язык. 
+            Сохраните структуру и форматирование оригинала.
+            Покерные термины следует оставить на английском, 
+            а затем дать их перевод в скобках при первом упоминании.
+            Все числа, формулы и названия должны быть переведены корректно. 
+            Сохраните все абзацы, списки и структуры переносов строк.
+            
+            Оригинал:
+            {text}
+            
+            Перевод на русский:"""
+            
+        elif purpose == "figure_description":
+            return f"""Переведите следующее описание диаграммы/таблицы/графика из книги по покеру на русский язык.
+            Сохраните точность терминологии.
+            Покерные термины следует оставить на английском, 
+            а затем дать их перевод в скобках при первом упоминании.
+            
+            Оригинал:
+            {text}
+            
+            Перевод на русский:"""
+            
+        elif purpose == "technical_content":
+            return f"""Переведите следующий технический текст из книги по покеру на русский язык.
+            Сохраните все формулы, числа и специальные обозначения в точном виде.
+            Покерные термины и математические обозначения следует оставить на английском, 
+            а затем дать их перевод в скобках при первом упоминании.
+            
+            Оригинал:
+            {text}
+            
+            Перевод на русский:"""
+            
+        else:
+            return f"""Переведите следующий текст на русский язык.
+            
+            Оригинал:
+            {text}
+            
+            Перевод на русский:"""
+    
+    def _post_process_translation(self, translation):
+        """
+        Apply post-processing to the translation.
+        
+        Args:
+            translation (str): Raw translation
+            
+        Returns:
+            str: Processed translation
+        """
+        # Fix spacing after/before punctuation in Russian
+        translation = re.sub(r'\s+([.,;:!?)])', r'\1', translation)
+        translation = re.sub(r'([({[])(?=\S)', r'\1 ', translation)
+        
+        # Fix poker terms with translations
+        # Look for patterns like "term (перевод)" and ensure they're formatted consistently
+        term_patterns = re.finditer(r'([A-Za-z][A-Za-z0-9\s\-\_]+)\s*\(([^)]+)\)', translation)
+        replacements = {}
+        
+        for match in term_patterns:
+            english_term = match.group(1).strip()
+            russian_trans = match.group(2).strip()
+            
+            # Format consistently
+            replacements[match.group(0)] = f"{english_term} ({russian_trans})"
+        
+        # Apply replacements
+        for old, new in replacements.items():
+            translation = translation.replace(old, new)
+            
+        return translation
+    
+    def translate_document(self, document_structure):
+        """
+        Translate an entire document structure.
+        
+        Args:
+            document_structure (dict): Document structure with text content
+            
+        Returns:
+            dict: Translated document structure
+        """
+        translated_structure = {}
+        
+        # Translate title if present
+        if 'title' in document_structure:
+            translated_structure['title'] = self.translate_text(document_structure['title'])
+        
+        # Translate paragraphs
+        if 'paragraphs' in document_structure:
+            translated_structure['paragraphs'] = []
+            for paragraph in document_structure['paragraphs']:
+                translated_paragraph = self.translate_text(paragraph)
+                translated_structure['paragraphs'].append(translated_paragraph)
+        
+        # Translate figures
+        if 'figures' in document_structure:
+            translated_structure['figures'] = []
+            for figure in document_structure['figures']:
+                figure_type = figure['type']
+                description = figure['description']
+                region = figure['region']
+                
+                translated_description = self.translate_text(description, purpose="figure_description")
+                
+                translated_figure = {
+                    'type': figure_type,
+                    'description': translated_description,
+                    'region': region,
+                    'image_path': figure.get('image_path', '')
+                }
+                
+                translated_structure['figures'].append(translated_figure)
+        
+        # Translate tables
+        if 'tables' in document_structure:
+            translated_structure['tables'] = []
+            for table in document_structure['tables']:
+                table_data = table['data']
+                
+                # For simple tables, translate the whole thing
+                if isinstance(table_data, str):
+                    translated_data = self.translate_text(table_data, purpose="technical_content")
+                else:
+                    # For structured tables, translate each cell
+                    translated_data = []
+                    for row in table_data:
+                        translated_row = []
+                        for cell in row:
+                            translated_cell = self.translate_text(cell, purpose="technical_content")
+                            translated_row.append(translated_cell)
+                        translated_data.append(translated_row)
+                
+                translated_table = {
+                    'data': translated_data,
+                    'image_path': table.get('image_path', '')
+                }
+                
+                translated_structure['tables'].append(translated_table)
+        
+        return translated_structure

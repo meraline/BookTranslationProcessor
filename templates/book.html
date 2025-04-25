@@ -1,0 +1,226 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ book.title }} - Poker Book OCR Processor{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1>{{ book.title }}</h1>
+        <div>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">Back to Books</a>
+            {% if book.status == 'completed' or book.status == 'error' %}
+            <form class="d-inline" method="POST" action="{{ url_for('reprocess_book', book_id=book.id) }}">
+                <button type="submit" class="btn btn-warning">Reprocess Book</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <!-- Book information -->
+    <div class="col-md-6">
+        <div class="card mb-4 h-100">
+            <div class="card-header">
+                <h4>Book Information</h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Title:</div>
+                        <div class="col-md-8">{{ book.title }}</div>
+                    </div>
+                </div>
+                
+                {% if book.description %}
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Description:</div>
+                        <div class="col-md-8">{{ book.description }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Created:</div>
+                        <div class="col-md-8">{{ book.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Status:</div>
+                        <div class="col-md-8">
+                            {% if book.status == 'new' %}
+                                <span class="badge bg-secondary">New</span>
+                            {% elif book.status == 'processing' %}
+                                <span class="badge bg-primary">Processing</span>
+                            {% elif book.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif book.status == 'error' %}
+                                <span class="badge bg-danger">Error</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Pages:</div>
+                        <div class="col-md-8">{{ pages|length }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Processing job information -->
+    <div class="col-md-6">
+        <div class="card mb-4 h-100">
+            <div class="card-header">
+                <h4>Processing Status</h4>
+            </div>
+            <div class="card-body">
+                {% if job %}
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Job Status:</div>
+                        <div class="col-md-8">
+                            {% if job.status == 'queued' %}
+                                <span class="badge bg-secondary">Queued</span>
+                            {% elif job.status == 'processing' %}
+                                <span class="badge bg-primary">Processing</span>
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" style="width: 100%"></div>
+                                </div>
+                            {% elif job.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif job.status == 'failed' %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Started:</div>
+                        <div class="col-md-8">{{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                </div>
+                
+                {% if job.completed_at %}
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Completed:</div>
+                        <div class="col-md-8">{{ job.completed_at.strftime('%Y-%m-%d %H:%M') }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if job.error_message %}
+                <div class="mb-3">
+                    <div class="row">
+                        <div class="col-md-4 fw-bold">Error:</div>
+                        <div class="col-md-8 text-danger">{{ job.error_message }}</div>
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if job.status == 'completed' %}
+                <div class="mt-4">
+                    <h5>Download Results</h5>
+                    <div class="d-flex gap-2">
+                        {% if job.result_file_en %}
+                        <a href="{{ url_for('download_pdf', job_id=job.id, language='en') }}" 
+                           class="btn btn-outline-primary">
+                            <i class="bi bi-file-earmark-pdf"></i> English PDF
+                        </a>
+                        {% endif %}
+                        
+                        {% if job.result_file_ru %}
+                        <a href="{{ url_for('download_pdf', job_id=job.id, language='ru') }}" 
+                           class="btn btn-outline-primary">
+                            <i class="bi bi-file-earmark-pdf"></i> Russian PDF
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% else %}
+                <div class="alert alert-info">
+                    No processing job has been started for this book.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- List of pages -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h4>Book Pages</h4>
+    </div>
+    <div class="card-body">
+        {% if pages %}
+        <div class="row g-3">
+            {% for page in pages %}
+            <div class="col-md-3 col-sm-4 col-6">
+                <div class="card h-100">
+                    {% if page.image_path %}
+                    <img src="{{ page.image_path }}" class="card-img-top" alt="Page {{ page.page_number }}" style="height: 150px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body p-2">
+                        <h5 class="card-title">Page {{ page.page_number }}</h5>
+                        <p class="card-text small">
+                            Status: 
+                            {% if page.status == 'pending' %}
+                                <span class="badge bg-secondary">Pending</span>
+                            {% elif page.status == 'processing' %}
+                                <span class="badge bg-primary">Processing</span>
+                            {% elif page.status == 'processed' %}
+                                <span class="badge bg-success">Processed</span>
+                            {% elif page.status == 'error' %}
+                                <span class="badge bg-danger">Error</span>
+                            {% endif %}
+                        </p>
+                        <a href="{{ url_for('view_page', page_id=page.id) }}" class="btn btn-sm btn-outline-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+            No pages have been uploaded for this book.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    {% if job and job.status == 'processing' %}
+    // Auto-update status for processing jobs
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check status every 5 seconds
+        setInterval(function() {
+            fetch('{{ url_for("book_status", book_id=book.id) }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'processing') {
+                        // Reload the page when processing completes
+                        window.location.reload();
+                    }
+                })
+                .catch(error => console.error('Error checking status:', error));
+        }, 5000);
+    });
+    {% endif %}
+</script>
+{% endblock %}

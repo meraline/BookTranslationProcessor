@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block title %}Poker Book OCR Processor - Home{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Welcome to Poker Book OCR Processor</h1>
+                <p class="card-text">
+                    This application helps you extract text and diagrams from poker book images, 
+                    translates the content to Russian, and generates organized PDF files in both languages.
+                </p>
+                <a href="{{ url_for('upload_book') }}" class="btn btn-primary">Upload New Book</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if books %}
+<div class="row">
+    <div class="col-md-12">
+        <h2>Your Books</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Created</th>
+                        <th>Status</th>
+                        <th>Pages</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ book.id }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            {% if book.status == 'new' %}
+                                <span class="badge bg-secondary">New</span>
+                            {% elif book.status == 'processing' %}
+                                <span class="badge bg-primary">Processing</span>
+                            {% elif book.status == 'completed' %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif book.status == 'error' %}
+                                <span class="badge bg-danger">Error</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ book.pages|length }}</td>
+                        <td>
+                            <a href="{{ url_for('view_book', book_id=book.id) }}" class="btn btn-sm btn-info">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-md-12 text-center py-5">
+        <div class="alert alert-info">
+            <h3>No books yet</h3>
+            <p>Upload your first book to get started!</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

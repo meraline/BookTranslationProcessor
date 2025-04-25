@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block title %}Error {{ error_code }} - Poker Book OCR Processor{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow-sm">
+            <div class="card-body text-center py-5">
+                <h1 class="display-1 text-danger mb-4">{{ error_code }}</h1>
+                <h2 class="mb-4">{{ message }}</h2>
+                <p class="mb-4">Sorry, we couldn't complete your request. Please try again or return to the home page.</p>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">Go to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

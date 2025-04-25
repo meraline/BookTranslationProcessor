@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+
+{% block title %}Upload Book Images{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card">
+            <div class="card-header">
+                <h2>Upload Book Images</h2>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('upload_book') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="book_title" class="form-label">Book Title</label>
+                        <input type="text" class="form-control" id="book_title" name="book_title" 
+                               placeholder="Enter book title" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description (Optional)</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"
+                                 placeholder="Enter a brief description of the book"></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="book_images" class="form-label">Upload Images</label>
+                        <input class="form-control" type="file" id="book_images" name="book_images" multiple accept="image/png, image/jpeg" required>
+                        <div class="form-text">
+                            Select multiple image files from your book. Pages will be processed in the order selected.
+                            Supported formats: PNG, JPG/JPEG.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div id="image-preview" class="row g-2">
+                            <!-- Preview images will be displayed here -->
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <h5>Processing Information</h5>
+                        <p>
+                            After uploading, your images will be processed to:
+                        </p>
+                        <ul>
+                            <li>Extract text using OCR</li>
+                            <li>Detect and analyze figures, charts, and tables</li>
+                            <li>Translate content to Russian</li>
+                            <li>Generate organized PDF files in both languages</li>
+                        </ul>
+                        <p>
+                            Processing may take several minutes depending on the number and complexity of images.
+                        </p>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Upload and Process</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('book_images');
+    const preview = document.getElementById('image-preview');
+    
+    input.addEventListener('change', function() {
+        preview.innerHTML = '';
+        
+        if (this.files) {
+            for (let i = 0; i < Math.min(this.files.length, 12); i++) {
+                const file = this.files[i];
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    const col = document.createElement('div');
+                    col.className = 'col-md-3 col-sm-4 col-6';
+                    
+                    const card = document.createElement('div');
+                    card.className = 'card h-100';
+                    
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'card-img-top';
+                    img.alt = file.name;
+                    img.style.objectFit = 'cover';
+                    img.style.height = '120px';
+                    
+                    const cardBody = document.createElement('div');
+                    cardBody.className = 'card-body p-2';
+                    
+                    const title = document.createElement('p');
+                    title.className = 'card-text small text-truncate';
+                    title.textContent = file.name;
+                    
+                    cardBody.appendChild(title);
+                    card.appendChild(img);
+                    card.appendChild(cardBody);
+                    col.appendChild(card);
+                    preview.appendChild(col);
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            if (this.files.length > 12) {
+                const moreCol = document.createElement('div');
+                moreCol.className = 'col-12 mt-2';
+                
+                const moreText = document.createElement('div');
+                moreText.className = 'alert alert-secondary text-center mb-0';
+                moreText.textContent = `+ ${this.files.length - 12} more files selected`;
+                
+                moreCol.appendChild(moreText);
+                preview.appendChild(moreCol);
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

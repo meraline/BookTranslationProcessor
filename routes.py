@@ -1,0 +1,211 @@
+import os
+import json
+import logging
+import threading
+from flask import render_template, request, redirect, url_for, flash, send_file, jsonify
+from werkzeug.utils import secure_filename
+from app import app, db
+from models import Book, BookPage, ProcessingJob, Figure
+from datetime import datetime
+from processing_service import process_book
+
+# Add context processor to provide current date/time to all templates
+@app.context_processor
+def inject_now():
+    return {'now': datetime.utcnow()}
+
+# Setup logging
+logger = logging.getLogger(__name__)
+
+def allowed_file(filename):
+    """Check if file extension is allowed"""
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/')
+def index():
+    """Main application page"""
+    # Get books from database
+    books = Book.query.order_by(Book.created_at.desc()).all()
+    return render_template('index.html', books=books)
+
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_book():
+    """Handle book image upload"""
+    if request.method == 'POST':
+        # Check if book title is provided
+        book_title = request.form.get('book_title', 'Untitled Book')
+        description = request.form.get('description', '')
+        
+        # Create new book record
+        new_book = Book(title=book_title, description=description)
+        db.session.add(new_book)
+        db.session.commit()
+        
+        # Get uploaded files
+        if 'book_images' not in request.files:
+            flash('No file part', 'error')
+            return redirect(request.url)
+        
+        files = request.files.getlist('book_images')
+        
+        # Check if at least one file is selected
+        if len(files) == 0 or files[0].filename == '':
+            flash('No selected file', 'error')
+            return redirect(request.url)
+        
+        # Process each file
+        uploaded_count = 0
+        for idx, file in enumerate(files):
+            if file and allowed_file(file.filename):
+                # Secure filename and save file
+                filename = secure_filename(file.filename)
+                # Add book ID and index to filename to prevent conflicts
+                filename = f"{new_book.id}_{idx}_{filename}"
+                file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(file_path)
+                
+                # Try to extract page number from filename
+                page_number = idx + 1  # Default to the order of upload
+                
+                # Create book page record
+                new_page = BookPage(
+                    book_id=new_book.id,
+                    page_number=page_number,
+                    image_path=file_path,
+                    status='pending'
+                )
+                db.session.add(new_page)
+                uploaded_count += 1
+        
+        # Save all pages
+        db.session.commit()
+        
+        if uploaded_count > 0:
+            # Create processing job
+            job = ProcessingJob(book_id=new_book.id, status='queued')
+            db.session.add(job)
+            db.session.commit()
+            
+            # Start processing in background
+            thread = threading.Thread(target=process_book, args=(new_book.id, job.id))
+            thread.daemon = True
+            thread.start()
+            
+            flash(f'Uploaded {uploaded_count} pages successfully and started processing', 'success')
+            return redirect(url_for('view_book', book_id=new_book.id))
+        else:
+            flash('No valid files were uploaded', 'error')
+        
+        return redirect(url_for('index'))
+    
+    return render_template('upload.html')
+
+@app.route('/book/<int:book_id>')
+def view_book(book_id):
+    """Display book details and processing status"""
+    book = Book.query.get_or_404(book_id)
+    pages = BookPage.query.filter_by(book_id=book_id).order_by(BookPage.page_number).all()
+    job = ProcessingJob.query.filter_by(book_id=book_id).order_by(ProcessingJob.created_at.desc()).first()
+    
+    return render_template('book.html', book=book, pages=pages, job=job)
+
+@app.route('/book/<int:book_id>/reprocess', methods=['POST'])
+def reprocess_book(book_id):
+    """Reprocess a book"""
+    book = Book.query.get_or_404(book_id)
+    
+    # Create new processing job
+    job = ProcessingJob(book_id=book.id, status='queued')
+    db.session.add(job)
+    
+    # Update book status
+    book.status = 'processing'
+    
+    # Reset page status
+    for page in book.pages:
+        page.status = 'pending'
+    
+    db.session.commit()
+    
+    # Start processing in background
+    thread = threading.Thread(target=process_book, args=(book.id, job.id))
+    thread.daemon = True
+    thread.start()
+    
+    flash(f'Processing started for book: {book.title}', 'success')
+    return redirect(url_for('view_book', book_id=book.id))
+
+@app.route('/download/<int:job_id>/<language>')
+def download_pdf(job_id, language):
+    """Download processed PDF"""
+    job = ProcessingJob.query.get_or_404(job_id)
+    
+    if language == 'en' and job.result_file_en:
+        return send_file(job.result_file_en, as_attachment=True)
+    elif language == 'ru' and job.result_file_ru:
+        return send_file(job.result_file_ru, as_attachment=True)
+    else:
+        flash('Requested file is not available', 'error')
+        return redirect(url_for('view_book', book_id=job.book_id))
+
+@app.route('/page/<int:page_id>')
+def view_page(page_id):
+    """View details of a single page"""
+    page = BookPage.query.get_or_404(page_id)
+    figures = Figure.query.filter_by(page_id=page_id).all()
+    
+    return render_template('page.html', page=page, figures=figures)
+
+@app.route('/api/book/<int:book_id>/status')
+def book_status(book_id):
+    """API endpoint to check book processing status"""
+    book = Book.query.get_or_404(book_id)
+    job = ProcessingJob.query.filter_by(book_id=book_id).order_by(ProcessingJob.created_at.desc()).first()
+    
+    if not job:
+        return jsonify({
+            'status': 'unknown',
+            'message': 'No processing job found'
+        })
+    
+    response = {
+        'book_id': book.id,
+        'book_title': book.title,
+        'status': job.status,
+        'created_at': job.created_at.isoformat(),
+        'completed_at': job.completed_at.isoformat() if job.completed_at else None,
+        'result_files': {
+            'en': job.result_file_en is not None,
+            'ru': job.result_file_ru is not None
+        }
+    }
+    
+    if job.error_message:
+        response['error'] = job.error_message
+    
+    return jsonify(response)
+
+@app.route('/images/<path:filename>')
+def get_image(filename):
+    """Serve uploaded and processed images"""
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(image_path):
+        return send_file(image_path)
+    else:
+        # Return a placeholder image if the requested image doesn't exist
+        return send_file(os.path.join('static', 'img', 'image-not-found.png'))
+
+@app.route('/output/<path:filename>')
+def get_output_file(filename):
+    """Serve output files"""
+    output_dir = 'output'
+    return send_file(os.path.join(output_dir, filename))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('error.html', error_code=404, message='Page not found'), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    return render_template('error.html', error_code=500, message='Server error'), 500

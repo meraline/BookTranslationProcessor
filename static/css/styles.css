@@ -1,0 +1,46 @@
+/* Custom styles for Poker Book OCR Processor */
+
+/* Body styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Main content container */
+.container {
+    flex: 1;
+}
+
+/* Card styling */
+.card {
+    margin-bottom: 1.5rem;
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Text content formatting */
+.text-content {
+    font-family: monospace;
+    background-color: var(--bs-dark-bg-subtle);
+    border-radius: 0.25rem;
+}
+
+/* Page thumbnail hover effect */
+.card-img-top {
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Footer styling */
+footer {
+    margin-top: auto;
+}
