@@ -1,0 +1,11 @@
+Table content: street would have because the bet on the current street leads to a bigger bet
+
+on the next, and there are a fixed number of streets.
+
+I'think (n) is one of those things that is inherent in all players that
+go for a check for deception, or check/raise, or slowplay, but again, it’s a
+topic that seems so obvious, yet it never gets talked about to the fullest
+(until now). Try to keep in mind how opponent ranges and equities change,
+and how actions will change, even ifit’s in an intuitive method, rather than
+
+actually plugging in variables.

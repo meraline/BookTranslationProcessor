@@ -1,0 +1,7 @@
+Table content: This is a graph that has 20 sample runs of what it could look like if
+you are a 1bb/100 (estimated) winner in a game with 80bb/100 standard
+deviation - most NLHE 6-max players/games. Over 1,000,000 hands (you
+could feasibly play this many hands in a year), about 10% of 1bb/100
+winners are still down. This is a bit scary if you are trying to make a living
+
+playing poker and are only a small winner.

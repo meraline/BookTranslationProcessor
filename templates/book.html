@@ -172,7 +172,7 @@
             <div class="col-md-3 col-sm-4 col-6">
                 <div class="card h-100">
                     {% if page.image_path %}
-                    <img src="{{ page.image_path }}" class="card-img-top" alt="Страница {{ page.page_number }}" style="height: 150px; object-fit: cover;">
+                    <img src="{{ url_for('get_image', filename=page.image_path.split('/')[-1]) }}" class="card-img-top" alt="Страница {{ page.page_number }}" style="height: 150px; object-fit: cover;">
                     {% endif %}
                     <div class="card-body p-2">
                         <h5 class="card-title">Страница {{ page.page_number }}</h5>

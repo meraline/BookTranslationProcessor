@@ -1,0 +1,13 @@
+Table content: Quantum Mechanics is a branch of physics that deals with the behavior
+of matter and its interactions with energy on the scale of atoms and atomic
+particles. In one particular thought experiment called Schrédinger’s cat
+there is a situation in which a cat left in a box has been dealt a fate of
+either being alive or dead based on a random event. While the experiment
+was never done, of course, there was an uncertainty about the state of
+the cat until it was observed. In poker, we experience this uncertainty
+all the time when we are trying to figure out our opponents hole cards.
+There are many different states their hole cards can be in and we will
+not be sure which hand they have until we observe it. At that moment,
+the waves of possibilities collapse to particles and become known hole
+
+cards. Unfortunately, all relevant (and valuable) decisions are always made

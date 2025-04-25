@@ -1,0 +1,4 @@
+Table content: The only other completely logical reason that you are checking is only
+because betting is -EV, and folding is 0 EV, and checking will always yield at
+
+or more than 0 EV. This is generally known as the check/fold situation.

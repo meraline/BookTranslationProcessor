@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 
-{% block title %}Page {{ page.page_number }} - {{ page.book.title }} - Poker Book OCR Processor{% endblock %}
+{% block title %}Страница {{ page.page_number }} - {{ page.book.title }} - OCR Процессор Книг по Покеру{% endblock %}
 
 {% block content %}
 <div class="mb-4">
     <div class="d-flex justify-content-between align-items-center">
-        <h1>Page {{ page.page_number }}</h1>
+        <h1>Страница {{ page.page_number }}</h1>
         <div>
-            <a href="{{ url_for('view_book', book_id=page.book_id) }}" class="btn btn-outline-secondary">Back to Book</a>
+            <a href="{{ url_for('view_book', book_id=page.book_id) }}" class="btn btn-outline-secondary">Назад к книге</a>
         </div>
     </div>
 </div>
@@ -17,13 +17,13 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header">
-                <h4>Original Image</h4>
+                <h4>Оригинальное изображение</h4>
             </div>
             <div class="card-body text-center">
                 {% if page.image_path %}
-                <img src="{{ page.image_path }}" class="img-fluid" alt="Original image">
+                <img src="{{ url_for('get_image', filename=page.image_path.split('/')[-1]) }}" class="img-fluid" alt="Оригинальное изображение">
                 {% else %}
-                <div class="alert alert-warning">No image available</div>
+                <div class="alert alert-warning">Изображение недоступно</div>
                 {% endif %}
             </div>
         </div>
@@ -32,17 +32,17 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header">
-                <h4>Processed Image</h4>
+                <h4>Обработанное изображение</h4>
             </div>
             <div class="card-body text-center">
                 {% if page.processed_image_path %}
-                <img src="{{ page.processed_image_path }}" class="img-fluid" alt="Processed image">
+                <img src="{{ url_for('get_output_file', filename=page.processed_image_path.split('output/')[-1]) }}" class="img-fluid" alt="Обработанное изображение">
                 {% else %}
                 <div class="alert alert-warning">
                     {% if page.status == 'pending' or page.status == 'processing' %}
-                    Processing not yet completed
+                    Обработка еще не завершена
                     {% else %}
-                    No processed image available
+                    Обработанное изображение недоступно
                     {% endif %}
                 </div>
                 {% endif %}
@@ -56,7 +56,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header">
-                <h4>English Text</h4>
+                <h4>Английский текст</h4>
             </div>
             <div class="card-body">
                 {% if page.text_content %}
@@ -64,9 +64,9 @@
                 {% else %}
                 <div class="alert alert-warning">
                     {% if page.status == 'pending' or page.status == 'processing' %}
-                    Processing not yet completed
+                    Обработка еще не завершена
                     {% else %}
-                    No text extracted
+                    Текст не извлечен
                     {% endif %}
                 </div>
                 {% endif %}
@@ -77,7 +77,7 @@
     <div class="col-md-6">
         <div class="card mb-4">
             <div class="card-header">
-                <h4>Russian Translation</h4>
+                <h4>Русский перевод</h4>
             </div>
             <div class="card-body">
                 {% if page.translated_content %}
@@ -85,9 +85,9 @@
                 {% else %}
                 <div class="alert alert-warning">
                     {% if page.status == 'pending' or page.status == 'processing' %}
-                    Processing not yet completed
+                    Обработка еще не завершена
                     {% else %}
-                    No translation available
+                    Перевод недоступен
                     {% endif %}
                 </div>
                 {% endif %}
@@ -100,7 +100,7 @@
 {% if figures %}
 <div class="card mb-4">
     <div class="card-header">
-        <h4>Detected Figures</h4>
+        <h4>Обнаруженные изображения и таблицы</h4>
     </div>
     <div class="card-body">
         <div class="row g-4">
@@ -109,21 +109,31 @@
                 <div class="card h-100">
                     {% if figure.image_path %}
                     <div class="text-center p-3">
-                        <img src="{{ figure.image_path }}" class="img-fluid" alt="{{ figure.figure_type }}" style="max-height: 300px;">
+                        <img src="{{ url_for('get_output_file', filename=figure.image_path.split('output/')[-1]) }}" class="img-fluid" alt="{{ figure.figure_type }}" style="max-height: 300px;">
                     </div>
                     {% endif %}
                     <div class="card-body">
-                        <h5 class="card-title">{{ figure.figure_type|title }}</h5>
+                        <h5 class="card-title">
+                            {% if figure.figure_type == 'table' %}
+                                Таблица
+                            {% elif figure.figure_type == 'chart' %}
+                                График
+                            {% elif figure.figure_type == 'diagram' %}
+                                Диаграмма
+                            {% else %}
+                                {{ figure.figure_type|title }}
+                            {% endif %}
+                        </h5>
                         {% if figure.description %}
                         <div class="mb-3">
-                            <h6>Description (English):</h6>
+                            <h6>Описание (английский):</h6>
                             <p class="card-text">{{ figure.description }}</p>
                         </div>
                         {% endif %}
                         
                         {% if figure.translated_description %}
                         <div>
-                            <h6>Description (Russian):</h6>
+                            <h6>Описание (русский):</h6>
                             <p class="card-text">{{ figure.translated_description }}</p>
                         </div>
                         {% endif %}
@@ -137,14 +147,14 @@
 {% else %}
 <div class="card mb-4">
     <div class="card-header">
-        <h4>Detected Figures</h4>
+        <h4>Обнаруженные изображения и таблицы</h4>
     </div>
     <div class="card-body">
         <div class="alert alert-info">
             {% if page.status == 'pending' or page.status == 'processing' %}
-            Processing not yet completed
+            Обработка еще не завершена
             {% else %}
-            No figures detected on this page
+            На этой странице не обнаружено изображений или таблиц
             {% endif %}
         </div>
     </div>

@@ -1,0 +1,16 @@
+Table content: Variance Simulator by evplusplus.com
+.r.=3.00bb/100, 5d=80.00bb/100, nhands=1000000, nruns=20)
+
+cxpected
+
+20000
+
+2
+a
+%
+£
+H
+
+6000
+# of herds 100
+

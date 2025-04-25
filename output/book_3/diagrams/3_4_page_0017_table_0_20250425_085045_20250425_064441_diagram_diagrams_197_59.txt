@@ -1,0 +1,4 @@
+Diagram/Chart: Poker diagram related to: check. Content: You make an intuitive decision, remember the situation, go home and check
+the math behind it, then use your findings to reinforce your next intuitive
+
+decision.
