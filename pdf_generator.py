@@ -28,12 +28,12 @@ class PDFGenerator:
         self.output_dir = output_dir
         self.fonts_dir = fonts_dir
         
-        # Use standard fonts
+        # Use standard fonts - always using Times
         self.fonts = {
-            'normal': {'name': 'Arial', 'style': ''},
-            'bold': {'name': 'Arial', 'style': 'B'},
-            'italic': {'name': 'Arial', 'style': 'I'},
-            'bold_italic': {'name': 'Arial', 'style': 'BI'}
+            'normal': {'name': 'Times', 'style': ''},
+            'bold': {'name': 'Times', 'style': 'B'},
+            'italic': {'name': 'Times', 'style': 'I'},
+            'bold_italic': {'name': 'Times', 'style': 'BI'}
         }
         
         # Use custom fonts if provided
@@ -79,29 +79,27 @@ class PDFGenerator:
                 logger.warning(f"Could not set PDF title: {e}")
         pdf.set_author("Poker Book Processor")
         
-        # Add built-in fonts that support Cyrillic
+        # Use core fonts that are always available in FPDF
+        # Instead of trying to use system fonts which can cause issues
         try:
-            # Use DejaVuSans for everything if Oblique isn't available
-            pdf.add_font('DejaVu', '', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
-            pdf.add_font('DejaVu', 'B', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', uni=True)
-            
-            # Try to add oblique font, fallback to regular if not available
+            # Set default Times-Roman font
+            pdf.set_font('Times', '', 12)
+            logger.info("Using Times font for PDF")
+        except Exception as e:
+            logger.warning(f"Failed to set Times font: {e}")
             try:
-                pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf', uni=True)
-            except Exception as e:
-                logger.warning(f"Failed to load italic font, using regular: {e}")
-                pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
-        except Exception as e:
-            logger.error(f"Error loading DejaVu fonts: {e}")
-            # Fall back to built-in fonts if needed
-            pass
-        
-        # Set default font - catch any error and use built-in fonts as fallback
-        try:
-            pdf.set_font('DejaVu', '', 12)
-        except Exception as e:
-            logger.warning(f"Failed to set DejaVu font, using Arial instead: {e}")
-            pdf.set_font('Arial', '', 12)
+                # Try Courier as a fallback
+                pdf.set_font('Courier', '', 12)
+                logger.info("Using Courier font for PDF")
+            except Exception as e2:
+                logger.warning(f"Failed to set Courier font: {e2}")
+                try:
+                    # Try Helvetica as a final fallback
+                    pdf.set_font('Helvetica', '', 12)
+                    logger.info("Using Helvetica font for PDF")
+                except Exception as e3:
+                    logger.error(f"Failed to set any font: {e3}")
+                    # We'll let the error propagate if all fonts fail
         
         return pdf
     
@@ -148,19 +146,19 @@ class PDFGenerator:
             # Add title if available
             if 'title' in document_structure:
                 title = document_structure['title']
-                pdf.set_font('DejaVu', 'B', 20)
+                pdf.set_font('Times', 'B', 20)
                 pdf.cell(0, 12, title, 0, 1, 'C')
                 current_page_height += 20
                 
                 # Add date
                 from datetime import datetime
                 date_str = datetime.now().strftime("%d.%m.%Y")
-                pdf.set_font('DejaVu', 'I', 10)
+                pdf.set_font('Times', 'I', 10)
                 pdf.cell(0, 5, f"Создано: {date_str}", 0, 1, 'R')
                 current_page_height += 10
                 
                 # Reset font
-                pdf.set_font('DejaVu', '', 12)
+                pdf.set_font('Times', '', 12)
                 
                 # Add a small gap
                 pdf.ln(5)
@@ -168,10 +166,10 @@ class PDFGenerator:
             
             # Create a table of contents
             toc_page = pdf.page_no()
-            pdf.set_font('DejaVu', 'B', 14)
+            pdf.set_font('Times', 'B', 14)
             pdf.cell(0, 10, "Содержание" if language == 'ru' else "Table of Contents", 0, 1)
             current_page_height += 15
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font('Times', '', 12)
             
             # We'll add TOC entries after we know the page numbers
             toc_entries = []
@@ -208,12 +206,12 @@ class PDFGenerator:
             current_section = None
             
             # Start with main text content
-            pdf.set_font('DejaVu', 'B', 16)
+            pdf.set_font('Times', 'B', 16)
             main_text_title = "Текст" if language == 'ru' else "Text"
             pdf.cell(0, 10, main_text_title, 0, 1)
             toc_entries.append((main_text_title, pdf.page_no()))
             current_page_height = 15
-            pdf.set_font('DejaVu', '', 12)
+            pdf.set_font('Times', '', 12)
             
             # Process paragraphs
             for paragraph in all_paragraphs:
@@ -245,11 +243,11 @@ class PDFGenerator:
             # Add figures section if we have any
             figures_title = "Диаграммы и графики" if language == 'ru' else "Diagrams and Charts"
             if 'figures' in document_structure and document_structure['figures']:
-                pdf.set_font('DejaVu', 'B', 16)
+                pdf.set_font('Times', 'B', 16)
                 pdf.cell(0, 10, figures_title, 0, 1)
                 toc_entries.append((figures_title, pdf.page_no()))
                 current_page_height = 15
-                pdf.set_font('DejaVu', '', 12)
+                pdf.set_font('Times', '', 12)
                 
                 # Process figures
                 figure_count = 0
@@ -264,11 +262,11 @@ class PDFGenerator:
             
             tables_title = "Таблицы" if language == 'ru' else "Tables"
             if 'tables' in document_structure and document_structure['tables']:
-                pdf.set_font('DejaVu', 'B', 16)
+                pdf.set_font('Times', 'B', 16)
                 pdf.cell(0, 10, tables_title, 0, 1)
                 toc_entries.append((tables_title, pdf.page_no()))
                 current_page_height = 15
-                pdf.set_font('DejaVu', '', 12)
+                pdf.set_font('Times', '', 12)
                 
                 # Process tables
                 table_count = 0
@@ -283,7 +281,7 @@ class PDFGenerator:
             
             for title, page_num in toc_entries:
                 style = 'I' if title.startswith('    ') else ''
-                pdf.set_font('DejaVu', style, 12)
+                pdf.set_font('Times', style, 12)
                 
                 # Calculate dot leaders
                 dots = '.' * (60 - len(title) - len(str(page_num)))
