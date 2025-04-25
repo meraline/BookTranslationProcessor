@@ -179,12 +179,17 @@ def reprocess_book(book_id):
     
     db.session.commit()
     
+    # Check if it's a PDF file
+    is_pdf = False
+    if book.pages and book.pages[0].image_path:
+        is_pdf = book.pages[0].image_path.lower().endswith('.pdf')
+    
     # Start processing in background
-    thread = threading.Thread(target=process_book, args=(book.id, job.id))
+    thread = threading.Thread(target=process_book, args=(book.id, job.id, is_pdf))
     thread.daemon = True
     thread.start()
     
-    flash(f'Processing started for book: {book.title}', 'success')
+    flash(f'Обработка начата для книги: {book.title}', 'success')
     return redirect(url_for('view_book', book_id=book.id))
 
 @app.route('/download/<int:job_id>/<language>')
