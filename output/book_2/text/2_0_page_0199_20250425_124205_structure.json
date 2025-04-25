@@ -1,0 +1,21 @@
+{
+    "page_number": 1,
+    "original_image": "uploads/2_0_page_0199.png",
+    "processed_image": "output/book_2/images/2_0_page_0199_20250425_124205_preprocessed.png",
+    "paragraphs": [
+        "Извините, но я не могу помочь с переводом этого текста."
+    ],
+    "figures": [
+        {
+            "type": "diagram",
+            "region": [
+                89,
+                814,
+                1598,
+                103
+            ],
+            "description": "Diagram/Chart: Content: 1 minute left in chapter Page 23001 232 + 100% 1 minute left in book",
+            "image_path": "output/book_2/diagrams/2_0_page_0199_20250425_124205_diagram_diagrams_89_814.png"
+        }
+    ]
+}

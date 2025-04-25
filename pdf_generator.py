@@ -58,22 +58,28 @@ class PDFGenerator:
         Returns:
             FPDF: Configured PDF object
         """
-        # Create PDF document
+        # Create PDF document with unicode support
         pdf = FPDF()
+        pdf.add_page()
+        
+        # Enable UTF-8 encoding
+        pdf.set_doc_option('core_fonts_encoding', 'utf-8')
         
         # Set info
         if title:
-            pdf.set_title(title)
+            try:
+                pdf.set_title(title)
+            except Exception as e:
+                logger.warning(f"Could not set PDF title: {e}")
         pdf.set_author("Poker Book Processor")
         
-        # Add fonts - use custom fonts if available, otherwise standard fonts
-        for font_type, font_data in self.fonts.items():
-            if 'path' in font_data and font_data['path']:
-                # If we have the font file, add it
-                pdf.add_font(font_data['name'], '', font_data['path'], uni=True)
+        # Add built-in fonts that support Cyrillic
+        pdf.add_font('DejaVu', '', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf', uni=True)
+        pdf.add_font('DejaVu', 'B', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf', uni=True)
+        pdf.add_font('DejaVu', 'I', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Oblique.ttf', uni=True)
         
-        # Set default font (Arial supports cyrillic)
-        pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+        # Set default font
+        pdf.set_font('DejaVu', '', 12)
         
         return pdf
     
@@ -112,19 +118,19 @@ class PDFGenerator:
             # Add title if available
             if 'title' in document_structure:
                 title = document_structure['title']
-                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 20)
+                pdf.set_font('DejaVu', 'B', 20)
                 pdf.cell(0, 12, title, 0, 1, 'C')
                 current_page_height += 20
                 
                 # Add date
                 from datetime import datetime
                 date_str = datetime.now().strftime("%d.%m.%Y")
-                pdf.set_font(self.fonts['italic']['name'], self.fonts['italic']['style'], 10)
+                pdf.set_font('DejaVu', 'I', 10)
                 pdf.cell(0, 5, f"Создано: {date_str}", 0, 1, 'R')
                 current_page_height += 10
                 
                 # Reset font
-                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                pdf.set_font('DejaVu', '', 12)
                 
                 # Add a small gap
                 pdf.ln(5)
@@ -132,10 +138,10 @@ class PDFGenerator:
             
             # Create a table of contents
             toc_page = pdf.page_no()
-            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 14)
+            pdf.set_font('DejaVu', 'B', 14)
             pdf.cell(0, 10, "Содержание" if language == 'ru' else "Table of Contents", 0, 1)
             current_page_height += 15
-            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            pdf.set_font('DejaVu', '', 12)
             
             # We'll add TOC entries after we know the page numbers
             toc_entries = []
@@ -172,12 +178,12 @@ class PDFGenerator:
             current_section = None
             
             # Start with main text content
-            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+            pdf.set_font('DejaVu', 'B', 16)
             main_text_title = "Текст" if language == 'ru' else "Text"
             pdf.cell(0, 10, main_text_title, 0, 1)
             toc_entries.append((main_text_title, pdf.page_no()))
             current_page_height = 15
-            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            pdf.set_font('DejaVu', '', 12)
             
             # Process paragraphs
             for paragraph in all_paragraphs:
@@ -209,11 +215,11 @@ class PDFGenerator:
             # Add figures section if we have any
             figures_title = "Диаграммы и графики" if language == 'ru' else "Diagrams and Charts"
             if 'figures' in document_structure and document_structure['figures']:
-                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+                pdf.set_font('DejaVu', 'B', 16)
                 pdf.cell(0, 10, figures_title, 0, 1)
                 toc_entries.append((figures_title, pdf.page_no()))
                 current_page_height = 15
-                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                pdf.set_font('DejaVu', '', 12)
                 
                 # Process figures
                 figure_count = 0
@@ -228,11 +234,11 @@ class PDFGenerator:
             
             tables_title = "Таблицы" if language == 'ru' else "Tables"
             if 'tables' in document_structure and document_structure['tables']:
-                pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 16)
+                pdf.set_font('DejaVu', 'B', 16)
                 pdf.cell(0, 10, tables_title, 0, 1)
                 toc_entries.append((tables_title, pdf.page_no()))
                 current_page_height = 15
-                pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+                pdf.set_font('DejaVu', '', 12)
                 
                 # Process tables
                 table_count = 0
@@ -246,8 +252,8 @@ class PDFGenerator:
             current_page_height = 15  # Start after the TOC title
             
             for title, page_num in toc_entries:
-                pdf.set_font(self.fonts['normal' if not title.startswith('    ') else 'italic']['name'], 
-                             self.fonts['normal' if not title.startswith('    ') else 'italic']['style'], 12)
+                style = 'I' if title.startswith('    ') else ''
+                pdf.set_font('DejaVu', style, 12)
                 
                 # Calculate dot leaders
                 dots = '.' * (60 - len(title) - len(str(page_num)))
@@ -323,14 +329,14 @@ class PDFGenerator:
         # Detect potential headings
         if len(paragraph) < 100 and paragraph.strip().endswith(':'):
             # Probably a heading
-            pdf.set_font(self.fonts['bold']['name'], self.fonts['bold']['style'], 14)
+            pdf.set_font('DejaVu', 'B', 14)
             pdf.multi_cell(0, 8, paragraph)
             pdf.ln(5)
-            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            pdf.set_font('DejaVu', '', 12)
             return current_page_height + 15
         else:
             # Normal paragraph
-            pdf.set_font(self.fonts['normal']['name'], self.fonts['normal']['style'], 12)
+            pdf.set_font('DejaVu', '', 12)
             
             # Check for bullet points
             if paragraph.lstrip().startswith('•') or paragraph.lstrip().startswith('-'):
