@@ -48,14 +48,27 @@ class PDFGenerator:
         Returns:
             dict: Configured PDF styles and document
         """
+        # Register DejaVu Sans font for Cyrillic support
+        dejavu_path = "/mnt/nixmodules/nix/store/8zlvngilj5pvnnkyapgbbmv5rnamvgxk-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+        # Try backup path if first doesn't exist
+        if not os.path.exists(dejavu_path):
+            dejavu_path = "/mnt/nixmodules/nix/store/am3y2gs2rj2fd13jvd3j2m9g5646dnw6-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+        
+        # Register the DejaVu fonts with an alias
+        try:
+            pdfmetrics.registerFont(TTFont('DejaVuSans', dejavu_path))
+            logger.info(f"Registered DejaVuSans font from: {dejavu_path}")
+        except Exception as e:
+            logger.error(f"Error registering DejaVuSans font: {str(e)}")
+        
         # Create styles for different text elements with proper Unicode/Russian support
         styles = getSampleStyleSheet()
         
         # Add custom styles for Russian text
-        # Note: We don't need to register custom fonts - built-in Helvetica works with Cyrillic
+        # Use DejaVuSans for proper Cyrillic support
         styles.add(ParagraphStyle(
             name='NormalRu',
-            fontName='Helvetica',  # Built-in font with good Unicode support
+            fontName='DejaVuSans',  # Font with proper Cyrillic support
             fontSize=12,
             leading=14,
             alignment=TA_JUSTIFY
@@ -63,7 +76,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='HeadingRu',
-            fontName='Helvetica-Bold',
+            fontName='DejaVuSans',  # Font with proper Cyrillic support
             fontSize=16,
             leading=18,
             alignment=TA_LEFT,
@@ -72,7 +85,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='TitleRu',
-            fontName='Helvetica-Bold',
+            fontName='DejaVuSans',  # Font with proper Cyrillic support
             fontSize=20,
             leading=24,
             alignment=TA_CENTER,
@@ -81,7 +94,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='TOCEntry',
-            fontName='Helvetica',
+            fontName='DejaVuSans',  # Font with proper Cyrillic support
             fontSize=12,
             leading=14,
             alignment=TA_LEFT
@@ -89,7 +102,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='CaptionRu',
-            fontName='Helvetica-Oblique',
+            fontName='DejaVuSans',  # Font with proper Cyrillic support
             fontSize=10,
             leading=12,
             alignment=TA_CENTER,
