@@ -27,7 +27,16 @@ def index():
     """Main application page"""
     # Get books from database
     books = Book.query.order_by(Book.created_at.desc()).all()
-    return render_template('index.html', books=books)
+    
+    # Get jobs for each book
+    book_jobs = {}
+    for book in books:
+        # Get the latest job for each book
+        job = ProcessingJob.query.filter_by(book_id=book.id).order_by(ProcessingJob.created_at.desc()).first()
+        if job:
+            book_jobs[book.id] = job
+    
+    return render_template('index.html', books=books, book_jobs=book_jobs)
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_book():

@@ -59,7 +59,28 @@
                                 <a href="{{ url_for('read_book', book_id=book.id) }}" class="btn btn-sm btn-success">
                                     <i class="bi bi-book"></i> Читать
                                 </a>
+                                
+                                <!-- Получаем последнюю задачу обработки для этой книги -->
+                                {% if book.id in book_jobs and book_jobs[book.id] and book_jobs[book.id].result_file_en %}
+                                <a href="{{ url_for('download_pdf', job_id=book_jobs[book.id].id, language='en') }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF (EN)
+                                </a>
                                 {% endif %}
+                                {% if book.id in book_jobs and book_jobs[book.id] and book_jobs[book.id].result_file_ru %}
+                                <a href="{{ url_for('download_pdf', job_id=book_jobs[book.id].id, language='ru') }}" 
+                                   class="btn btn-sm btn-primary">
+                                    <i class="bi bi-file-earmark-pdf"></i> PDF (RU)
+                                </a>
+                                {% endif %}
+                                {% endif %}
+                                
+                                <form class="d-inline" method="POST" action="{{ url_for('delete_book', book_id=book.id) }}" 
+                                      onsubmit="return confirm('Вы уверены, что хотите удалить эту книгу? Это действие необратимо.');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i> Удалить
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
