@@ -60,6 +60,15 @@ wheels = [
 ]
 
 [[package]]
+name = "chardet"
+version = "5.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/0d/f7b6ab21ec75897ed80c17d79b15951a719226b9fababf1e40ea74d69079/chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7", size = 2069618 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/38/6f/f5fbc992a329ee4e0f288c1fe0e2ad9485ed064cac731ed2fe47dcc38cbf/chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970", size = 199385 },
+]
+
+[[package]]
 name = "charset-normalizer"
 version = "3.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -219,6 +228,15 @@ wheels = [
 ]
 
 [[package]]
+name = "defusedxml"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/d5/c66da9b79e5bdb124974bfe172b4daf3c984ebd9c2a06e2b8a4dc7331c72/defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69", size = 75520 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/07/6c/aa3f2f849e01cb6a001cd8554a88d4c77c5c1a31c95bdf1cf9301e6d9ef4/defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61", size = 25604 },
+]
+
+[[package]]
 name = "distro"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -357,6 +375,20 @@ name = "fpdf"
 version = "1.7.2"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/37/c6/608a9e6c172bf9124aa687ec8b9f0e8e5d697d59a5f4fad0e2d5ec2a7556/fpdf-1.7.2.tar.gz", hash = "sha256:125840783289e7d12552b1e86ab692c37322e7a65b96a99e0ea86cca041b6779", size = 39504 }
+
+[[package]]
+name = "fpdf2"
+version = "2.8.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "defusedxml" },
+    { name = "fonttools" },
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ea/a2/6464c0406365d50bcf000a72c6ede7b6633f08ad8bccdc1553265bb15ccf/fpdf2-2.8.3.tar.gz", hash = "sha256:494dc0bd935271c9ce16fb3a47c98b6f59b8d160cd519c2d3a7ed243c3852456", size = 278704 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ef/0d/a79fe9d1c5fa165a940c7a7907d30a5b5f88d14d82dca0afe73618f4b07a/fpdf2-2.8.3-py2.py3-none-any.whl", hash = "sha256:0529d7bf1c46e7031768f442e7def37545b619b1bcd34e9c540de3d866f61550", size = 245701 },
+]
 
 [[package]]
 name = "greenlet"
@@ -1302,6 +1334,7 @@ dependencies = [
     { name = "flask" },
     { name = "flask-sqlalchemy" },
     { name = "fpdf" },
+    { name = "fpdf2" },
     { name = "gunicorn" },
     { name = "matplotlib" },
     { name = "numpy" },
@@ -1313,6 +1346,7 @@ dependencies = [
     { name = "pymupdf" },
     { name = "pytesseract" },
     { name = "python-dotenv" },
+    { name = "reportlab" },
     { name = "sqlalchemy" },
     { name = "tqdm" },
     { name = "werkzeug" },
@@ -1325,6 +1359,7 @@ requires-dist = [
     { name = "flask", specifier = ">=3.1.0" },
     { name = "flask-sqlalchemy", specifier = ">=3.1.1" },
     { name = "fpdf", specifier = ">=1.7.2" },
+    { name = "fpdf2", specifier = ">=2.8.3" },
     { name = "gunicorn", specifier = ">=23.0.0" },
     { name = "matplotlib", specifier = ">=3.10.1" },
     { name = "numpy", specifier = ">=2.2.5" },
@@ -1336,9 +1371,23 @@ requires-dist = [
     { name = "pymupdf", specifier = ">=1.25.5" },
     { name = "pytesseract", specifier = ">=0.3.13" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "reportlab", specifier = ">=4.4.0" },
     { name = "sqlalchemy", specifier = ">=2.0.40" },
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "werkzeug", specifier = ">=3.1.3" },
+]
+
+[[package]]
+name = "reportlab"
+version = "4.4.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "chardet" },
+    { name = "pillow" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/88/69/291a56d8bb177017e6e5421c34baa51b2e9017434c0ca1822e5007e45a26/reportlab-4.4.0.tar.gz", hash = "sha256:a64d85513910e246c21dc97ccc3c9054a1d44370bf8fc1fab80af937814354d5", size = 3597413 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/52/15/4702e132ae36beb8daf3e20a92f166451148c4a89650cc9d3f19b3c66714/reportlab-4.4.0-py3-none-any.whl", hash = "sha256:0a993f1d4a765fcbdf4e26adc96b3351004ebf4d27583340595ba7edafebec32", size = 1953103 },
 ]
 
 [[package]]
