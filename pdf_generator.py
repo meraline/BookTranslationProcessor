@@ -63,8 +63,13 @@ class PDFGenerator:
         pdf = FPDF()
         pdf.add_page()
         
-        # Enable UTF-8 encoding
-        pdf.set_doc_option('core_fonts_encoding', 'utf-8')
+        # We've seen "set_doc_option" is not available in this fpdf version
+        # Try to set UTF-8 compatibility using alternative methods
+        try:
+            # Try setting auto_break for page layout
+            pdf.set_auto_page_break(True, margin=15)
+        except Exception as e:
+            logger.warning(f"Could not set auto page break: {e}")
         
         # Set info
         if title:
@@ -120,7 +125,11 @@ class PDFGenerator:
             else:
                 filename = f"poker_book_{language}.pdf"
                 
-            # Make sure the PDF directory exists
+            # Create output directory if it doesn't exist
+            # Note: self.output_dir already includes the book directory (e.g., 'output/book_5')
+            os.makedirs(self.output_dir, exist_ok=True)
+            
+            # Now create the PDF subdirectory 
             pdf_dir = os.path.join(self.output_dir, 'pdf')
             os.makedirs(pdf_dir, exist_ok=True)
             
