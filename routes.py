@@ -192,6 +192,68 @@ def reprocess_book(book_id):
     flash(f'Обработка начата для книги: {book.title}', 'success')
     return redirect(url_for('view_book', book_id=book.id))
 
+@app.route('/book/<int:book_id>/delete', methods=['POST'])
+def delete_book(book_id):
+    """Delete a book and all associated data"""
+    book = Book.query.get_or_404(book_id)
+    
+    try:
+        # Get all pages
+        pages = BookPage.query.filter_by(book_id=book_id).all()
+        
+        # Delete associated files
+        for page in pages:
+            # Delete image file if it exists and it's not a PDF
+            if page.image_path and os.path.exists(page.image_path) and not page.image_path.lower().endswith('.pdf'):
+                os.remove(page.image_path)
+            
+            # Delete processed image if it exists
+            if page.processed_image_path and os.path.exists(page.processed_image_path):
+                os.remove(page.processed_image_path)
+            
+            # Delete associated figures
+            figures = Figure.query.filter_by(page_id=page.id).all()
+            for figure in figures:
+                if figure.image_path and os.path.exists(figure.image_path):
+                    os.remove(figure.image_path)
+                db.session.delete(figure)
+        
+        # Delete jobs and their output files
+        jobs = ProcessingJob.query.filter_by(book_id=book_id).all()
+        for job in jobs:
+            if job.result_file_en and os.path.exists(job.result_file_en):
+                os.remove(job.result_file_en)
+            if job.result_file_ru and os.path.exists(job.result_file_ru):
+                os.remove(job.result_file_ru)
+            db.session.delete(job)
+        
+        # Delete output directory if it exists
+        output_dir = os.path.join('output', f"book_{book_id}")
+        if os.path.exists(output_dir):
+            import shutil
+            shutil.rmtree(output_dir)
+        
+        # Delete PDF file if this is a PDF book (only delete first page's file, as all pages reference the same file)
+        if pages and pages[0].image_path and pages[0].image_path.lower().endswith('.pdf') and os.path.exists(pages[0].image_path):
+            os.remove(pages[0].image_path)
+        
+        # Delete all pages
+        for page in pages:
+            db.session.delete(page)
+        
+        # Finally delete the book
+        book_title = book.title
+        db.session.delete(book)
+        db.session.commit()
+        
+        flash(f'Книга "{book_title}" успешно удалена', 'success')
+    except Exception as e:
+        logger.error(f"Error deleting book {book_id}: {str(e)}")
+        flash(f'Ошибка при удалении книги: {str(e)}', 'error')
+        db.session.rollback()
+    
+    return redirect(url_for('index'))
+
 @app.route('/download/<int:job_id>/<language>')
 def download_pdf(job_id, language):
     """Download processed PDF"""

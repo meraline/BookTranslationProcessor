@@ -1,0 +1,23 @@
+11. Brockwell P. J., Davis R. A. Time series: theory and methods. – Springer science & business media, 2009. 
+12. Okasha M. K. Using support vector machines in financial time series forecasting //International Journal of Statistics 
+and Applications. – 2014. – Т. 4.– №. 1. – pp. 28-39. 
+13. Chen K., Zhou Y., Dai F. A LSTM-based method for stock returns prediction: A case study of China stock market 
+//2015 IEEE international conference onbig data (big data). – IEEE, 2015. – С. 2823-2824. 
+14. Wu S. et al. S_I_LSTM: stock price prediction based on multiple data sources and sentiment analysis //Connection 
+Science. – 2022. – Т. 34. – №. 1. – pp. 44-62. 
+15. Hochreiter, S., & Schmidhuber, J. (1997). Long short-term memory. Neural computation, 9(8), 1735-1780. 
+16. Michańków J., Sakowski P., Ślepaczuk R. LSTM in Algorithmic Investment Strategies on BTC and S&P500 Index 
+//Sensors. – 2022. – Т. 22. – №. 3. – p.917. 
+17. Nazir S., Azlan Ab Aziz1 , J. Hosen1 , Nor Azlina Aziz1 , G. Ramana Murthy. Forecast Energy Consumption Time-
+Series Dataset using Multistep LSTM Models To cite this article: S. Nazir et al 2021 J. Phys.: Conf. Ser. 1933 012054. 
+18. Laptev N., Yosinski J., Li Erran Li, Smyl S. Time-series Extreme Event Forecasting with Neural Networks at Uber. 
+ICML 2017 Time Series Workshop, Sydney, Australia, 2017. ile:///C:/Users/snv/Downloads/TSW2017_paper_3.pdf. 
+19. Yunpeng L., C. Software, and X. Jiaotonguniversity, “Multistep ahead time series forecasting for different data patterns 
+based on LSTM recurrent neural network,” pp. 305–310, 2017, doi: 10.1109/WISA.2017.25. 
+20. Xiaorui Shao, Chang Soo Kim. Multi-Step Short-Term Power Consumption Forecasting Using Multi-Channel LSTM 
+With Time Location Considering Customer Behavior. Journals & Magazines, IEEE Access, Volume: 8. 
+21. Sizykh, D., Sizykh, N. Classification Analysis Method for Dynamic Characteristics of IT Companies Shares Exchange 
+Value. Proceedings of 2018 11th International Conference &amp;quot; Management of Large-Scale System 
+Development&amp;quot;, MLSD 2018, 2018, https://ieeexplore.ieee.org/document/8551785. 
+ 
+268
