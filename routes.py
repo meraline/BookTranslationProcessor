@@ -329,6 +329,21 @@ def upload_book():
                     status='pending'
                 )
                 db.session.add(new_page)
+                
+                # Сохраняем хеш PDF в базе данных для будущего обнаружения дубликатов
+                if pdf_hash:
+                    try:
+                        new_file_hash = FileHash(
+                            file_hash=pdf_hash,
+                            original_filename=temp_filename,
+                            content_type='pdf',
+                            book_id=new_book.id,
+                            page_id=new_page.id
+                        )
+                        db.session.add(new_file_hash)
+                    except Exception as e:
+                        app.logger.error(f"Ошибка при сохранении хеша PDF в БД: {str(e)}")
+                
                 db.session.commit()
                 
                 is_pdf = True
@@ -435,6 +450,11 @@ def delete_book(book_id):
             if job.result_file_ru and os.path.exists(job.result_file_ru):
                 os.remove(job.result_file_ru)
             db.session.delete(job)
+            
+        # Удаляем хеши файлов, связанные с этой книгой
+        file_hashes = FileHash.query.filter_by(book_id=book_id).all()
+        for file_hash in file_hashes:
+            db.session.delete(file_hash)
         
         # Delete output directory if it exists
         output_dir = os.path.join('output', f"book_{book_id}")
