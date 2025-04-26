@@ -16,7 +16,7 @@ class Base(DeclarativeBase):
 # Initialize Flask and database
 db = SQLAlchemy(model_class=Base)
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "dev-secret-key")
+app.secret_key = os.environ.get("SESSION_SECRET", "poker-book-ocr-secret-key-for-file-deduplication")
 app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
 # Configure database

@@ -2,7 +2,7 @@ import os
 import json
 import logging
 import threading
-from flask import render_template, request, redirect, url_for, flash, send_file, jsonify
+from flask import render_template, request, redirect, url_for, flash, send_file, jsonify, session
 from werkzeug.utils import secure_filename
 from app import app, db
 from models import Book, BookPage, ProcessingJob, Figure
@@ -71,7 +71,7 @@ def upload_book():
             
             # Import necessary modules for duplicate detection
             from text_extractor import TextExtractor
-            from utils import is_text_duplicate
+            from utils import is_text_duplicate, compute_image_hash
             
             # Collect existing page texts from the database for this book
             existing_texts = []
@@ -92,17 +92,27 @@ def upload_book():
                         file_hash = compute_image_hash(temp_filepath)
                         
                         # Если у нас есть сохраненные хеши изображений, проверяем среди них
-                        if 'image_hashes' not in session:
+                        try:
+                            # Безопасно получаем список хешей из сессии
+                            image_hashes = session.get('image_hashes', [])
+                            if not isinstance(image_hashes, list):
+                                image_hashes = []
+                                
+                            # Проверяем, есть ли уже такой хеш
+                            is_duplicate = False
+                            similarity = 0.0
+                            
+                            if file_hash and file_hash in image_hashes:
+                                is_duplicate = True
+                                similarity = 1.0
+                                app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
+                        except Exception as e:
+                            app.logger.error(f"Ошибка при работе с сессией: {str(e)}")
+                            # Сбрасываем сессию в случае ошибки
+                            session.clear()
                             session['image_hashes'] = []
-                        
-                        # Проверяем, есть ли уже такой хеш
-                        is_duplicate = False
-                        similarity = 0.0
-                        
-                        if file_hash and file_hash in session['image_hashes']:
-                            is_duplicate = True
-                            similarity = 1.0
-                            app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
+                            is_duplicate = False
+                            similarity = 0.0
                         
                         # Если не нашли дубликат по хешу, пробуем через OCR
                         if not is_duplicate:
@@ -116,8 +126,19 @@ def upload_book():
                                 
                                 # Если это новый файл, сохраняем его хеш для будущих проверок
                                 if not is_duplicate and file_hash:
-                                    session['image_hashes'].append(file_hash)
-                                    session.modified = True
+                                    try:
+                                        # Безопасное обновление списка хешей
+                                        image_hashes = session.get('image_hashes', [])
+                                        if not isinstance(image_hashes, list):
+                                            image_hashes = []
+                                        
+                                        # Добавляем новый хеш и сохраняем в сессии
+                                        if file_hash not in image_hashes:
+                                            image_hashes.append(file_hash)
+                                            session['image_hashes'] = image_hashes
+                                            session.modified = True
+                                    except Exception as e:
+                                        app.logger.error(f"Ошибка при сохранении хеша в сессии: {str(e)}")
                                     
                             except Exception as e:
                                 app.logger.error(f"Ошибка при проверке текстовых дубликатов: {str(e)}")
