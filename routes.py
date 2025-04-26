@@ -5,7 +5,7 @@ import threading
 from flask import render_template, request, redirect, url_for, flash, send_file, jsonify, session
 from werkzeug.utils import secure_filename
 from app import app, db
-from models import Book, BookPage, ProcessingJob, Figure
+from models import Book, BookPage, ProcessingJob, Figure, FileHash
 from datetime import datetime
 from processing_service import process_book
 
@@ -91,26 +91,25 @@ def upload_book():
                     try:
                         file_hash = compute_image_hash(temp_filepath)
                         
-                        # Если у нас есть сохраненные хеши изображений, проверяем среди них
+                        # Проверяем, есть ли уже такой хеш в базе данных
                         try:
-                            # Безопасно получаем список хешей из сессии
-                            image_hashes = session.get('image_hashes', [])
-                            if not isinstance(image_hashes, list):
-                                image_hashes = []
-                                
-                            # Проверяем, есть ли уже такой хеш
                             is_duplicate = False
                             similarity = 0.0
+                            duplicate_file = None
                             
-                            if file_hash and file_hash in image_hashes:
-                                is_duplicate = True
-                                similarity = 1.0
-                                app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
+                            if file_hash:
+                                # Ищем хеш в базе данных
+                                existing_file_hash = FileHash.query.filter_by(file_hash=file_hash).first()
+                                
+                                if existing_file_hash:
+                                    is_duplicate = True
+                                    similarity = 1.0
+                                    duplicate_file = existing_file_hash
+                                    app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
+                                    app.logger.info(f"Оригинальный файл: {existing_file_hash.original_filename}")
+                            
                         except Exception as e:
-                            app.logger.error(f"Ошибка при работе с сессией: {str(e)}")
-                            # Сбрасываем сессию в случае ошибки
-                            session.clear()
-                            session['image_hashes'] = []
+                            app.logger.error(f"Ошибка при проверке хеша в БД: {str(e)}")
                             is_duplicate = False
                             similarity = 0.0
                         
@@ -124,21 +123,23 @@ def upload_book():
                                     page_text, existing_texts, threshold=0.80  # 80% similarity threshold
                                 )
                                 
-                                # Если это новый файл, сохраняем его хеш для будущих проверок
+                                # Если это новый файл, сохраняем его хеш в БД для будущих проверок
                                 if not is_duplicate and file_hash:
                                     try:
-                                        # Безопасное обновление списка хешей
-                                        image_hashes = session.get('image_hashes', [])
-                                        if not isinstance(image_hashes, list):
-                                            image_hashes = []
+                                        # Проверяем, нет ли уже такого хеша
+                                        existing_hash = FileHash.query.filter_by(file_hash=file_hash).first()
                                         
-                                        # Добавляем новый хеш и сохраняем в сессии
-                                        if file_hash not in image_hashes:
-                                            image_hashes.append(file_hash)
-                                            session['image_hashes'] = image_hashes
-                                            session.modified = True
+                                        if not existing_hash:
+                                            # Сохраняем новый хеш в БД
+                                            new_file_hash = FileHash(
+                                                file_hash=file_hash,
+                                                original_filename=temp_filename,
+                                                content_type='image'
+                                            )
+                                            db.session.add(new_file_hash)
+                                            db.session.commit()
                                     except Exception as e:
-                                        app.logger.error(f"Ошибка при сохранении хеша в сессии: {str(e)}")
+                                        app.logger.error(f"Ошибка при сохранении хеша в БД: {str(e)}")
                                     
                             except Exception as e:
                                 app.logger.error(f"Ошибка при проверке текстовых дубликатов: {str(e)}")
@@ -250,30 +251,53 @@ def upload_book():
                     # Вычисляем хеш для текста PDF
                     pdf_hash = hashlib.md5(pdf_text.encode('utf-8')).hexdigest()
                     
-                    # Ищем похожие PDF-книги в базе данных
-                    existing_books = Book.query.all()
-                    for book in existing_books:
-                        # Проверяем только для книг, у которых есть PDF-страницы
-                        if book.pages and book.pages[0].image_path and book.pages[0].image_path.lower().endswith('.pdf'):
-                            # Открываем существующий PDF и извлекаем текст
-                            try:
-                                doc = fitz.open(book.pages[0].image_path)
-                                existing_text = ""
-                                for i in range(min(10, doc.page_count)):
-                                    page = doc[i]
-                                    existing_text += page.get_text()
-                                doc.close()
-                                
-                                # Вычисляем хеш существующего PDF
-                                existing_hash = hashlib.md5(existing_text.encode('utf-8')).hexdigest()
-                                
-                                # Если хеши совпадают, это дубликат
-                                if pdf_hash == existing_hash:
-                                    pdf_is_duplicate = True
-                                    duplicate_book = book
-                                    break
-                            except Exception as e:
-                                app.logger.error(f"Ошибка при проверке дубликата PDF: {str(e)}")
+                    # Сначала проверяем хеш в таблице FileHash
+                    existing_file_hash = FileHash.query.filter_by(file_hash=pdf_hash).first()
+                    if existing_file_hash and existing_file_hash.book_id:
+                        # Нашли дубликат по хешу в БД
+                        pdf_is_duplicate = True
+                        duplicate_book = Book.query.get(existing_file_hash.book_id)
+                        if duplicate_book:
+                            app.logger.info(f"Найден дубликат PDF по хешу в базе данных: {duplicate_book.title}")
+                    else:
+                        # Ищем похожие PDF-книги в базе данных (запасной вариант)
+                        existing_books = Book.query.all()
+                        for book in existing_books:
+                            # Проверяем только для книг, у которых есть PDF-страницы
+                            if book.pages and book.pages[0].image_path and book.pages[0].image_path.lower().endswith('.pdf'):
+                                # Открываем существующий PDF и извлекаем текст
+                                try:
+                                    doc = fitz.open(book.pages[0].image_path)
+                                    existing_text = ""
+                                    for i in range(min(10, doc.page_count)):
+                                        page = doc[i]
+                                        existing_text += page.get_text()
+                                    doc.close()
+                                    
+                                    # Вычисляем хеш существующего PDF
+                                    existing_hash = hashlib.md5(existing_text.encode('utf-8')).hexdigest()
+                                    
+                                    # Если хеши совпадают, это дубликат
+                                    if pdf_hash == existing_hash:
+                                        pdf_is_duplicate = True
+                                        duplicate_book = book
+                                        
+                                        # Сохраняем хеш в БД для будущего использования
+                                        try:
+                                            new_file_hash = FileHash(
+                                                file_hash=pdf_hash,
+                                                original_filename=temp_filename,
+                                                content_type='pdf',
+                                                book_id=book.id
+                                            )
+                                            db.session.add(new_file_hash)
+                                            db.session.commit()
+                                        except Exception as e:
+                                            app.logger.error(f"Ошибка при сохранении хеша PDF в БД: {str(e)}")
+                                        
+                                        break
+                                except Exception as e:
+                                    app.logger.error(f"Ошибка при проверке дубликата PDF: {str(e)}")
                 except Exception as e:
                     app.logger.error(f"Ошибка при проверке дубликата PDF: {str(e)}")
                 

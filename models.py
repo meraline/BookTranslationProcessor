@@ -88,3 +88,16 @@ class Figure(db.Model):
     
     def __repr__(self):
         return f'<Figure {self.id}:{self.figure_type}>'
+
+class FileHash(db.Model):
+    """Model for storing file hashes to detect duplicates"""
+    id = db.Column(db.Integer, primary_key=True)
+    file_hash = db.Column(db.String(64), nullable=False, unique=True)  # MD5 hash
+    original_filename = db.Column(db.String(255), nullable=True)
+    content_type = db.Column(db.String(50), nullable=True)  # image, pdf, etc.
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=True)
+    page_id = db.Column(db.Integer, db.ForeignKey('book_page.id'), nullable=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    def __repr__(self):
+        return f'<FileHash {self.file_hash[:8]}>'
