@@ -15,6 +15,31 @@ logger = logging.getLogger(__name__)
 class TranslationManager:
     """Handles translation from English to Russian using OpenAI API."""
     
+    # Словарь покерных терминов для проверки и замены
+    POKER_GLOSSARY = {
+        "EV": "Expected Value (математическое ожидание)",
+        "pot odds": "pot odds (шансы банка)",
+        "implied odds": "implied odds (потенциальные шансы)",
+        "GTO": "Game Theory Optimal (оптимальная игра по теории игр)",
+        "VPIP": "Voluntarily Put Money In Pot (добровольный вклад в банк)",
+        "PFR": "Pre-Flop Raise (повышение на префлопе)",
+        "3-bet": "3-bet (3-бет, ререйз)",
+        "4-bet": "4-bet (4-бет, ререйз на 3-бет)",
+        "WTSD": "Went To Showdown (дошел до вскрытия)",
+        "MTTTL": "Move To The Top Level (переход на высший уровень)",
+        "SWASED": "SWASED (система анализа в покере)",
+        "ECD": "ECD (аббревиатура в покере)",
+        "CEE": "CEE (термин из покера)",
+        "UTG": "Under The Gun (первая позиция после блайндов)",
+        "BB": "Big Blind (большой блайнд)",
+        "SB": "Small Blind (малый блайнд)",
+        "BTN": "Button (позиция баттона)",
+        "CO": "Cut-off (позиция катоффа)",
+        "HJ": "Hijack (позиция хайджека)",
+        "MP": "Middle Position (средняя позиция)",
+        "EP": "Early Position (ранняя позиция)",
+    }
+    
     def __init__(self, openai_api_key=None, target_language='ru', cache_dir=None):
         """
         Initialize translation manager.
@@ -203,7 +228,61 @@ class TranslationManager:
             if total_chars == 0 or special_chars / total_chars < 0.4:
                 cleaned_lines.append(line)
         
-        return '\n'.join(cleaned_lines)
+        text = '\n'.join(cleaned_lines)
+        
+        # Предварительная обработка покерных терминов и аббревиатур
+        text = self._preprocess_poker_terms(text)
+        
+        return text
+        
+    def _preprocess_poker_terms(self, text):
+        """
+        Предварительная обработка покерных терминов для повышения качества перевода.
+        
+        Args:
+            text (str): Исходный текст
+            
+        Returns:
+            str: Обработанный текст с правильно отмеченными покерными терминами
+        """
+        # Проверка и обработка аббревиатур в глоссарии
+        for term, translation in self.POKER_GLOSSARY.items():
+            # Ищем термин в начале слова или как отдельное слово
+            pattern = r'\b' + re.escape(term) + r'\b'
+            
+            # Если термин уже встречается в тексте, заменяем его на версию с переводом при первом вхождении
+            if re.search(pattern, text, re.IGNORECASE):
+                # Найдем первое вхождение
+                match = re.search(pattern, text, re.IGNORECASE)
+                if match:
+                    # Получим оригинальный текст (с учетом регистра)
+                    original_match = match.group(0)
+                    # Заменим только первое вхождение
+                    text = text.replace(original_match, translation, 1)
+        
+        # Поиск и обработка последовательностей аббревиатур (например, "SWASED ECD CEE")
+        abbr_pattern = r'\b([A-Z]{2,}(?:\s+[A-Z]{2,})+)\b'
+        abbr_matches = re.finditer(abbr_pattern, text)
+        
+        for match in abbr_matches:
+            abbr_sequence = match.group(0)
+            # Разделим последовательность на отдельные аббревиатуры
+            abbrs = abbr_sequence.split()
+            
+            # Проверим, есть ли эти аббревиатуры в нашем глоссарии
+            processed_abbrs = []
+            for abbr in abbrs:
+                if abbr in self.POKER_GLOSSARY:
+                    processed_abbrs.append(self.POKER_GLOSSARY[abbr])
+                else:
+                    # Если нет в глоссарии, просто добавляем пометку
+                    processed_abbrs.append(f"{abbr} (покерный термин)")
+            
+            # Заменим всю последовательность
+            replacement = " ".join(processed_abbrs)
+            text = text.replace(abbr_sequence, replacement)
+        
+        return text
     
     def _build_translation_prompt(self, text, purpose):
         """
@@ -288,7 +367,41 @@ class TranslationManager:
         # Apply replacements
         for old, new in replacements.items():
             translation = translation.replace(old, new)
+        
+        # Корректировка проблемных мест с аббревиатурами
+        # Исправление случаев, когда аббревиатуры переведены некорректно
+        for term, correct_form in self.POKER_GLOSSARY.items():
+            # Ищем варианты неправильных переводов термина
+            variations = [
+                f"{term.lower()} ",  # аббревиатура в нижнем регистре
+                f"{term.upper()} ",  # аббревиатура в верхнем регистре
+                f"{term} ",          # аббревиатура как в глоссарии
+            ]
             
+            for var in variations:
+                if var.strip() in translation and correct_form not in translation:
+                    # Заменяем только если неправильная форма есть, а правильной нет
+                    translation = translation.replace(var.strip(), correct_form)
+        
+        # Проверяем нетипичные аббревиатуры и последовательности заглавных букв (как SWASED ECD CEE)
+        abbr_sequences = re.finditer(r'\b([A-Z]{2,}(?:\s+[A-Z]{2,})+)\b', translation)
+        for match in abbr_sequences:
+            abbr_sequence = match.group(0)
+            # Проверяем, не заменили ли мы это раньше
+            if "покерный термин" not in translation[match.start()-20:match.end()+20]:
+                # Добавляем пояснение
+                translation = translation.replace(
+                    abbr_sequence, 
+                    f"{abbr_sequence} (покерные термины и обозначения)"
+                )
+        
+        # Убираем случайные символы, которые могли попасть в текст из-за OCR ошибок
+        translation = re.sub(r'(\w)_(\w)', r'\1 \2', translation)  # Заменяем a_b на "a b"
+        translation = re.sub(r'[\x00-\x1F\x7F-\x9F]', '', translation)  # Убираем непечатные символы
+        
+        # Убираем повторы пробелов
+        translation = re.sub(r' {2,}', ' ', translation)
+        
         return translation
     
     def translate_document(self, document_structure):
