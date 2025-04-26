@@ -87,19 +87,62 @@ def upload_book():
                     temp_filepath = os.path.join('/tmp', temp_filename)
                     file.save(temp_filepath)
                     
-                    # Extract text from the image for duplicate detection
+                    # Сначала проверяем дубликаты по хешу файла, что быстрее и надежнее
                     try:
-                        page_text = TextExtractor.quick_extract_text(temp_filepath)
+                        file_hash = compute_image_hash(temp_filepath)
                         
-                        # Check if this image is a duplicate based on text content
-                        is_duplicate, similar_text, similarity = is_text_duplicate(
-                            page_text, existing_texts, threshold=0.80  # 80% similarity threshold
-                        )
+                        # Если у нас есть сохраненные хеши изображений, проверяем среди них
+                        if 'image_hashes' not in session:
+                            session['image_hashes'] = []
+                        
+                        # Проверяем, есть ли уже такой хеш
+                        is_duplicate = False
+                        similarity = 0.0
+                        
+                        if file_hash and file_hash in session['image_hashes']:
+                            is_duplicate = True
+                            similarity = 1.0
+                            app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
+                        
+                        # Если не нашли дубликат по хешу, пробуем через OCR
+                        if not is_duplicate:
+                            try:
+                                page_text = TextExtractor.quick_extract_text(temp_filepath)
+                                
+                                # Check if this image is a duplicate based on text content
+                                is_duplicate, similar_text, similarity = is_text_duplicate(
+                                    page_text, existing_texts, threshold=0.80  # 80% similarity threshold
+                                )
+                                
+                                # Если это новый файл, сохраняем его хеш для будущих проверок
+                                if not is_duplicate and file_hash:
+                                    session['image_hashes'].append(file_hash)
+                                    session.modified = True
+                                    
+                            except Exception as e:
+                                app.logger.error(f"Ошибка при проверке текстовых дубликатов: {str(e)}")
+                                page_text = ""
+                                is_duplicate = False
+                                similarity = 0.0
+                        else:
+                            # Если дубликат найден по хешу, OCR не нужен
+                            page_text = ""
+                                
                     except Exception as e:
-                        app.logger.error(f"Ошибка при проверке дубликатов: {str(e)}")
+                        app.logger.error(f"Ошибка при проверке дубликатов по хешу: {str(e)}")
                         page_text = ""
                         is_duplicate = False
                         similarity = 0.0
+                        
+                        # Пробуем запасной вариант через OCR
+                        try:
+                            page_text = TextExtractor.quick_extract_text(temp_filepath)
+                            is_duplicate, similar_text, similarity = is_text_duplicate(
+                                page_text, existing_texts, threshold=0.80
+                            )
+                        except Exception as e2:
+                            app.logger.error(f"Запасной вариант OCR также не сработал: {str(e2)}")
+                            # Оставляем значения по умолчанию
                     
                     if is_duplicate:
                         # This is a duplicate, skip it

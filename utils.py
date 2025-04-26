@@ -219,6 +219,30 @@ def find_optimal_layout(figures, page_width, page_height, padding=10):
     
     return positions
 
+def compute_image_hash(img_path):
+    """
+    Compute a simple hash for an image file for duplicate detection.
+    
+    Args:
+        img_path (str): Path to the image file
+        
+    Returns:
+        str: MD5 hash string or None on failure
+    """
+    try:
+        import hashlib
+        
+        # Читаем файл небольшими кусками для экономии памяти
+        md5_hash = hashlib.md5()
+        with open(img_path, "rb") as f:
+            # Читаем файл по 4KB за раз
+            for chunk in iter(lambda: f.read(4096), b""):
+                md5_hash.update(chunk)
+        return md5_hash.hexdigest()
+    except Exception as e:
+        logger.error(f"Ошибка при вычислении хеша изображения: {str(e)}")
+        return None
+
 def compute_text_similarity(text1, text2):
     """
     Compute similarity between two text strings.
@@ -230,28 +254,49 @@ def compute_text_similarity(text1, text2):
     Returns:
         float: Similarity score between 0.0 and 1.0
     """
-    if not text1 or not text2:
+    try:
+        # Проверка входных параметров
+        if not isinstance(text1, str) or not isinstance(text2, str):
+            return 0.0
+        
+        if not text1 or not text2:
+            return 0.0
+        
+        # Normalize texts
+        text1 = text1.lower().strip()
+        text2 = text2.lower().strip()
+        
+        if not text1 or not text2:
+            return 0.0
+        
+        # Точное совпадение
+        if text1 == text2:
+            return 1.0
+        
+        # Если тексты сильно различаются по длине, они, вероятно, не похожи
+        len1, len2 = len(text1), len(text2)
+        if len1 > 2 * len2 or len2 > 2 * len1:
+            return 0.0
+        
+        # Calculate Jaccard similarity on words
+        # Сначала фильтруем слова, чтобы избавиться от коротких, которые могут быть шумом
+        words1 = set(w for w in text1.split() if len(w) > 2)
+        words2 = set(w for w in text2.split() if len(w) > 2)
+        
+        if not words1 or not words2:
+            return 0.0
+        
+        # Compute Jaccard similarity (intersection / union)
+        intersection = len(words1.intersection(words2))
+        union = len(words1.union(words2))
+        
+        if union == 0:
+            return 0.0
+        
+        return intersection / union
+    except Exception as e:
+        logger.error(f"Ошибка при вычислении похожести текстов: {str(e)}")
         return 0.0
-    
-    # Normalize texts
-    text1 = text1.lower().strip()
-    text2 = text2.lower().strip()
-    
-    # Calculate Jaccard similarity on words
-    words1 = set(text1.split())
-    words2 = set(text2.split())
-    
-    if not words1 or not words2:
-        return 0.0
-    
-    # Compute Jaccard similarity (intersection / union)
-    intersection = len(words1.intersection(words2))
-    union = len(words1.union(words2))
-    
-    if union == 0:
-        return 0.0
-    
-    return intersection / union
 
 def is_text_duplicate(text, existing_texts, threshold=0.85):
     """
@@ -265,18 +310,57 @@ def is_text_duplicate(text, existing_texts, threshold=0.85):
     Returns:
         tuple: (is_duplicate, most_similar_text, similarity_score)
     """
-    if not text or not existing_texts:
+    try:
+        # Проверка входных данных на корректность
+        if not isinstance(text, str) or text is None:
+            return False, None, 0.0
+            
+        if not isinstance(existing_texts, list) or not existing_texts:
+            return False, None, 0.0
+        
+        # Нормализация текста
+        normalized_text = text.lower().strip()
+        if not normalized_text:
+            return False, None, 0.0
+            
+        max_similarity = 0.0
+        most_similar_text = None
+        
+        # Быстрая проверка на точное совпадение
+        for existing_text in existing_texts:
+            # Пропускаем некорректные значения
+            if not isinstance(existing_text, str) or not existing_text:
+                continue
+                
+            # Проверка на точное совпадение
+            if normalized_text == existing_text.lower().strip():
+                return True, existing_text, 1.0
+        
+        # Если текст очень короткий, используем только точное совпадение
+        if len(normalized_text) < 30:
+            return False, None, 0.0
+            
+        # Для более длинных текстов проверяем похожесть
+        for existing_text in existing_texts:
+            # Пропускаем некорректные значения
+            if not isinstance(existing_text, str) or not existing_text:
+                continue
+                
+            try:
+                similarity = compute_text_similarity(normalized_text, existing_text)
+                if similarity > max_similarity:
+                    max_similarity = similarity
+                    most_similar_text = existing_text
+            except Exception as e:
+                # Логируем и игнорируем ошибки при сравнении
+                logger.error(f"Ошибка при сравнении текстов: {str(e)}")
+                continue
+        
+        is_duplicate = max_similarity >= threshold
+        
+        return is_duplicate, most_similar_text, max_similarity
+    
+    except Exception as e:
+        # В случае любой ошибки возвращаем "не дубликат"
+        logger.error(f"Ошибка при проверке дубликатов: {str(e)}")
         return False, None, 0.0
-    
-    max_similarity = 0.0
-    most_similar_text = None
-    
-    for existing_text in existing_texts:
-        similarity = compute_text_similarity(text, existing_text)
-        if similarity > max_similarity:
-            max_similarity = similarity
-            most_similar_text = existing_text
-    
-    is_duplicate = max_similarity >= threshold
-    
-    return is_duplicate, most_similar_text, max_similarity
