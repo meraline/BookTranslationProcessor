@@ -218,3 +218,65 @@ def find_optimal_layout(figures, page_width, page_height, padding=10):
         row_height = max(row_height, height)
     
     return positions
+
+def compute_text_similarity(text1, text2):
+    """
+    Compute similarity between two text strings.
+    
+    Args:
+        text1 (str): First text
+        text2 (str): Second text
+        
+    Returns:
+        float: Similarity score between 0.0 and 1.0
+    """
+    if not text1 or not text2:
+        return 0.0
+    
+    # Normalize texts
+    text1 = text1.lower().strip()
+    text2 = text2.lower().strip()
+    
+    # Calculate Jaccard similarity on words
+    words1 = set(text1.split())
+    words2 = set(text2.split())
+    
+    if not words1 or not words2:
+        return 0.0
+    
+    # Compute Jaccard similarity (intersection / union)
+    intersection = len(words1.intersection(words2))
+    union = len(words1.union(words2))
+    
+    if union == 0:
+        return 0.0
+    
+    return intersection / union
+
+def is_text_duplicate(text, existing_texts, threshold=0.85):
+    """
+    Check if a text is a duplicate of any existing text.
+    
+    Args:
+        text (str): Text to check
+        existing_texts (list): List of existing texts
+        threshold (float): Similarity threshold (0.0 to 1.0)
+        
+    Returns:
+        tuple: (is_duplicate, most_similar_text, similarity_score)
+    """
+    if not text or not existing_texts:
+        return False, None, 0.0
+    
+    max_similarity = 0.0
+    most_similar_text = None
+    
+    for existing_text in existing_texts:
+        similarity = compute_text_similarity(text, existing_text)
+        if similarity > max_similarity:
+            max_similarity = similarity
+            most_similar_text = existing_text
+    
+    is_duplicate = max_similarity >= threshold
+    
+    return is_duplicate, most_similar_text, max_similarity

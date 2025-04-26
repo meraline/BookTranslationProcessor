@@ -29,6 +29,42 @@ class TextExtractor:
         self.tech_config = '--oem 1 --psm 6 -c tessedit_char_whitelist="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-+=%()[]{}.:,;/<>*& "' 
         self.number_config = '--oem 1 --psm 7 -c tessedit_char_whitelist="0123456789.,-+/%"'
         
+    @staticmethod
+    def quick_extract_text(image_path):
+        """
+        Quickly extract text from an image for duplicate detection.
+        Does not use advanced preprocessing to keep it fast.
+        
+        Args:
+            image_path (str): Path to the image
+            
+        Returns:
+            str: Extracted text
+        """
+        try:
+            # Load image with OpenCV (faster than PIL for this specific use)
+            image = cv2.imread(image_path)
+            if image is None:
+                logger.warning(f"Could not load image: {image_path}")
+                return ""
+                
+            # Convert to grayscale
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            
+            # Simple threshold for faster processing
+            _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            
+            # Extract text with default config (faster)
+            text = pytesseract.image_to_string(thresh, lang='eng+rus')
+            
+            # Clean text
+            text = text.strip()
+            return text
+            
+        except Exception as e:
+            logger.error(f"Error in quick text extraction: {str(e)}")
+            return ""
+        
     def extract_text(self, img, region=None):
         """
         Extract text from an image or a specific region.

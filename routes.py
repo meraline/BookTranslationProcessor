@@ -69,15 +69,49 @@ def upload_book():
                 flash('Не выбрано ни одного файла', 'error')
                 return redirect(request.url)
             
+            # Import necessary modules for duplicate detection
+            from text_extractor import TextExtractor
+            from utils import is_text_duplicate
+            
+            # Collect existing page texts from the database for this book
+            existing_texts = []
+            
+            # Keep track of skipped duplicates
+            duplicate_count = 0
+            
             # Process each file
             for idx, file in enumerate(files):
                 if file and allowed_file(file.filename):
-                    # Secure filename and save file
-                    filename = secure_filename(file.filename)
-                    # Add book ID and index to filename to prevent conflicts
-                    filename = f"{new_book.id}_{idx}_{filename}"
+                    # Secure filename and save file to a temporary location for checking
+                    temp_filename = secure_filename(file.filename)
+                    temp_filepath = os.path.join('/tmp', temp_filename)
+                    file.save(temp_filepath)
+                    
+                    # Extract text from the image for duplicate detection
+                    page_text = TextExtractor.quick_extract_text(temp_filepath)
+                    
+                    # Check if this image is a duplicate based on text content
+                    is_duplicate, similar_text, similarity = is_text_duplicate(
+                        page_text, existing_texts, threshold=0.80  # 80% similarity threshold
+                    )
+                    
+                    if is_duplicate:
+                        # This is a duplicate, skip it
+                        app.logger.info(f"Skipping duplicate image: {temp_filename} (similarity: {similarity:.2f})")
+                        duplicate_count += 1
+                        # Clean up temp file
+                        os.remove(temp_filepath)
+                        continue
+                    
+                    # Not a duplicate, save permanently
+                    filename = f"{new_book.id}_{idx}_{secure_filename(file.filename)}"
                     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    file.save(file_path)
+                    # Move from temp location to permanent
+                    os.rename(temp_filepath, file_path)
+                    
+                    # Add to existing texts to check future pages against
+                    if page_text:
+                        existing_texts.append(page_text)
                     
                     # Try to extract page number from filename
                     page_number = idx + 1  # Default to the order of upload
@@ -87,7 +121,8 @@ def upload_book():
                         book_id=new_book.id,
                         page_number=page_number,
                         image_path=file_path,
-                        status='pending'
+                        status='pending',
+                        text_content=page_text  # Store extracted text for future reference
                     )
                     db.session.add(new_page)
                     uploaded_count += 1
@@ -96,7 +131,10 @@ def upload_book():
             db.session.commit()
             
             if uploaded_count > 0:
-                flash_message = f'Загружено {uploaded_count} изображений, начата обработка'
+                if duplicate_count > 0:
+                    flash_message = f'Загружено {uploaded_count} изображений, пропущено {duplicate_count} дубликатов, начата обработка'
+                else:
+                    flash_message = f'Загружено {uploaded_count} изображений, начата обработка'
             else:
                 flash('Не загружено ни одного подходящего файла', 'error')
                 return redirect(request.url)
@@ -114,12 +152,73 @@ def upload_book():
                 return redirect(request.url)
                 
             if pdf_file and allowed_file(pdf_file.filename):
-                # Secure filename and save file
+                import fitz  # PyMuPDF для проверки PDF
+                import hashlib
+                
+                # Сначала сохраняем PDF во временный файл для проверки
+                temp_filename = secure_filename(pdf_file.filename)
+                temp_filepath = os.path.join('/tmp', temp_filename)
+                pdf_file.save(temp_filepath)
+                
+                # Проверяем наличие дубликатов по содержимому PDF
+                pdf_is_duplicate = False
+                duplicate_book = None
+                
+                try:
+                    # Извлекаем текст из первых нескольких страниц для сравнения
+                    doc = fitz.open(temp_filepath)
+                    pdf_text = ""
+                    # Берем до 10 страниц для сравнения или все, если их меньше
+                    for i in range(min(10, doc.page_count)):
+                        page = doc[i]
+                        pdf_text += page.get_text()
+                    doc.close()
+                    
+                    # Вычисляем хеш для текста PDF
+                    pdf_hash = hashlib.md5(pdf_text.encode('utf-8')).hexdigest()
+                    
+                    # Ищем похожие PDF-книги в базе данных
+                    existing_books = Book.query.all()
+                    for book in existing_books:
+                        # Проверяем только для книг, у которых есть PDF-страницы
+                        if book.pages and book.pages[0].image_path and book.pages[0].image_path.lower().endswith('.pdf'):
+                            # Открываем существующий PDF и извлекаем текст
+                            try:
+                                doc = fitz.open(book.pages[0].image_path)
+                                existing_text = ""
+                                for i in range(min(10, doc.page_count)):
+                                    page = doc[i]
+                                    existing_text += page.get_text()
+                                doc.close()
+                                
+                                # Вычисляем хеш существующего PDF
+                                existing_hash = hashlib.md5(existing_text.encode('utf-8')).hexdigest()
+                                
+                                # Если хеши совпадают, это дубликат
+                                if pdf_hash == existing_hash:
+                                    pdf_is_duplicate = True
+                                    duplicate_book = book
+                                    break
+                            except Exception as e:
+                                app.logger.error(f"Ошибка при проверке дубликата PDF: {str(e)}")
+                except Exception as e:
+                    app.logger.error(f"Ошибка при проверке дубликата PDF: {str(e)}")
+                
+                if pdf_is_duplicate and duplicate_book:
+                    # Удаляем временный файл и созданную книгу, т.к. найден дубликат
+                    os.remove(temp_filepath)
+                    db.session.delete(new_book)
+                    db.session.commit()
+                    
+                    flash(f'PDF файл уже существует в системе (книга "{duplicate_book.title}"). Повторная загрузка пропущена.', 'warning')
+                    return redirect(url_for('view_book', book_id=duplicate_book.id))
+                
+                # Не дубликат, сохраняем окончательно
                 filename = secure_filename(pdf_file.filename)
                 # Add book ID to filename to prevent conflicts
                 filename = f"{new_book.id}_pdf_{filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                pdf_file.save(file_path)
+                os.rename(temp_filepath, file_path)
                 
                 # Create single book page record for PDF
                 new_page = BookPage(
