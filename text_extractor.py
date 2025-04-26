@@ -55,7 +55,8 @@ class TextExtractor:
             _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
             
             # Extract text with default config (faster)
-            text = pytesseract.image_to_string(thresh, lang='eng+rus')
+            # Убираем параметр lang, так как он может быть не поддержан или вызывать ошибки
+            text = pytesseract.image_to_string(thresh)
             
             # Clean text
             text = text.strip()

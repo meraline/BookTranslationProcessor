@@ -88,12 +88,18 @@ def upload_book():
                     file.save(temp_filepath)
                     
                     # Extract text from the image for duplicate detection
-                    page_text = TextExtractor.quick_extract_text(temp_filepath)
-                    
-                    # Check if this image is a duplicate based on text content
-                    is_duplicate, similar_text, similarity = is_text_duplicate(
-                        page_text, existing_texts, threshold=0.80  # 80% similarity threshold
-                    )
+                    try:
+                        page_text = TextExtractor.quick_extract_text(temp_filepath)
+                        
+                        # Check if this image is a duplicate based on text content
+                        is_duplicate, similar_text, similarity = is_text_duplicate(
+                            page_text, existing_texts, threshold=0.80  # 80% similarity threshold
+                        )
+                    except Exception as e:
+                        app.logger.error(f"Ошибка при проверке дубликатов: {str(e)}")
+                        page_text = ""
+                        is_duplicate = False
+                        similarity = 0.0
                     
                     if is_duplicate:
                         # This is a duplicate, skip it
