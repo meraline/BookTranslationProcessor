@@ -106,8 +106,11 @@ def upload_book():
                     # Not a duplicate, save permanently
                     filename = f"{new_book.id}_{idx}_{secure_filename(file.filename)}"
                     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    # Move from temp location to permanent
-                    os.rename(temp_filepath, file_path)
+                    # Copy from temp location to permanent (os.rename может не работать между разными файловыми системами)
+                    import shutil
+                    shutil.copy2(temp_filepath, file_path)
+                    # Удаляем временный файл
+                    os.remove(temp_filepath)
                     
                     # Add to existing texts to check future pages against
                     if page_text:
@@ -218,7 +221,11 @@ def upload_book():
                 # Add book ID to filename to prevent conflicts
                 filename = f"{new_book.id}_pdf_{filename}"
                 file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                os.rename(temp_filepath, file_path)
+                # Copy from temp location to permanent (os.rename может не работать между разными файловыми системами)
+                import shutil
+                shutil.copy2(temp_filepath, file_path)
+                # Удаляем временный файл
+                os.remove(temp_filepath)
                 
                 # Create single book page record for PDF
                 new_page = BookPage(
