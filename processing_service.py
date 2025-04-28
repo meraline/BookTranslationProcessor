@@ -156,8 +156,33 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                             try:
                                 full_text = text_extractor.extract_text(processed_img, force_mode='aggressive')
                                 logger.info(f"Повторно извлечено {len(full_text)} символов")
+                                if full_text:
+                                    preview_text = full_text[:200] + '...' if len(full_text) > 200 else full_text
+                                    logger.info(f"Предпросмотр текста из агрессивного режима: {preview_text}")
                             except Exception as e:
                                 logger.error(f"Ошибка при повторном извлечении: {str(e)}")
+                                
+                        # Если текст всё ещё не найден, пробуем последний вариант - извлечение через PIL
+                        if not full_text or len(full_text.strip()) < 10:
+                            logger.warning("Текст отсутствует или слишком короткий. Попытка извлечения через PIL")
+                            try:
+                                from PIL import Image as PILImage
+                                import os
+                                
+                                if os.path.exists(page.image_path):
+                                    pil_image = PILImage.open(page.image_path)
+                                    full_text = pytesseract.image_to_string(pil_image)
+                                    logger.info(f"PIL OCR извлечено {len(full_text)} символов")
+                                    if full_text:
+                                        preview_text = full_text[:200] + '...' if len(full_text) > 200 else full_text
+                                        logger.info(f"Предпросмотр текста из PIL: {preview_text}")
+                                else:
+                                    logger.error(f"Файл изображения не существует: {page.image_path}")
+                            except Exception as pil_error:
+                                logger.error(f"Ошибка при PIL OCR: {str(pil_error)}")
+                                # Установка базового текста для предотвращения None
+                                if not full_text:
+                                    full_text = "OCR failed to extract text from this image."
                         
                         # Save raw OCR text
                         raw_text_path = os.path.join(text_dir, f"{output_basename}_raw.txt")

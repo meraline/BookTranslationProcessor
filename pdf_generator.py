@@ -254,10 +254,16 @@ class PDFGenerator:
                 # Пробуем использовать другой источник текста
                 if 'enhanced_text' in document_structure and document_structure['enhanced_text']:
                     logger.info("Используем enhanced_text как запасной вариант")
-                    document_structure[paragraphs_source] = [document_structure['enhanced_text']]
+                    # Разбиваем текст на параграфы по двойному переносу строки
+                    enhanced_text = document_structure['enhanced_text']
+                    document_structure[paragraphs_source] = enhanced_text.split('\n\n') if enhanced_text else []
+                    logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из enhanced_text")
                 elif 'original_text' in document_structure and document_structure['original_text']:
                     logger.info("Используем original_text как запасной вариант")
-                    document_structure[paragraphs_source] = [document_structure['original_text']]
+                    # Разбиваем текст на параграфы по двойному переносу строки
+                    original_text = document_structure['original_text']
+                    document_structure[paragraphs_source] = original_text.split('\n\n') if original_text else []
+                    logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из original_text")
                 
             if paragraphs_source in document_structure:
                 for paragraph in document_structure[paragraphs_source]:
