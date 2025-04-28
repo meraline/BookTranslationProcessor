@@ -633,157 +633,140 @@ def download_pdf(job_id, language):
     """Download processed PDF"""
     job = ProcessingJob.query.get_or_404(job_id)
     
+    # Определяем, какой файл нужно отправить
+    pdf_path = None
     if language == 'en' and job.result_file_en:
         pdf_path = job.result_file_en
-        
-        # Используем специализированный логгер, если доступен
-        if USE_CUSTOM_LOGGERS:
-            pdf_logger.info(f"Исходный путь к PDF файлу: {pdf_path}")
-            app_logger.info(f"Обработка запроса на загрузку английского PDF для job_id={job_id}")
-        
-        # Исправление проблемы с дублирующимися pdf в пути
-        if 'pdf/pdf' in pdf_path:
-            corrected_path = pdf_path.replace('pdf/pdf', 'pdf')
-            logger.debug(f"Исправление пути с {pdf_path} на {corrected_path}")
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.info(f"Исправленный путь: {corrected_path}")
-            pdf_path = corrected_path
-        
-        logger.debug(f"Отправка английского PDF файла: {pdf_path}")
-        
-        if not os.path.exists(pdf_path):
-            logger.error(f"Файл не существует по указанному пути: {pdf_path}")
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.error(f"Файл не найден: {pdf_path}")
-                file_logger.info("Поиск альтернативных путей...")
-            
-            # Пробуем альтернативные пути для обратной совместимости
-            alt_paths = [
-                job.result_file_en,  # Оригинальный путь из БД
-                job.result_file_en.replace('pdf/pdf', 'pdf'),  # Исправленный путь
-                job.result_file_en.replace('/pdf/', '/'),  # Путь с удаленным pdf/
-                # Еще больше вариантов путей для исправления
-                job.result_file_en.replace('output/book_', 'output/book_').replace('/pdf/pdf/', '/pdf/'),
-                job.result_file_en.replace('pdf/pdf', 'pdf').replace('//', '/'),
-            ]
-            
-            # Логируем все альтернативные пути для отладки
-            if USE_CUSTOM_LOGGERS:
-                for i, path in enumerate(alt_paths):
-                    file_logger.info(f"Альтернативный путь {i+1}: {path} (существует: {os.path.exists(path)})")
-            
-            for alt_path in alt_paths:
-                if os.path.exists(alt_path):
-                    logger.info(f"Найден альтернативный путь к файлу: {alt_path}")
-                    if USE_CUSTOM_LOGGERS:
-                        pdf_logger.info(f"Используем альтернативный путь: {alt_path}")
-                    return send_file(alt_path, as_attachment=True)
-            
-            # Если файл не найден ни по одному из путей, создаем каталог и сообщаем об ошибке
-            error_msg = f"PDF файл не найден ни по одному из путей. Основной путь: {pdf_path}"
-            logger.error(error_msg)
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.error(error_msg)
-                
-                # Проверяем наличие директорий
-                dirs_to_check = [
-                    os.path.dirname(pdf_path),
-                    os.path.dirname(job.result_file_en),
-                    'output',
-                    'output/pdf',
-                    f'output/book_{job.book_id}',
-                    f'output/book_{job.book_id}/pdf'
-                ]
-                
-                for dir_path in dirs_to_check:
-                    file_logger.info(f"Проверка директории: {dir_path} (существует: {os.path.exists(dir_path)})")
-            
-            # Если файл не найден ни по одному из путей
-            flash('Файл не найден на сервере. Возможно, требуется повторная обработка.', 'error')
-            return redirect(url_for('view_book', book_id=job.book_id))
-            
-        # Файл найден, отправляем его клиенту
-        if USE_CUSTOM_LOGGERS:
-            pdf_logger.info(f"Отправка файла клиенту: {pdf_path}")
-        
-        return send_file(pdf_path, as_attachment=True)
+        file_type = "English"
     elif language == 'ru' and job.result_file_ru:
         pdf_path = job.result_file_ru
-        
-        # Используем специализированный логгер, если доступен
-        if USE_CUSTOM_LOGGERS:
-            pdf_logger.info(f"Исходный путь к русскому PDF файлу: {pdf_path}")
-            app_logger.info(f"Обработка запроса на загрузку русского PDF для job_id={job_id}")
-        
-        # Исправление проблемы с дублирующимися pdf в пути
-        if 'pdf/pdf' in pdf_path:
-            corrected_path = pdf_path.replace('pdf/pdf', 'pdf')
-            logger.debug(f"Исправление пути с {pdf_path} на {corrected_path}")
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.info(f"Исправленный путь: {corrected_path}")
-            pdf_path = corrected_path
-        
-        logger.debug(f"Отправка русского PDF файла: {pdf_path}")
-        
-        if not os.path.exists(pdf_path):
-            logger.error(f"Файл не существует по указанному пути: {pdf_path}")
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.error(f"Файл не найден: {pdf_path}")
-                file_logger.info("Поиск альтернативных путей...")
-            
-            # Пробуем альтернативные пути для обратной совместимости
-            alt_paths = [
-                job.result_file_ru,  # Оригинальный путь из БД
-                job.result_file_ru.replace('pdf/pdf', 'pdf'),  # Исправленный путь
-                job.result_file_ru.replace('/pdf/', '/'),  # Путь с удаленным pdf/
-                # Еще больше вариантов путей для исправления
-                job.result_file_ru.replace('output/book_', 'output/book_').replace('/pdf/pdf/', '/pdf/'),
-                job.result_file_ru.replace('pdf/pdf', 'pdf').replace('//', '/'),
-            ]
-            
-            # Логируем все альтернативные пути для отладки
-            if USE_CUSTOM_LOGGERS:
-                for i, path in enumerate(alt_paths):
-                    file_logger.info(f"Альтернативный путь {i+1}: {path} (существует: {os.path.exists(path)})")
-            
-            for alt_path in alt_paths:
-                if os.path.exists(alt_path):
-                    logger.info(f"Найден альтернативный путь к файлу: {alt_path}")
-                    if USE_CUSTOM_LOGGERS:
-                        pdf_logger.info(f"Используем альтернативный путь: {alt_path}")
-                    return send_file(alt_path, as_attachment=True)
-            
-            # Если файл не найден ни по одному из путей, создаем каталог и сообщаем об ошибке
-            error_msg = f"Русский PDF файл не найден ни по одному из путей. Основной путь: {pdf_path}"
-            logger.error(error_msg)
-            if USE_CUSTOM_LOGGERS:
-                pdf_logger.error(error_msg)
-                
-                # Проверяем наличие директорий
-                dirs_to_check = [
-                    os.path.dirname(pdf_path),
-                    os.path.dirname(job.result_file_ru),
-                    'output',
-                    'output/pdf',
-                    f'output/book_{job.book_id}',
-                    f'output/book_{job.book_id}/pdf'
-                ]
-                
-                for dir_path in dirs_to_check:
-                    file_logger.info(f"Проверка директории: {dir_path} (существует: {os.path.exists(dir_path)})")
-            
-            # Если файл не найден ни по одному из путей
-            flash('Русский PDF файл не найден на сервере. Возможно, требуется повторная обработка.', 'error')
-            return redirect(url_for('view_book', book_id=job.book_id))
-            
-        # Файл найден, отправляем его клиенту
-        if USE_CUSTOM_LOGGERS:
-            pdf_logger.info(f"Отправка русского PDF файла клиенту: {pdf_path}")
-        
-        return send_file(pdf_path, as_attachment=True)
+        file_type = "Russian"
     else:
         flash('Файл не доступен', 'error')
         return redirect(url_for('view_book', book_id=job.book_id))
+    
+    # Используем специализированный логгер, если доступен
+    if USE_CUSTOM_LOGGERS:
+        pdf_logger.info(f"Исходный путь к {file_type} PDF файлу: {pdf_path}")
+        app_logger.info(f"Обработка запроса на загрузку {file_type} PDF для job_id={job_id}")
+    
+    # Исправление проблемы с дублирующимися pdf в пути
+    if 'pdf/pdf' in pdf_path:
+        corrected_path = pdf_path.replace('pdf/pdf', 'pdf')
+        logger.debug(f"Исправление пути с {pdf_path} на {corrected_path}")
+        if USE_CUSTOM_LOGGERS:
+            pdf_logger.info(f"Исправленный путь: {corrected_path}")
+        pdf_path = corrected_path
+    
+    logger.debug(f"Отправка {file_type} PDF файла: {pdf_path}")
+    
+    # Проверяем существование файла
+    if os.path.exists(pdf_path):
+        if USE_CUSTOM_LOGGERS:
+            pdf_logger.info(f"Файл найден: {pdf_path}")
+            pdf_logger.info(f"Размер файла: {os.path.getsize(pdf_path)} байт")
+        
+        # Получаем имя файла для загрузки
+        download_name = os.path.basename(pdf_path)
+        
+        try:
+            # Попытка отправить файл с указанием mimetype и имени файла
+            response = send_file(
+                pdf_path, 
+                mimetype='application/pdf',
+                as_attachment=True, 
+                download_name=download_name
+            )
+            
+            # Добавляем дополнительные заголовки для принудительной загрузки
+            response.headers["Content-Disposition"] = f"attachment; filename={download_name}"
+            response.headers["Content-Type"] = "application/pdf"
+            
+            if USE_CUSTOM_LOGGERS:
+                pdf_logger.info(f"Отправка файла клиенту через send_file с mimetype: {response.mimetype}")
+            
+            return response
+            
+        except Exception as e:
+            error_msg = f"Ошибка при отправке файла: {str(e)}"
+            logger.error(error_msg)
+            if USE_CUSTOM_LOGGERS:
+                pdf_logger.error(error_msg)
+            flash(f'Ошибка при загрузке файла: {str(e)}', 'error')
+            return redirect(url_for('view_book', book_id=job.book_id))
+    
+    # Если файл не существует, пробуем альтернативные пути
+    logger.error(f"Файл не существует по указанному пути: {pdf_path}")
+    if USE_CUSTOM_LOGGERS:
+        pdf_logger.error(f"Файл не найден: {pdf_path}")
+        file_logger.info("Поиск альтернативных путей...")
+    
+    # Генерируем возможные альтернативные пути
+    source_path = job.result_file_en if language == 'en' else job.result_file_ru
+    alt_paths = [
+        source_path,  # Оригинальный путь из БД
+        source_path.replace('pdf/pdf', 'pdf'),  # Исправленный путь
+        source_path.replace('/pdf/', '/'),  # Путь с удаленным pdf/
+        source_path.replace('output/book_', 'output/book_').replace('/pdf/pdf/', '/pdf/'),
+        source_path.replace('pdf/pdf', 'pdf').replace('//', '/'),
+    ]
+    
+    # Логируем все альтернативные пути для отладки
+    if USE_CUSTOM_LOGGERS:
+        for i, path in enumerate(alt_paths):
+            file_logger.info(f"Альтернативный путь {i+1}: {path} (существует: {os.path.exists(path)})")
+    
+    # Пробуем каждый альтернативный путь
+    for alt_path in alt_paths:
+        if os.path.exists(alt_path):
+            logger.info(f"Найден альтернативный путь к файлу: {alt_path}")
+            if USE_CUSTOM_LOGGERS:
+                pdf_logger.info(f"Используем альтернативный путь: {alt_path}")
+            
+            try:
+                # Отправляем файл клиенту с указанием MIME-типа
+                response = send_file(
+                    alt_path, 
+                    mimetype='application/pdf',
+                    as_attachment=True, 
+                    download_name=os.path.basename(alt_path)
+                )
+                response.headers["Content-Disposition"] = f"attachment; filename={os.path.basename(alt_path)}"
+                response.headers["Content-Type"] = "application/pdf"
+                
+                if USE_CUSTOM_LOGGERS:
+                    pdf_logger.info(f"Отправка файла по альтернативному пути: {alt_path}")
+                
+                return response
+                
+            except Exception as e:
+                logger.error(f"Ошибка при отправке файла по альтернативному пути: {str(e)}")
+                continue  # Попробовать следующий путь
+    
+    # Если файл не найден ни по одному из путей, проверяем директории
+    error_msg = f"{file_type} PDF файл не найден ни по одному из путей. Основной путь: {pdf_path}"
+    logger.error(error_msg)
+    
+    if USE_CUSTOM_LOGGERS:
+        pdf_logger.error(error_msg)
+        
+        # Проверяем наличие директорий
+        dirs_to_check = [
+            os.path.dirname(pdf_path),
+            os.path.dirname(source_path),
+            'output',
+            'output/pdf',
+            f'output/book_{job.book_id}',
+            f'output/book_{job.book_id}/pdf'
+        ]
+        
+        for dir_path in dirs_to_check:
+            if dir_path:  # Проверка на пустой путь
+                file_logger.info(f"Проверка директории: {dir_path} (существует: {os.path.exists(dir_path)})")
+    
+    # Если файл не найден ни по одному из путей
+    flash(f'{file_type} PDF файл не найден на сервере. Возможно, требуется повторная обработка.', 'error')
+    return redirect(url_for('view_book', book_id=job.book_id))
 
 @app.route('/page/<int:page_id>')
 def view_page(page_id):
