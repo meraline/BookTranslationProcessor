@@ -291,10 +291,8 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
             book_structure_path = os.path.join(text_dir, f"{safe_title}_structure.json")
             utils.save_to_json(book_structure, book_structure_path)
             
-            # Ensure PDF output directory exists
-            pdf_dir = os.path.join(output_dir, 'pdf')
-            os.makedirs(pdf_dir, exist_ok=True)
-            
+            # Путь к PDF уже будет содержать pdf подкаталог,
+            # т.к. PDFGenerator добавляет его в конструкторе
             # Generate PDFs
             english_pdf = None
             russian_pdf = None
@@ -323,6 +321,8 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                     logger.error(f"English PDF was not created at expected path: {english_pdf}")
                     
                     # Try to create a test file to debug directory/permission issues
+                    pdf_dir = os.path.join(output_dir, 'pdf')
+                    os.makedirs(pdf_dir, exist_ok=True)
                     test_path = os.path.join(pdf_dir, 'test_en.pdf')
                     try:
                         with open(test_path, 'w') as f:
@@ -433,6 +433,8 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                     logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
                     
                     # Try to create a test file to debug directory/permission issues
+                    pdf_dir = os.path.join(output_dir, 'pdf')
+                    os.makedirs(pdf_dir, exist_ok=True)
                     test_path = os.path.join(pdf_dir, 'test_ru.pdf')
                     try:
                         with open(test_path, 'w') as f:

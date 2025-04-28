@@ -35,8 +35,13 @@ class PDFGenerator:
             output_dir (str): Directory to save PDFs
             fonts_dir (str, optional): Directory with custom fonts
         """
-        self.output_dir = output_dir
+        # Убедимся, что output_dir содержит корректный путь для сохранения PDF
+        # Добавляем путь к подкаталогу pdf, чтобы не дублировать его в generate_pdf
+        self.output_dir = os.path.join(output_dir, 'pdf')
         self.fonts_dir = fonts_dir
+        
+        # Создадим директорию, если она не существует
+        os.makedirs(self.output_dir, exist_ok=True)
     
     def _setup_pdf(self, title=None):
         """
@@ -159,8 +164,9 @@ class PDFGenerator:
             # self.output_dir is something like 'output/book_5'
             os.makedirs(self.output_dir, exist_ok=True)
             
-            # Generate the PDF output path
-            output_path = os.path.join(self.output_dir, 'pdf', filename)
+            # Generate the PDF output path - обратите внимание, что self.output_dir 
+            # уже содержит путь output/book_N/pdf, поэтому не нужно добавлять 'pdf' сюда
+            output_path = os.path.join(self.output_dir, filename)
             logger.info(f"PDF will be saved to: {output_path}")
             
             # Make sure the directory exists
