@@ -1,0 +1,26 @@
+{
+    "page_number": 1,
+    "original_image": "uploads/35_0_page_0004.png",
+    "processed_image": "output/book_35/images/35_0_page_0004_20250428_155123_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER By Derric Haynie, (Quantum) Poker Summing Up Everything You Will Ever Need to Know About Poker Location 3 of 3390"
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER By Derric Haynie, (Quantum)Pokey Summing{UpEverythingiVouWill Evex:NeedtoKnow/AboutiPokex Loca%on 3 of 3390 o OW:"
+    ],
+    "original_text": "QUANTUM POKER By Derric Haynie, (Quantum)Pokey Summing{UpEverythingiVouWill Evex:NeedtoKnow/AboutiPokex Loca%on 3 of 3390 o OW:",
+    "enhanced_text": "QUANTUM POKER By Derric Haynie, (Quantum) Poker Summing Up Everything You Will Ever Need to Know About Poker Location 3 of 3390",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                177,
+                329,
+                634,
+                536
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_35/tables/35_0_page_0004_20250428_155123_image_tables_177_329.png"
+        }
+    ]
+}
