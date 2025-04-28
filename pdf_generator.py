@@ -11,6 +11,8 @@ import cv2
 from PIL import Image
 import numpy as np
 import unicodedata
+# Import text sanitization functions
+from text_sanitizer import sanitize_text_for_pdf, aggressive_text_cleanup
 
 # Use ReportLab for PDF generation with Unicode support
 from reportlab.lib.pagesizes import A4, letter
@@ -347,7 +349,7 @@ class PDFGenerator:
                     # Regular paragraph - using NormalRu style for Russian text support
                     try:
                         # Заменяем проблемные символы Unicode на их правильные представления
-                        sanitized_text = self._sanitize_text_for_pdf(paragraph)
+                        sanitized_text = sanitize_text_for_pdf(paragraph)
                         if not sanitized_text:
                             logger.warning(f"Пустой параграф после санитизации: '{paragraph[:50]}...'")
                             continue
@@ -360,7 +362,7 @@ class PDFGenerator:
                         logger.error(f"Error adding paragraph: {str(e)}")
                         try:
                             # Пробуем более агрессивную очистку текста
-                            safe_text = self._aggressive_text_cleanup(paragraph)
+                            safe_text = aggressive_text_cleanup(paragraph)
                             story.append(Paragraph(safe_text, styles['Normal']))
                             story.append(Spacer(1, 6))
                         except Exception as e2:
