@@ -1,0 +1,52 @@
+25-04-28 17:58:58,224 - app - INFO - Файл успешно скопирован в uploads/2_8_page_0012.png
+2025-04-28 17:58:58,224 - app - INFO - Временный файл удален: /tmp/page_0012.png
+2025-04-28 17:58:58,225 - app - INFO - Проверка дубликатов для файла: page_0013.png
+2025-04-28 17:58:58,225 - app - INFO - Вычислен хеш файла: 19e0a7266f...
+2025-04-28 17:58:58,226 - app - INFO - Уникальный файл, добавляем: page_0013.png
+2025-04-28 17:58:58,226 - app - INFO - Пропускаем OCR для файла: page_0013.png
+2025-04-28 17:58:58,227 - app - INFO - Файл успешно скопирован в uploads/2_9_page_0013.png
+2025-04-28 17:58:58,227 - app - INFO - Временный файл удален: /tmp/page_0013.png
+2025-04-28 17:58:58,235 - processing_service - INFO - Starting processing for book ID: 2, job ID: 2, PDF: False
+2025-04-28 17:58:58,251 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:58:58,819 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:58:58,819 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:58:59,109 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Cannot use old API.
+2025-04-28 17:58:59,109 - translation_manager - ERROR - Translation attempt 1 failed: OpenAI API error: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:00,110 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Cannot use old API.
+2025-04-28 17:59:00,110 - translation_manager - ERROR - Translation attempt 2 failed: OpenAI API error: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:02,110 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Cannot use old API.
+2025-04-28 17:59:02,110 - translation_manager - ERROR - Translation attempt 3 failed: OpenAI API error: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:02,110 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:59:02,110 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:02,110 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:02,564 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:02,565 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:02,769 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:02,769 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:03,790 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:03,790 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:05,354 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:05,354 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:05,850 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:05,850 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:05,853 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:05,853 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:06,605 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:06,605 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:06,611 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:06,611 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:07,226 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:07,226 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:07,229 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:07,230 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:07,730 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:07,730 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:07,733 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:07,733 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:08,205 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:08,205 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:08,208 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:08,208 - processing_service - INFO - OpenAI API not available for translation.
+2025-04-28 17:59:09,859 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:59:09,859 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 17:59:12,026 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'

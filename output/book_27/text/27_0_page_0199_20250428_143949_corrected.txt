@@ -1,0 +1,19 @@
+same way, is very static. They will not adjust in any way. They will always play similar hands the same way. 
+
+Strength = any action that narrows an opponent's range to hands that have a lot of equity/EV, or hands that will not fold.
+
+Superuser = a player who can see an opponent's hole cards without anyone knowing; it could even extend as far as knowing the future streets, but that is not as common when talking about a superuser.
+
+Table Captain = a person who is extremely active at the table, probably playing lots of pots and being very aggressive. They may be a maniac, spewing off tons of money, or a strongly adjusted pro who sees tons of room for value in their loose play. Figuring out which one they are is your choice.
+
+Uncertainty = the total sum of all variables for which you can't account.
+
+UTG = Under The Gun = first to act. Please tell me you know the positions.
+
+Sometimes utility differs from financial gain and loss. Everything you do, you measure in utility, so it's an important concept to understand.
+
+Volatility = describes the equity changes of each hand, or hand versus range on this street, the future streets, or just throughout the course of the hand. Determining how many cards will drastically change your opponent's range equity, your range's equity, or your equity will help determine the volatility of the current board texture.
+
+Weakness = any action that narrows an opponent's range to hands that don't have a lot of equity/EV, or hands that will fold to a reasonable bet.
+
+Whale = a bad losing player with a lot of money, who consistently comes back into the game.

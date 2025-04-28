@@ -95,13 +95,8 @@ class TranslationManager:
             bool: True if connection works, False otherwise
         """
         try:
-            # Try to use the new API client with a minimal request
-            try:
-                client = openai.OpenAI(api_key=self.openai_api_key)
-            except TypeError:
-                # Fallback для случаев когда proxies вызывает ошибку
-                client = openai.OpenAI()
-                client.api_key = self.openai_api_key
+            # Создаем клиента OpenAI без лишних параметров
+            client = openai.OpenAI(api_key=self.openai_api_key)
                 
             response = client.chat.completions.create(
                 model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
@@ -180,23 +175,18 @@ class TranslationManager:
         # Try translation with retries
         for attempt in range(retry_count):
             try:
-                # Try to use new API client
-                try:
-                    client = openai.OpenAI(api_key=self.openai_api_key)
-                    response = client.chat.completions.create(
-                        model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-                        messages=[
-                            {"role": "system", "content": "Вы специалист по переводу текстов по покеру с английского на русский."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        max_tokens=4000,
-                        temperature=0.1
-                    )
-                    translated_text = response.choices[0].message.content.strip()
-                # If new API doesn't work, raise exception to trigger retry
-                except Exception as new_api_error:
-                    logger.error(f"Error with new API: {str(new_api_error)}. Cannot use old API.")
-                    raise ValueError(f"OpenAI API error: {str(new_api_error)}")
+                # Используем клиент OpenAI без проблемных параметров
+                client = openai.OpenAI(api_key=self.openai_api_key)
+                response = client.chat.completions.create(
+                    model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                    messages=[
+                        {"role": "system", "content": "Вы специалист по переводу текстов по покеру с английского на русский."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=4000,
+                    temperature=0.1
+                )
+                translated_text = response.choices[0].message.content.strip()
                 
                 # Post-process the translation
                 processed_translation = self._post_process_translation(translated_text)
