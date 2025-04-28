@@ -248,20 +248,31 @@ class TextExtractor:
         text = re.sub(r'\s+([.,;:!?)])', r'\1', text)
         text = re.sub(r'([({[])\s+', r'\1', text)
         
-        # Clear garbage characters (common OCR artifacts)
-        text = re.sub(r'[^\x00-\x7F]+', '', text)
+        # УЛУЧШЕНО: Сохраняем кириллицу и другие символы Unicode
+        # Удаляем только непечатаемые управляющие символы и некоторые спецсимволы
+        # Вместо удаления всех не-ASCII символов, которое было реализовано ранее
+        text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', text)  # Управляющие символы
         
-        # Remove lines with excessive special characters
+        # Удаление проблемных символов, заменяющихся на '■' в PDF
+        text = re.sub(r'[■□▪▫◾◽◼◻]', '', text)
+        
+        # Remove lines with excessive special characters (not alphanumeric and not Cyrillic)
         lines = text.split('\n')
         cleaned_lines = []
         for line in lines:
-            # Count special characters
-            special_chars = sum(1 for c in line if not c.isalnum() and not c.isspace())
-            total_chars = len(line)
-            
-            # If less than 30% special characters, or very short line with numbers (likely a data point)
-            if (total_chars > 0 and special_chars / total_chars < 0.3) or (total_chars < 10 and any(c.isdigit() for c in line)):
+            # Если строка не состоит только из специальных символов
+            if not re.match(r'^[^\w\s\u0400-\u04FF]+$', line):
                 cleaned_lines.append(line)
+            elif len(line.strip()) < 3:  # Очень короткая строка тоже игнорируется
+                continue
+            else:
+                # Считаем процент спецсимволов (не алфавитно-цифровых, не пробельных и не кириллических)
+                special_chars = sum(1 for c in line if not re.match(r'[\w\s\u0400-\u04FF]', c))
+                total_chars = len(line)
+                
+                # Сохраняем строку, если специальных символов меньше 40%
+                if total_chars > 0 and special_chars / total_chars < 0.4:
+                    cleaned_lines.append(line)
         
         return '\n'.join(cleaned_lines).strip()
     

@@ -339,12 +339,15 @@ class PDFGenerator:
                     section_count += 1
                     heading_text = paragraph.strip().rstrip(':')
                     
+                    # Очищаем текст заголовка от проблемных символов
+                    clean_heading = sanitize_text_for_pdf(heading_text)
+                    
                     # Add heading and to TOC
                     story.append(Spacer(1, 10))
-                    story.append(Paragraph(heading_text, styles['HeadingRu'] if language == 'ru' else styles['Heading2']))
+                    story.append(Paragraph(clean_heading, styles['HeadingRu'] if language == 'ru' else styles['Heading2']))
                     story.append(Spacer(1, 6))
                     
-                    toc_entries.append((f"    {heading_text}", 1))  # Page numbers are approximate
+                    toc_entries.append((f"    {clean_heading}", 1))  # Page numbers are approximate
                 else:
                     # Regular paragraph - using NormalRu style for Russian text support
                     try:
@@ -375,9 +378,10 @@ class PDFGenerator:
             if 'figures' in document_structure and document_structure['figures']:
                 story.append(Spacer(1, 12))
                 figures_title = "Диаграммы и графики" if language == 'ru' else "Diagrams and Charts"
-                story.append(Paragraph(figures_title, styles['Heading1']))
+                cleaned_title = sanitize_text_for_pdf(figures_title)
+                story.append(Paragraph(cleaned_title, styles['Heading1']))
                 story.append(Spacer(1, 12))
-                toc_entries.append((figures_title, 1))  # Page numbers are approximate
+                toc_entries.append((cleaned_title, 1))  # Page numbers are approximate
                 
                 # Process figures
                 figure_count = 0
@@ -385,7 +389,8 @@ class PDFGenerator:
                     figure_count += 1
                     
                     # Create figure caption
-                    figure_caption = f"Figure {figure_count}: {figure.get('description', '')}" if language == 'en' else f"Рисунок {figure_count}: {figure.get('description', '')}"
+                    description = sanitize_text_for_pdf(figure.get('description', ''))
+                    figure_caption = f"Figure {figure_count}: {description}" if language == 'en' else f"Рисунок {figure_count}: {description}"
                     
                     # Get image path and add to PDF
                     image_path = figure.get('path')
@@ -410,9 +415,10 @@ class PDFGenerator:
             if 'tables' in document_structure and document_structure['tables']:
                 story.append(Spacer(1, 12))
                 tables_title = "Таблицы" if language == 'ru' else "Tables"
-                story.append(Paragraph(tables_title, styles['Heading1']))
+                cleaned_tables_title = sanitize_text_for_pdf(tables_title)
+                story.append(Paragraph(cleaned_tables_title, styles['Heading1']))
                 story.append(Spacer(1, 12))
-                toc_entries.append((tables_title, 1))  # Page numbers are approximate
+                toc_entries.append((cleaned_tables_title, 1))  # Page numbers are approximate
                 
                 # Process tables
                 table_count = 0
