@@ -50,6 +50,9 @@ import models
 # Import routes
 from routes import *
 
+# Import API routes for chunked uploads
+from api_routes import *
+
 # Create database tables
 with app.app_context():
     db.create_all()

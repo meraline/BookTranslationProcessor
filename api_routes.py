@@ -106,16 +106,26 @@ def upload_chunk():
             )
             db.session.add(page)
             
-            # Если у нас есть хеш файла, добавляем его в БД
+            # Если у нас есть хеш файла, проверяем, существует ли он уже
             if file_hash:
-                file_hash_record = FileHash(
-                    file_hash=file_hash,
-                    original_filename=safe_filename,
-                    content_type='image',
-                    book_id=book_id,
-                    page_id=page.id if page.id else None
-                )
-                db.session.add(file_hash_record)
+                existing_hash = FileHash.query.filter_by(file_hash=file_hash).first()
+                
+                if not existing_hash:
+                    # Хеш не существует, добавляем новую запись
+                    file_hash_record = FileHash(
+                        file_hash=file_hash,
+                        original_filename=safe_filename,
+                        content_type='image',
+                        book_id=book_id,
+                        page_id=page.id if page.id else None
+                    )
+                    db.session.add(file_hash_record)
+                else:
+                    # Хеш уже существует, обновляем связи
+                    existing_hash.book_id = book_id
+                    existing_hash.page_id = page.id if page.id else existing_hash.page_id
+                    
+                    app.logger.info(f"Найден существующий хеш файла, обновляем связи: {file_hash[:10]}...")
             
             db.session.commit()
             
