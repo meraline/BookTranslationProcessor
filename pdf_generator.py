@@ -35,13 +35,33 @@ class PDFGenerator:
             output_dir (str): Directory to save PDFs
             fonts_dir (str, optional): Directory with custom fonts
         """
-        # Убедимся, что output_dir содержит корректный путь для сохранения PDF
-        # Добавляем путь к подкаталогу pdf, чтобы не дублировать его в generate_pdf
-        self.output_dir = os.path.join(output_dir, 'pdf')
+        # Инициализируем логгер, если он доступен
+        try:
+            from logger_config import pdf_logger
+            self.logger = pdf_logger
+            self.use_custom_logger = True
+        except ImportError:
+            self.logger = logger
+            self.use_custom_logger = False
+            
+        # Проверяем, содержит ли output_dir уже 'pdf' в пути
+        # Это помогает избежать дублирования пути 'pdf/pdf'
+        if output_dir.endswith('pdf') or '/pdf/' in output_dir or '\\pdf\\' in output_dir:
+            self.output_dir = output_dir
+            if self.use_custom_logger:
+                self.logger.info(f"Путь уже содержит 'pdf', используем как есть: {output_dir}")
+        else:
+            self.output_dir = os.path.join(output_dir, 'pdf')
+            if self.use_custom_logger:
+                self.logger.info(f"Добавлен 'pdf' к пути: {self.output_dir}")
+                
         self.fonts_dir = fonts_dir
         
         # Создадим директорию, если она не существует
         os.makedirs(self.output_dir, exist_ok=True)
+        if self.use_custom_logger:
+            self.logger.info(f"Создана директория для PDF: {self.output_dir}")
+            self.logger.info(f"Проверка существования директории: {os.path.exists(self.output_dir)}")
     
     def _setup_pdf(self, title=None):
         """
@@ -164,10 +184,16 @@ class PDFGenerator:
             # self.output_dir is something like 'output/book_5'
             os.makedirs(self.output_dir, exist_ok=True)
             
-            # Generate the PDF output path - обратите внимание, что self.output_dir 
-            # уже содержит путь output/book_N/pdf, поэтому не нужно добавлять 'pdf' сюда
+            # Генерируем путь к PDF файлу, избегая дублирования частей пути
             output_path = os.path.join(self.output_dir, filename)
-            logger.info(f"PDF will be saved to: {output_path}")
+            
+            # Логируем путь
+            if self.use_custom_logger:
+                self.logger.info(f"PDF будет сохранен по пути: {output_path}")
+                self.logger.info(f"self.output_dir = {self.output_dir}")
+                self.logger.info(f"filename = {filename}")
+            else:
+                logger.info(f"PDF will be saved to: {output_path}")
             
             # Make sure the directory exists
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
