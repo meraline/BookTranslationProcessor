@@ -197,11 +197,13 @@ def process_book(book_id, job_id, is_pdf=False):
                                 })
                         
                         # Create document structure
+                        # Важно: сохранить оригинальный текст для версии на английском языке
                         document_structure = {
                             'page_number': page.page_number,
                             'original_image': page.image_path,
                             'processed_image': debug_image_path,
                             'paragraphs': enhanced_text.split('\n\n') if enhanced_text else [],
+                            'original_text': page.text_content,  # Исходный текст без улучшений для английской версии
                             'figures': processed_figures
                         }
                         
@@ -670,9 +672,19 @@ def generate_pdf(pdf_generator, book_structure, language):
     
     # Collect content from all pages
     for page in book_structure.get('pages', []):
-        # Add paragraphs
-        if 'paragraphs' in page:
-            content['paragraphs'].extend(page['paragraphs'])
+        # Add paragraphs - use the correct source depending on language
+        if language == 'en':
+            # For English: ensure we use non-translated paragraphs
+            if 'original_text' in page and page['original_text'].strip():
+                # Use the original text (non-translated)
+                orig_paragraphs = page['original_text'].split('\n\n')
+                content['paragraphs'].extend([p for p in orig_paragraphs if p.strip()])
+            elif 'paragraphs' in page:
+                content['paragraphs'].extend(page['paragraphs'])
+        elif language == 'ru':
+            # For Russian: use translated paragraphs
+            if 'paragraphs' in page:
+                content['paragraphs'].extend(page['paragraphs'])
         
         # Add figures
         if 'figures' in page:
