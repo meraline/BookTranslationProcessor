@@ -543,10 +543,13 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                 # Use the one with more content
                 full_text = pdf_text if len(pdf_text) > len(ocr_text) else ocr_text
                 
-                # Save raw text
+                # Save raw text - THIS IS THE ORIGINAL ENGLISH TEXT
                 raw_text_path = os.path.join(text_dir, f"{output_basename}_raw.txt")
                 with open(raw_text_path, 'w', encoding='utf-8') as f:
                     f.write(full_text)
+                
+                # Store original text separately
+                original_english_text = full_text
                 
                 # Improve text with OpenAI if available
                 if openai_api_key:
@@ -557,8 +560,8 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                 else:
                     enhanced_text = full_text
                 
-                # Save text content to database
-                db_page.text_content = enhanced_text
+                # Save text content to database - for PDF processing, use original text for English version
+                db_page.text_content = original_english_text
                 
                 # Detect figures and diagrams
                 figures = figure_analyzer.detect_figures(processed_img, original_img)
@@ -598,12 +601,13 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                             'image_path': figure_path
                         })
                 
-                # Create document structure
+                # Create document structure - ensure we include original English text
                 document_structure = {
                     'page_number': db_page.page_number,
                     'original_image': img_path,
                     'processed_image': debug_image_path,
                     'paragraphs': enhanced_text.split('\n\n') if enhanced_text else [],
+                    'original_text': original_english_text,  # Store the original English text
                     'figures': processed_figures
                 }
                 
