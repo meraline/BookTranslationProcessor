@@ -65,7 +65,7 @@ class PDFGenerator:
     
     def _setup_pdf(self, title=None):
         """
-        Set up the PDF document with proper fonts using ReportLab.
+        Set up the PDF document with standard fonts using ReportLab.
         
         Args:
             title (str, optional): Title for the PDF
@@ -73,33 +73,17 @@ class PDFGenerator:
         Returns:
             dict: Configured PDF styles and document
         """
-        # Register DejaVu Sans font for Cyrillic support
-        dejavu_path = "/mnt/nixmodules/nix/store/8zlvngilj5pvnnkyapgbbmv5rnamvgxk-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
-        # Try backup path if first doesn't exist
-        if not os.path.exists(dejavu_path):
-            dejavu_path = "/mnt/nixmodules/nix/store/am3y2gs2rj2fd13jvd3j2m9g5646dnw6-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+        # Используем стандартные шрифты ReportLab, которые встроены
+        # Helvetica, Times-Roman, Courier - они всегда доступны
         
-        # Register the DejaVu fonts with an alias
-        try:
-            pdfmetrics.registerFont(TTFont('DejaVuSans', dejavu_path))
-            logger.info(f"Registered DejaVuSans font from: {dejavu_path}")
-        except Exception as e:
-            logger.error(f"Error registering DejaVuSans font: {str(e)}")
-        
-        # Create styles for different text elements with proper Unicode/Russian support
+        # Создаем стили для различных элементов текста
         styles = getSampleStyleSheet()
         
-        # Override default styles to use DejaVu Sans for better Unicode support in both languages
-        # This ensures all text displays correctly regardless of language
-        for style_name in ['Normal', 'Heading1', 'Heading2', 'Title', 'Italic']:
-            if style_name in styles:
-                styles[style_name].fontName = 'DejaVuSans'
-        
-        # Add custom styles for Russian text
-        # Use DejaVuSans for proper Cyrillic support
+        # Добавляем пользовательские стили для русского текста
+        # Используем Helvetica (заменитель для Cyrillic)
         styles.add(ParagraphStyle(
             name='NormalRu',
-            fontName='DejaVuSans',  # Font with proper Cyrillic support
+            fontName='Helvetica',
             fontSize=12,
             leading=14,
             alignment=TA_JUSTIFY
@@ -107,7 +91,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='HeadingRu',
-            fontName='DejaVuSans',  # Font with proper Cyrillic support
+            fontName='Helvetica-Bold',
             fontSize=16,
             leading=18,
             alignment=TA_LEFT,
@@ -116,7 +100,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='TitleRu',
-            fontName='DejaVuSans',  # Font with proper Cyrillic support
+            fontName='Helvetica-Bold',
             fontSize=20,
             leading=24,
             alignment=TA_CENTER,
@@ -125,7 +109,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='TOCEntry',
-            fontName='DejaVuSans',  # Font with proper Cyrillic support
+            fontName='Helvetica',
             fontSize=12,
             leading=14,
             alignment=TA_LEFT
@@ -133,7 +117,7 @@ class PDFGenerator:
         
         styles.add(ParagraphStyle(
             name='CaptionRu',
-            fontName='DejaVuSans',  # Font with proper Cyrillic support
+            fontName='Helvetica-Oblique',
             fontSize=10,
             leading=12,
             alignment=TA_CENTER,

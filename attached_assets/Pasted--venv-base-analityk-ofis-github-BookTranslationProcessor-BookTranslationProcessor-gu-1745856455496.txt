@@ -1,0 +1,179 @@
+(venv) (base) analityk@ofis:~/Документы/github/BookTranslationProcessor/BookTranslationProcessor$ gunicorn --bind 0.0.0.0:5000 --workers 4 main:app
+[2025-04-28 19:06:02 +0300] [2958531] [INFO] Starting gunicorn 23.0.0
+[2025-04-28 19:06:02 +0300] [2958531] [INFO] Listening at: http://0.0.0.0:5000 (2958531)
+[2025-04-28 19:06:02 +0300] [2958531] [INFO] Using worker: sync
+[2025-04-28 19:06:02 +0300] [2958532] [INFO] Booting worker with pid: 2958532
+[2025-04-28 19:06:02 +0300] [2958533] [INFO] Booting worker with pid: 2958533
+[2025-04-28 19:06:02 +0300] [2958534] [INFO] Booting worker with pid: 2958534
+[2025-04-28 19:06:02 +0300] [2958535] [INFO] Booting worker with pid: 2958535
+2025-04-28 19:06:39,156 - app - INFO - Проверка дубликатов для файла: page_0199.png
+2025-04-28 19:06:39,156 - app - INFO - Проверка дубликатов для файла: page_0199.png
+2025-04-28 19:06:39,156 - app - INFO - Вычислен хеш файла: e3c6c76c64...
+2025-04-28 19:06:39,156 - app - INFO - Вычислен хеш файла: e3c6c76c64...
+2025-04-28 19:06:39,159 - app - INFO - Уникальный файл, добавляем: page_0199.png
+2025-04-28 19:06:39,159 - app - INFO - Уникальный файл, добавляем: page_0199.png
+2025-04-28 19:06:39,159 - app - INFO - Пропускаем OCR для файла: page_0199.png
+2025-04-28 19:06:39,159 - app - INFO - Пропускаем OCR для файла: page_0199.png
+2025-04-28 19:06:39,161 - app - INFO - Файл успешно скопирован в uploads/5_0_page_0199.png
+2025-04-28 19:06:39,161 - app - INFO - Файл успешно скопирован в uploads/5_0_page_0199.png
+2025-04-28 19:06:39,161 - app - INFO - Временный файл удален: /tmp/page_0199.png
+2025-04-28 19:06:39,161 - app - INFO - Временный файл удален: /tmp/page_0199.png
+2025-04-28 19:06:39,162 - app - INFO - Проверка дубликатов для файла: page_0198.png
+2025-04-28 19:06:39,162 - app - INFO - Проверка дубликатов для файла: page_0198.png
+2025-04-28 19:06:39,162 - app - INFO - Вычислен хеш файла: f2e437f053...
+2025-04-28 19:06:39,162 - app - INFO - Вычислен хеш файла: f2e437f053...
+2025-04-28 19:06:39,165 - app - INFO - Уникальный файл, добавляем: page_0198.png
+2025-04-28 19:06:39,165 - app - INFO - Уникальный файл, добавляем: page_0198.png
+2025-04-28 19:06:39,165 - app - INFO - Пропускаем OCR для файла: page_0198.png
+2025-04-28 19:06:39,165 - app - INFO - Пропускаем OCR для файла: page_0198.png
+2025-04-28 19:06:39,166 - app - INFO - Файл успешно скопирован в uploads/5_1_page_0198.png
+2025-04-28 19:06:39,166 - app - INFO - Файл успешно скопирован в uploads/5_1_page_0198.png
+2025-04-28 19:06:39,167 - app - INFO - Временный файл удален: /tmp/page_0198.png
+2025-04-28 19:06:39,167 - app - INFO - Временный файл удален: /tmp/page_0198.png
+2025-04-28 19:06:39,167 - app - INFO - Проверка дубликатов для файла: page_0197.png
+2025-04-28 19:06:39,167 - app - INFO - Проверка дубликатов для файла: page_0197.png
+2025-04-28 19:06:39,168 - app - INFO - Вычислен хеш файла: e3c6c76c64...
+2025-04-28 19:06:39,168 - app - INFO - Вычислен хеш файла: e3c6c76c64...
+2025-04-28 19:06:39,170 - app - INFO - Уникальный файл, добавляем: page_0197.png
+2025-04-28 19:06:39,170 - app - INFO - Уникальный файл, добавляем: page_0197.png
+2025-04-28 19:06:39,170 - app - INFO - Пропускаем OCR для файла: page_0197.png
+2025-04-28 19:06:39,170 - app - INFO - Пропускаем OCR для файла: page_0197.png
+2025-04-28 19:06:39,171 - app - INFO - Файл успешно скопирован в uploads/5_2_page_0197.png
+2025-04-28 19:06:39,171 - app - INFO - Файл успешно скопирован в uploads/5_2_page_0197.png
+2025-04-28 19:06:39,171 - app - INFO - Временный файл удален: /tmp/page_0197.png
+2025-04-28 19:06:39,171 - app - INFO - Временный файл удален: /tmp/page_0197.png
+2025-04-28 19:06:39,181 - processing_service - INFO - Starting processing for book ID: 5, job ID: 5, PDF: False, Translate: False
+2025-04-28 19:06:39,198 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Путь уже содержит 'pdf', используем как есть: output/book_5/pdf
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Путь уже содержит 'pdf', используем как есть: output/book_5/pdf
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Создана директория для PDF: output/book_5/pdf
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Создана директория для PDF: output/book_5/pdf
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Проверка существования директории: True
+2025-04-28 19:06:39,198 - pdf_operations - INFO - Проверка существования директории: True
+2025-04-28 19:06:40,614 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:40,614 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 19:06:42,000 - translation_manager - ERROR - Translation attempt 1 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:43,000 - translation_manager - ERROR - Translation attempt 2 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:45,000 - translation_manager - ERROR - Translation attempt 3 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:45,000 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 19:06:45,001 - processing_service - INFO - Translation skipped as requested by user.
+2025-04-28 19:06:46,137 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:46,137 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 19:06:47,199 - processing_service - INFO - Translation skipped as requested by user.
+2025-04-28 19:06:48,449 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:48,450 - processing_service - INFO - OpenAI API not available or API test failed. Using original text.
+2025-04-28 19:06:49,815 - translation_manager - ERROR - Translation attempt 1 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:50,815 - translation_manager - ERROR - Translation attempt 2 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:52,815 - translation_manager - ERROR - Translation attempt 3 failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 19:06:52,815 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 19:06:52,815 - processing_service - INFO - Translation skipped as requested by user.
+2025-04-28 19:06:52,822 - processing_service - INFO - Generating English PDF for book: 2
+2025-04-28 19:06:52,822 - pdf_operations - INFO - PDF будет сохранен по пути: output/book_5/pdf/2_e1cc38da_en.pdf
+2025-04-28 19:06:52,822 - pdf_operations - INFO - PDF будет сохранен по пути: output/book_5/pdf/2_e1cc38da_en.pdf
+2025-04-28 19:06:52,823 - pdf_operations - INFO - self.output_dir = output/book_5/pdf
+2025-04-28 19:06:52,823 - pdf_operations - INFO - self.output_dir = output/book_5/pdf
+2025-04-28 19:06:52,823 - pdf_operations - INFO - filename = 2_e1cc38da_en.pdf
+2025-04-28 19:06:52,823 - pdf_operations - INFO - filename = 2_e1cc38da_en.pdf
+2025-04-28 19:06:52,832 - pdf_generator - ERROR - Error registering DejaVuSans font: Can't open file "/mnt/nixmodules/nix/store/am3y2gs2rj2fd13jvd3j2m9g5646dnw6-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+2025-04-28 19:06:52,832 - pdf_generator - INFO - PDF styles configured with Unicode/Russian text support
+2025-04-28 19:06:52,832 - pdf_generator - ERROR - Error generating PDF: 
+paragraph text '<para>2</para>' caused exception error with style name=Title Can't map determine family/bold/italic for dejavusans
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: error with style name=Title Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/pdf_generator.py", line 219, in generate_pdf
+    story.append(Paragraph(title, styles['TitleRu'] if language == 'ru' else styles['Title']))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1809, in __init__
+    self._setup(text, style, bulletText or getattr(style,'bulletText',None), frags, cleanBlockQuotedText)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1830, in _setup
+    style, frags, bulletTextFrags = _parser.parse(text,style)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3217, in parse
+    annotateException('\nparagraph text %s caused exception' % ascii(text))
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: 
+paragraph text '<para>2</para>' caused exception error with style name=Title Can't map determine family/bold/italic for dejavusans
+2025-04-28 19:06:52,835 - processing_service - ERROR - English PDF was not created at expected path: None
+2025-04-28 19:06:52,836 - processing_service - INFO - Test file created successfully at: output/book_5/pdf/test_en.pdf
+2025-04-28 19:06:52,839 - processing_service - INFO - Skipping Russian PDF generation as requested by user.
+2025-04-28 19:06:52,851 - processing_service - INFO - Final verification - English PDF path: output/book_5/pdf/test_en.pdf
+2025-04-28 19:06:52,851 - processing_service - INFO - Final verification - Russian PDF path: None
+2025-04-28 19:06:52,851 - processing_service - INFO - Processing completed for book ID: 5
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Исходный путь к English PDF файлу: output/book_5/pdf/test_en.pdf
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Исходный путь к English PDF файлу: output/book_5/pdf/test_en.pdf
+2025-04-28 19:07:00,901 - app - INFO - Обработка запроса на загрузку English PDF для job_id=5
+2025-04-28 19:07:00,901 - app - INFO - Обработка запроса на загрузку English PDF для job_id=5
+2025-04-28 19:07:00,901 - routes - DEBUG - Отправка English PDF файла: output/book_5/pdf/test_en.pdf
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Файл найден: output/book_5/pdf/test_en.pdf
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Файл найден: output/book_5/pdf/test_en.pdf
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Размер файла: 9 байт
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Размер файла: 9 байт
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Отправка файла клиенту через send_file с mimetype: application/pdf
+2025-04-28 19:07:00,901 - pdf_operations - INFO - Отправка файла клиенту через send_file с mimetype: application/pdf
