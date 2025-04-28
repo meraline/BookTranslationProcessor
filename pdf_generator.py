@@ -10,6 +10,7 @@ import re
 import cv2
 from PIL import Image
 import numpy as np
+import unicodedata
 
 # Use ReportLab for PDF generation with Unicode support
 from reportlab.lib.pagesizes import A4, letter
@@ -76,55 +77,91 @@ class PDFGenerator:
         # Используем стандартные шрифты ReportLab, которые встроены
         # Helvetica, Times-Roman, Courier - они всегда доступны
         
+        # Регистрация шрифтов для обеспечения поддержки кириллицы
+        # Сначала проверим, зарегистрирован ли уже шрифт DejaVuSans
+        registered_fonts = pdfmetrics.getRegisteredFontNames()
+        
+        if 'DejaVuSans' not in registered_fonts:
+            try:
+                # Попытка зарегистрировать шрифт DejaVuSans из системных директорий
+                dejavu_paths = [
+                    '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',  # Linux
+                    'C:\\Windows\\Fonts\\DejaVuSans.ttf',  # Windows
+                    '/System/Library/Fonts/DejaVuSans.ttf',  # macOS
+                    'fonts/DejaVuSans.ttf',  # Локальная директория проекта
+                    os.path.join(os.path.dirname(__file__), 'fonts', 'DejaVuSans.ttf')  # Относительно скрипта
+                ]
+                
+                for font_path in dejavu_paths:
+                    if os.path.exists(font_path):
+                        pdfmetrics.registerFont(TTFont('DejaVuSans', font_path))
+                        logger.info(f"Зарегистрирован шрифт DejaVuSans из {font_path}")
+                        break
+            except Exception as e:
+                logger.warning(f"Не удалось зарегистрировать шрифт DejaVuSans: {str(e)}")
+                logger.info("Будет использован стандартный шрифт Helvetica")
+        
         # Создаем стили для различных элементов текста
         styles = getSampleStyleSheet()
         
-        # Добавляем пользовательские стили для русского текста
-        # Используем Helvetica (заменитель для Cyrillic)
+        # Определяем базовый шрифт в зависимости от доступности
+        base_font = 'DejaVuSans' if 'DejaVuSans' in pdfmetrics.getRegisteredFontNames() else 'Helvetica'
+        bold_font = f'{base_font}-Bold' if 'DejaVuSans' in base_font else 'Helvetica-Bold'
+        italic_font = f'{base_font}-Italic' if 'DejaVuSans' in base_font else 'Helvetica-Oblique'
+        
+        logger.info(f"Используемый базовый шрифт: {base_font}")
+        
+        # Добавляем пользовательские стили для текста с поддержкой Юникода/кириллицы
         styles.add(ParagraphStyle(
             name='NormalRu',
-            fontName='Helvetica',
+            fontName=base_font,
             fontSize=12,
             leading=14,
-            alignment=TA_JUSTIFY
+            alignment=TA_JUSTIFY,
+            wordWrap='CJK',  # Улучшенный перенос слов для не-латинских символов
+            encoding='utf-8'
         ))
         
         styles.add(ParagraphStyle(
             name='HeadingRu',
-            fontName='Helvetica-Bold',
+            fontName=bold_font,
             fontSize=16,
             leading=18,
             alignment=TA_LEFT,
-            spaceAfter=10
+            spaceAfter=10,
+            encoding='utf-8'
         ))
         
         styles.add(ParagraphStyle(
             name='TitleRu',
-            fontName='Helvetica-Bold',
+            fontName=bold_font,
             fontSize=20,
             leading=24,
             alignment=TA_CENTER,
-            spaceAfter=20
+            spaceAfter=20,
+            encoding='utf-8'
         ))
         
         styles.add(ParagraphStyle(
             name='TOCEntry',
-            fontName='Helvetica',
+            fontName=base_font,
             fontSize=12,
             leading=14,
-            alignment=TA_LEFT
+            alignment=TA_LEFT,
+            encoding='utf-8'
         ))
         
         styles.add(ParagraphStyle(
             name='CaptionRu',
-            fontName='Helvetica-Oblique',
+            fontName=italic_font,
             fontSize=10,
             leading=12,
             alignment=TA_CENTER,
-            spaceAfter=6
+            spaceAfter=6,
+            encoding='utf-8'
         ))
             
-        logger.info("PDF styles configured with Unicode/Russian text support")
+        logger.info("PDF styles configured with enhanced Unicode/Russian text support")
         
         # Create PDF document setup
         return {
@@ -309,13 +346,28 @@ class PDFGenerator:
                 else:
                     # Regular paragraph - using NormalRu style for Russian text support
                     try:
-                        story.append(Paragraph(paragraph, styles['NormalRu'] if language == 'ru' else styles['Normal']))
+                        # Заменяем проблемные символы Unicode на их правильные представления
+                        sanitized_text = self._sanitize_text_for_pdf(paragraph)
+                        if not sanitized_text:
+                            logger.warning(f"Пустой параграф после санитизации: '{paragraph[:50]}...'")
+                            continue
+                        
+                        # Используем подходящий стиль в зависимости от языка
+                        style_to_use = styles['NormalRu'] if language == 'ru' else styles['Normal']
+                        story.append(Paragraph(sanitized_text, style_to_use))
                         story.append(Spacer(1, 6))
                     except Exception as e:
                         logger.error(f"Error adding paragraph: {str(e)}")
-                        # Try fallback without styling
-                        story.append(Paragraph(paragraph, styles['Normal']))
-                        story.append(Spacer(1, 6))
+                        try:
+                            # Пробуем более агрессивную очистку текста
+                            safe_text = self._aggressive_text_cleanup(paragraph)
+                            story.append(Paragraph(safe_text, styles['Normal']))
+                            story.append(Spacer(1, 6))
+                        except Exception as e2:
+                            logger.error(f"Failed even with aggressive cleanup: {str(e2)}")
+                            # Добавляем параграф с простым текстом без форматирования
+                            story.append(Paragraph("Text content was removed due to encoding issues", styles['Normal']))
+                            story.append(Spacer(1, 6))
             
             # Add figures section if any
             if 'figures' in document_structure and document_structure['figures']:
