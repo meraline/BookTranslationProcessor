@@ -5,6 +5,7 @@ import logging
 import traceback
 import cv2
 import numpy as np
+import pytesseract
 from datetime import datetime
 from app import db
 from models import Book, BookPage, ProcessingJob, Figure
@@ -167,7 +168,6 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                             logger.warning("Текст отсутствует или слишком короткий. Попытка извлечения через PIL")
                             try:
                                 from PIL import Image as PILImage
-                                import os
                                 
                                 if os.path.exists(page.image_path):
                                     pil_image = PILImage.open(page.image_path)
