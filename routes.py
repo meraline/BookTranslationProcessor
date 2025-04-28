@@ -89,24 +89,33 @@ def upload_book():
                     
                     # Сначала проверяем дубликаты по хешу файла, что быстрее и надежнее
                     try:
+                        app.logger.info(f"Проверка дубликатов для файла: {temp_filename}")
+                        # Временно отключаем проверку дубликатов, чтобы решить проблему с загрузкой
+                        is_duplicate = False
+                        similarity = 0.0
+                        duplicate_file = None
                         file_hash = compute_image_hash(temp_filepath)
+                        
+                        # Логируем хеш для отладки
+                        if file_hash:
+                            app.logger.info(f"Вычислен хеш файла: {file_hash[:10]}...")
+                        else:
+                            app.logger.info("Не удалось вычислить хеш файла")
                         
                         # Проверяем, есть ли уже такой хеш в базе данных
                         try:
-                            is_duplicate = False
-                            similarity = 0.0
-                            duplicate_file = None
-                            
                             if file_hash:
                                 # Ищем хеш в базе данных
                                 existing_file_hash = FileHash.query.filter_by(file_hash=file_hash).first()
                                 
-                                if existing_file_hash:
+                                if existing_file_hash and False:  # Временно отключаем, чтобы все файлы добавлялись
                                     is_duplicate = True
                                     similarity = 1.0
                                     duplicate_file = existing_file_hash
                                     app.logger.info(f"Обнаружен дубликат по хешу файла: {temp_filename}")
                                     app.logger.info(f"Оригинальный файл: {existing_file_hash.original_filename}")
+                                else:
+                                    app.logger.info(f"Уникальный файл, добавляем: {temp_filename}")
                             
                         except Exception as e:
                             app.logger.error(f"Ошибка при проверке хеша в БД: {str(e)}")
@@ -117,11 +126,18 @@ def upload_book():
                         if not is_duplicate:
                             try:
                                 page_text = TextExtractor.quick_extract_text(temp_filepath)
+                                app.logger.info(f"Извлечен текст из изображения: {len(page_text) if page_text else 0} символов")
                                 
-                                # Check if this image is a duplicate based on text content
-                                is_duplicate, similar_text, similarity = is_text_duplicate(
-                                    page_text, existing_texts, threshold=0.80  # 80% similarity threshold
-                                )
+                                # Временно отключаем проверку дубликатов по тексту
+                                is_duplicate = False
+                                similar_text = None
+                                similarity = 0.0
+                                
+                                # Закомментировано для отладки
+                                # # Check if this image is a duplicate based on text content
+                                # is_duplicate, similar_text, similarity = is_text_duplicate(
+                                #     page_text, existing_texts, threshold=0.80  # 80% similarity threshold
+                                # )
                                 
                                 # Если это новый файл, сохраняем его хеш в БД для будущих проверок
                                 if not is_duplicate and file_hash:
@@ -130,14 +146,17 @@ def upload_book():
                                         existing_hash = FileHash.query.filter_by(file_hash=file_hash).first()
                                         
                                         if not existing_hash:
-                                            # Сохраняем новый хеш в БД
+                                            # Сохраняем новый хеш в БД с отложенным связыванием c book_id и page_id
+                                            # Они будут связаны после успешного создания страницы
                                             new_file_hash = FileHash(
                                                 file_hash=file_hash,
                                                 original_filename=temp_filename,
                                                 content_type='image'
                                             )
                                             db.session.add(new_file_hash)
-                                            db.session.commit()
+                                            # Откладываем commit до создания страницы
+                                            # db.session.commit()
+                                            app.logger.info(f"Добавлен новый хеш в базу для файла: {temp_filename}")
                                     except Exception as e:
                                         app.logger.error(f"Ошибка при сохранении хеша в БД: {str(e)}")
                                     
@@ -275,15 +294,29 @@ def upload_book():
                 return redirect(request.url)
                 
             if pdf_file and allowed_file(pdf_file.filename):
-                import fitz  # PyMuPDF для проверки PDF
+                # Временно проинициализируем переменную перед использованием
+                pdf_hash = None
                 import hashlib
+                
+                try:
+                    import fitz  # PyMuPDF для проверки PDF
+                except ImportError:
+                    app.logger.error("Ошибка импорта PyMuPDF (fitz). Возможно, библиотека не установлена.")
+                    # Продолжаем без проверки дубликатов для PDF
                 
                 # Сначала сохраняем PDF во временный файл для проверки
                 temp_filename = secure_filename(pdf_file.filename)
                 temp_filepath = os.path.join('/tmp', temp_filename)
                 pdf_file.save(temp_filepath)
+                app.logger.info(f"PDF файл временно сохранен в {temp_filepath}")
                 
-                # Проверяем наличие дубликатов по содержимому PDF
+                # Проверяем директорию uploads и создаем, если она отсутствует
+                uploads_folder = app.config['UPLOAD_FOLDER']
+                if not os.path.exists(uploads_folder):
+                    os.makedirs(uploads_folder, exist_ok=True)
+                    app.logger.info(f"Создана директория для загрузок PDF: {uploads_folder}")
+                
+                # Временно отключаем проверку дубликатов для PDF
                 pdf_is_duplicate = False
                 duplicate_book = None
                 
