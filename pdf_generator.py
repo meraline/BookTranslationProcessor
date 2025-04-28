@@ -426,7 +426,8 @@ class PDFGenerator:
                     table_count += 1
                     
                     # Create table caption
-                    table_caption = f"Table {table_count}: {table.get('description', '')}" if language == 'en' else f"Таблица {table_count}: {table.get('description', '')}"
+                    table_description = sanitize_text_for_pdf(table.get('description', ''))
+                    table_caption = f"Table {table_count}: {table_description}" if language == 'en' else f"Таблица {table_count}: {table_description}"
                     
                     # Get table image or data
                     image_path = table.get('path')

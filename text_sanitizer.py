@@ -70,9 +70,9 @@ def aggressive_text_cleanup(text):
     # Step 1: Basic sanitization
     text = sanitize_text_for_pdf(text)
     
-    # Step 2: Keep only basic Latin alphabet, numbers, and common punctuation
+    # Step 2: Keep only basic Latin alphabet, Cyrillic characters, numbers, and common punctuation
     # This is a fallback for serious encoding issues
-    text = re.sub(r'[^a-zA-Z0-9\s.,;:!?\'\"()\-]', '', text)
+    text = re.sub(r'[^a-zA-Z0-9\u0400-\u04FF\s.,;:!?\'\"()\-]', '', text)
     
     # Step 3: Remove excess whitespace
     text = re.sub(r'\s+', ' ', text).strip()
