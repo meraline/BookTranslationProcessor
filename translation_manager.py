@@ -391,6 +391,40 @@ class TranslationManager:
             
             Перевод на русский:"""
     
+    def _split_into_chunks(self, text, chunk_size=1800):
+        """
+        Split a long text into chunks of approximately equal size, trying to break at paragraph boundaries.
+        
+        Args:
+            text (str): The text to split
+            chunk_size (int): Approximate size of each chunk in characters
+            
+        Returns:
+            list: List of text chunks
+        """
+        # If text is shorter than chunk_size, return it as is
+        if len(text) <= chunk_size:
+            return [text]
+            
+        chunks = []
+        paragraphs = text.split('\n\n')
+        current_chunk = ""
+        
+        for paragraph in paragraphs:
+            # If adding this paragraph exceeds chunk size and we already have content,
+            # add current chunk to results and start a new one
+            if len(current_chunk) + len(paragraph) > chunk_size and current_chunk:
+                chunks.append(current_chunk)
+                current_chunk = paragraph + '\n\n'
+            else:
+                current_chunk += paragraph + '\n\n'
+                
+        # Add the last chunk if not empty
+        if current_chunk:
+            chunks.append(current_chunk)
+            
+        return chunks
+        
     def improve_extracted_text(self, text):
         """
         Improve OCR extracted text using OpenAI API.

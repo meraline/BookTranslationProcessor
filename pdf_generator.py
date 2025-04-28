@@ -212,8 +212,21 @@ class PDFGenerator:
             all_paragraphs = []
             seen_paragraphs = set()
             
-            if 'paragraphs' in document_structure:
-                for paragraph in document_structure['paragraphs']:
+            # Выбираем источник текста в зависимости от языка
+            paragraphs_source = 'paragraphs'  # По умолчанию - обработанный текст (улучшенный англ. или переведенный рус.)
+            
+            # Для русского языка всегда используем переведенные параграфы
+            # Для английского можем использовать оригинальные или улучшенные параграфы
+            if language == 'en' and 'original_paragraphs' in document_structure:
+                # Используем улучшенные параграфы на английском, не перевод
+                logger.info("Using English paragraphs for English PDF")
+                paragraphs_source = 'paragraphs'  # Это улучшенный английский текст
+            elif language == 'ru':
+                logger.info("Using translated paragraphs for Russian PDF")
+                paragraphs_source = 'paragraphs'  # Для русского PDF используем переведенные параграфы
+            
+            if paragraphs_source in document_structure:
+                for paragraph in document_structure[paragraphs_source]:
                     # Skip empty paragraphs
                     paragraph = paragraph.strip()
                     if not paragraph:

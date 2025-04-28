@@ -200,13 +200,19 @@ def process_book(book_id, job_id, is_pdf=False):
                                 })
                         
                         # Create document structure
-                        # Важно: сохранить оригинальный текст для версии на английском языке
+                        # Организуем хранение улучшенного английского и оригинального текста
+                        # Разделим их на параграфы для обработки
+                        english_paragraphs = enhanced_text.split('\n\n') if enhanced_text else []
+                        original_paragraphs = original_english_text.split('\n\n') if original_english_text else []
+                        
                         document_structure = {
                             'page_number': page.page_number,
                             'original_image': page.image_path,
                             'processed_image': debug_image_path,
-                            'paragraphs': enhanced_text.split('\n\n') if enhanced_text else [],
-                            'original_text': page.text_content,  # Исходный текст без улучшений для английской версии
+                            'paragraphs': english_paragraphs,  # Улучшенный английский текст в параграфах
+                            'original_paragraphs': original_paragraphs,  # Оригинальный текст без OCR исправлений 
+                            'original_text': original_english_text,  # Полный исходный текст без улучшений
+                            'enhanced_text': enhanced_text,  # Полный улучшенный текст
                             'figures': processed_figures
                         }
                         
