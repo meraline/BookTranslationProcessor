@@ -150,12 +150,17 @@ def process_book(book_id, job_id, is_pdf=False):
                         original_english_text = full_text
                         
                         # Improve OCR result with OpenAI if available - using specific method to keep text in English
-                        if openai_api_key:
-                            enhanced_text = translation_manager.improve_extracted_text(original_english_text)
-                            corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
-                            with open(corrected_text_path, 'w', encoding='utf-8') as f:
-                                f.write(enhanced_text)
+                        if openai_api_key and translation_manager._test_openai_connection():
+                            try:
+                                enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                                corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
+                                with open(corrected_text_path, 'w', encoding='utf-8') as f:
+                                    f.write(enhanced_text)
+                            except Exception as e:
+                                logger.error(f"Error improving OCR text: {str(e)}")
+                                enhanced_text = original_english_text
                         else:
+                            logger.info("OpenAI API not available or API test failed. Using original text.")
                             enhanced_text = original_english_text
                         
                         # Save original English text content to database
@@ -221,18 +226,35 @@ def process_book(book_id, job_id, is_pdf=False):
                         utils.save_to_json(document_structure, structure_path)
                         
                         # Translate content if OpenAI API key is available
-                        if openai_api_key:
-                            translated_structure = translation_manager.translate_document(document_structure)
-                            
-                            # Save translated structure
-                            translated_path = os.path.join(translated_dir, f"{output_basename}_translated.json")
-                            utils.save_to_json(translated_structure, translated_path)
-                            
-                            # Save translated content to database
-                            page.translated_content = '\n\n'.join(
-                                translated_structure.get('paragraphs', []))
-                            
-                            document_structure['translated'] = translated_structure
+                        if openai_api_key and translation_manager._test_openai_connection():
+                            try:
+                                translated_structure = translation_manager.translate_document(document_structure)
+                                
+                                # Save translated structure
+                                translated_path = os.path.join(translated_dir, f"{output_basename}_translated.json")
+                                utils.save_to_json(translated_structure, translated_path)
+                                
+                                # Save translated content to database
+                                page.translated_content = '\n\n'.join(
+                                    translated_structure.get('paragraphs', []))
+                                
+                                document_structure['translated'] = translated_structure
+                            except Exception as e:
+                                logger.error(f"Error translating document: {str(e)}")
+                                # Create empty translated structure to avoid errors
+                                document_structure['translated'] = {
+                                    'paragraphs': [f"[Перевод недоступен: {str(e)}]"]
+                                }
+                                # Save minimal translation to database
+                                page.translated_content = f"[Перевод недоступен: {str(e)}]"
+                        else:
+                            logger.info("OpenAI API not available for translation.")
+                            # Create empty translated structure to avoid errors
+                            document_structure['translated'] = {
+                                'paragraphs': ["[Перевод недоступен: API недоступно]"]
+                            }
+                            # Save minimal translation to database
+                            page.translated_content = "[Перевод недоступен: API недоступно]"
                         
                         processed_documents.append(document_structure)
                         
@@ -309,97 +331,105 @@ def process_book(book_id, job_id, is_pdf=False):
                 logger.error(f"Error generating English PDF: {str(e)}")
                 traceback.print_exc()
             
-            # Generate Russian PDF if translations available
-            if openai_api_key:
-                try:
-                    logger.info(f"Generating Russian PDF for book: {book.title}")
-                    # Create translated book structure
-                    translated_pages = []
-                    for document in processed_documents:
-                        # Проверяем, есть ли у документа переведенные данные
-                        if 'translated' in document:
-                            # Берем переведенный вариант документа
-                            translated_doc = document['translated']
-                            
-                            # Если это словарь, копируем в него оригинальные пути к изображениям
-                            if isinstance(translated_doc, dict):
-                                # Копируем важные, не подлежащие переводу поля
-                                if 'original_image' in document and 'original_image' not in translated_doc:
-                                    translated_doc['original_image'] = document['original_image']
-                                if 'processed_image' in document and 'processed_image' not in translated_doc:
-                                    translated_doc['processed_image'] = document['processed_image']
-                                if 'page_number' in document and 'page_number' not in translated_doc:
-                                    translated_doc['page_number'] = document['page_number']
-                                
-                                # Обработка рисунков
-                                if 'figures' in document and document['figures']:
-                                    # Если в переводе нет фигур или пустой список, скопируем из оригинала
-                                    if ('figures' not in translated_doc) or (not translated_doc.get('figures')):
-                                        translated_doc['figures'] = []
-                                        # Копируем фигуры, заменяя только description на translated_description
-                                        for idx, fig in enumerate(document['figures']):
-                                            # Создаем копию фигуры
-                                            translated_fig = fig.copy()
-                                            # Если у фигуры есть перевод описания, используем его
-                                            if 'translated_description' in fig:
-                                                translated_fig['description'] = fig['translated_description']
-                                            
-                                            # Добавляем в список переведенных фигур
-                                            translated_doc['figures'].append(translated_fig)
-                                
-                            # Добавляем переведенный документ в список
-                            translated_pages.append(translated_doc)
-                        else:
-                            # Если перевода нет, используем оригинал с пометкой
-                            logger.warning(f"Document missing translation data: {document.get('page_number', 'unknown')}")
-                            
-                            # Создаем копию оригинала
-                            translated_doc = document.copy()
-                            if 'paragraphs' in translated_doc:
-                                # Добавляем пометку о неудавшемся переводе
-                                translated_doc['paragraphs'] = ["[Перевод отсутствует. Показан оригинальный текст.]"] + document['paragraphs']
-                            
-                            translated_pages.append(translated_doc)
-                    
-                    translated_book = {
-                        'title': translation_manager.translate_text(book.title),
-                        'pages': translated_pages,
-                        'language': 'ru'
-                    }
-                    
-                    russian_pdf = generate_pdf(pdf_generator, translated_book, 'ru')
-                    
-                    # Verify the file exists and update job
-                    if russian_pdf and os.path.exists(russian_pdf):
-                        # Log success and absolute paths for debugging
-                        abs_path = os.path.abspath(russian_pdf)
-                        logger.info(f"Russian PDF successfully generated at: {russian_pdf}")
-                        logger.info(f"Absolute path: {abs_path}")
+            # Generate Russian PDF (always try to generate, even with placeholders for missing translations)
+            # Generate Russian PDF (always try to generate, even with placeholders for missing translations)
+            try:
+                logger.info(f"Generating Russian PDF for book: {book.title}")
+                
+                # Create translated book structure
+                translated_pages = []
+                for document in processed_documents:
+                    # Проверяем, есть ли у документа переведенные данные
+                    if 'translated' in document:
+                        # Берем переведенный вариант документа
+                        translated_doc = document['translated']
                         
-                        # Save path to job
-                        job.result_file_ru = russian_pdf
-                        # Commit immediately to ensure it's saved
-                        db.session.commit()
-                        
-                        # Verify path was saved to database
-                        job_check = ProcessingJob.query.get(job.id)
-                        logger.info(f"Saved path verification: {job_check.result_file_ru}")
+                        # Если это словарь, копируем в него оригинальные пути к изображениям
+                        if isinstance(translated_doc, dict):
+                            # Копируем важные, не подлежащие переводу поля
+                            if 'original_image' in document and 'original_image' not in translated_doc:
+                                translated_doc['original_image'] = document['original_image']
+                            if 'processed_image' in document and 'processed_image' not in translated_doc:
+                                translated_doc['processed_image'] = document['processed_image']
+                            if 'page_number' in document and 'page_number' not in translated_doc:
+                                translated_doc['page_number'] = document['page_number']
+                            
+                            # Обработка рисунков
+                            if 'figures' in document and document['figures']:
+                                # Если в переводе нет фигур или пустой список, скопируем из оригинала
+                                if ('figures' not in translated_doc) or (not translated_doc.get('figures')):
+                                    translated_doc['figures'] = []
+                                    # Копируем фигуры, заменяя только description на translated_description
+                                    for idx, fig in enumerate(document['figures']):
+                                        # Создаем копию фигуры
+                                        translated_fig = fig.copy()
+                                        # Если у фигуры есть перевод описания, используем его
+                                        if 'translated_description' in fig:
+                                            translated_fig['description'] = fig['translated_description']
+                                        
+                                        # Добавляем в список переведенных фигур
+                                        translated_doc['figures'].append(translated_fig)
+                            
+                        # Добавляем переведенный документ в список
+                        translated_pages.append(translated_doc)
                     else:
-                        logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
+                        # Если перевода нет, используем оригинал с пометкой
+                        logger.warning(f"Document missing translation data: {document.get('page_number', 'unknown')}")
                         
-                        # Try to create a test file to debug directory/permission issues
-                        test_path = os.path.join(pdf_dir, 'test_ru.pdf')
-                        try:
-                            with open(test_path, 'w') as f:
-                                f.write("Test file")
-                            logger.info(f"Test file created successfully at: {test_path}")
-                            job.result_file_ru = test_path
-                            db.session.commit()
-                        except Exception as test_error:
-                            logger.error(f"Could not create test file: {str(test_error)}")
+                        # Создаем копию оригинала
+                        translated_doc = document.copy()
+                        if 'paragraphs' in translated_doc:
+                            # Добавляем пометку о неудавшемся переводе
+                            translated_doc['paragraphs'] = ["[Перевод отсутствует. Показан оригинальный текст.]"] + document['paragraphs']
+                        
+                        translated_pages.append(translated_doc)
+                
+                # Translate book title
+                try:
+                    translated_title = translation_manager.translate_text(book.title) if openai_api_key and translation_manager._test_openai_connection() else f"{book.title} [RU]"
                 except Exception as e:
-                    logger.error(f"Error generating Russian PDF: {str(e)}")
-                    traceback.print_exc()
+                    logger.error(f"Error translating book title: {str(e)}")
+                    translated_title = f"{book.title} [RU]"
+                
+                translated_book = {
+                    'title': translated_title,
+                    'pages': translated_pages,
+                    'language': 'ru'
+                }
+                
+                russian_pdf = generate_pdf(pdf_generator, translated_book, 'ru')
+                
+                # Verify the file exists and update job
+                if russian_pdf and os.path.exists(russian_pdf):
+                    # Log success and absolute paths for debugging
+                    abs_path = os.path.abspath(russian_pdf)
+                    logger.info(f"Russian PDF successfully generated at: {russian_pdf}")
+                    logger.info(f"Absolute path: {abs_path}")
+                    
+                    # Save path to job
+                    job.result_file_ru = russian_pdf
+                    # Commit immediately to ensure it's saved
+                    db.session.commit()
+                    
+                    # Verify path was saved to database
+                    job_check = ProcessingJob.query.get(job.id)
+                    logger.info(f"Saved path verification: {job_check.result_file_ru}")
+                else:
+                    logger.error(f"Russian PDF was not created at expected path: {russian_pdf}")
+                    
+                    # Try to create a test file to debug directory/permission issues
+                    test_path = os.path.join(pdf_dir, 'test_ru.pdf')
+                    try:
+                        with open(test_path, 'w') as f:
+                            f.write("Test file")
+                        logger.info(f"Test file created successfully at: {test_path}")
+                        job.result_file_ru = test_path
+                        db.session.commit()
+                    except Exception as test_error:
+                        logger.error(f"Could not create test file: {str(test_error)}")
+            except Exception as e:
+                logger.error(f"Error generating Russian PDF: {str(e)}")
+                traceback.print_exc()
             
             # Update job status
             job.status = 'completed'

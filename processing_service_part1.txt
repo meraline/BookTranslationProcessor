@@ -1,0 +1,334 @@
+import os
+import sys
+import re
+import logging
+import traceback
+import cv2
+import numpy as np
+from datetime import datetime
+from app import db
+from models import Book, BookPage, ProcessingJob, Figure
+
+# Import processor modules
+from image_preprocessor import ImagePreprocessor
+from text_extractor import TextExtractor
+from figure_analyzer import FigureAnalyzer
+from translation_manager import TranslationManager
+from pdf_generator import PDFGenerator
+from poker_book_processor import PokerBookProcessor
+import utils
+import fitz  # PyMuPDF
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+def process_book(book_id, job_id, is_pdf=False):
+    """
+    Process a book's pages with OCR
+    
+    This function runs in a separate thread and updates the database with results
+    
+    Args:
+        book_id: ID of the book to process
+        job_id: ID of the processing job
+        is_pdf: Whether the upload is a PDF file (True) or images (False)
+    """
+    logger.info(f"Starting processing for book ID: {book_id}, job ID: {job_id}, PDF: {is_pdf}")
+    
+    # Import app at function level to avoid circular imports
+    from app import app
+    
+    # Create application context for the thread
+    with app.app_context():
+        try:
+            # Get book and job from database
+            book = Book.query.get(book_id)
+            job = ProcessingJob.query.get(job_id)
+            
+            if not book or not job:
+                logger.error(f"Book or job not found. Book ID: {book_id}, Job ID: {job_id}")
+                return
+            
+            # Update job and book status
+            job.status = 'processing'
+            book.status = 'processing'
+            db.session.commit()
+            
+            # Create output directories
+            output_dir = os.path.join('output', f"book_{book.id}")
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+                
+            # Create subdirectories
+            text_dir = os.path.join(output_dir, 'text')
+            images_dir = os.path.join(output_dir, 'images')
+            tables_dir = os.path.join(output_dir, 'tables')
+            diagrams_dir = os.path.join(output_dir, 'diagrams')
+            translated_dir = os.path.join(output_dir, 'translated')
+            pdf_dir = os.path.join(output_dir, 'pdf')
+            cache_dir = os.path.join(output_dir, 'cache')
+            
+            for directory in [text_dir, images_dir, tables_dir, diagrams_dir, 
+                            translated_dir, pdf_dir, cache_dir]:
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
+                    
+            # Initialize components
+            image_preprocessor = ImagePreprocessor()
+            text_extractor = TextExtractor()
+            figure_analyzer = FigureAnalyzer()
+            
+            # Get OpenAI API key from environment
+            openai_api_key = os.environ.get('OPENAI_API_KEY')
+            if not openai_api_key:
+                logger.warning("OpenAI API key not found. Processing will continue without OpenAI enhancements.")
+            
+            translation_manager = TranslationManager(
+                openai_api_key=openai_api_key,
+                target_language='ru',
+                cache_dir=cache_dir
+            )
+            
+            pdf_generator = PDFGenerator(output_dir=pdf_dir)
+            
+            # Handle differently based on file type (PDF or images)
+            processed_documents = []
+            
+            if is_pdf:
+                # We have a PDF file to process
+                processed_documents = process_pdf_file(book, output_dir, images_dir, text_dir, 
+                                                     diagrams_dir, tables_dir, translated_dir,
+                                                     translation_manager, openai_api_key)
+            else:
+                # We have individual image files
+                pages = BookPage.query.filter_by(book_id=book.id).order_by(BookPage.page_number).all()
+                
+                if not pages:
+                    raise ValueError("No pages found for this book")
+                
+                # Process each page
+                for page in pages:
+                    try:
+                        # Update page status
+                        page.status = 'processing'
+                        db.session.commit()
+                        
+                        # Check if image file exists
+                        if not os.path.exists(page.image_path):
+                            logger.error(f"Image file not found: {page.image_path}")
+                            page.status = 'error'
+                            db.session.commit()
+                            continue
+                        
+                        # Generate base filename
+                        basename = os.path.splitext(os.path.basename(page.image_path))[0]
+                        timestamp = utils.create_timestamp()
+                        output_basename = f"{basename}_{timestamp}"
+                        
+                        # Preprocess image
+                        original_img, processed_img = image_preprocessor.preprocess_image(page.image_path)
+                        
+                        # Save preprocessed image
+                        debug_image_path = os.path.join(images_dir, f"{output_basename}_preprocessed.png")
+                        cv2_write_result = cv2.imwrite(debug_image_path, processed_img)
+                        if not cv2_write_result:
+                            logger.warning(f"Failed to save preprocessed image to {debug_image_path}")
+                        
+                        # Set processed image path in database
+                        page.processed_image_path = debug_image_path
+                        
+                        # Extract text from the entire image
+                        full_text = text_extractor.extract_text(processed_img)
+                        
+                        # Save raw OCR text
+                        raw_text_path = os.path.join(text_dir, f"{output_basename}_raw.txt")
+                        with open(raw_text_path, 'w', encoding='utf-8') as f:
+                            f.write(full_text)
+                        
+                        # Store the original English text first (before any correction or translation)
+                        original_english_text = full_text
+                        
+                        # Improve OCR result with OpenAI if available - using specific method to keep text in English
+                        if openai_api_key and translation_manager._test_openai_connection():
+                            try:
+                                enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                                corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
+                                with open(corrected_text_path, 'w', encoding='utf-8') as f:
+                                    f.write(enhanced_text)
+                            except Exception as e:
+                                logger.error(f"Error improving OCR text: {str(e)}")
+                                enhanced_text = original_english_text
+                        else:
+                            logger.info("OpenAI API not available or API test failed. Using original text.")
+                            enhanced_text = original_english_text
+                        
+                        # Save original English text content to database
+                        page.text_content = original_english_text
+                        
+                        # Detect figures and diagrams
+                        figures = figure_analyzer.detect_figures(processed_img, original_img)
+                        
+                        # Process detected figures
+                        processed_figures = []
+                        for idx, figure_data in enumerate(figures):
+                            figure_type, region, description = figure_data
+                            
+                            # Save figure
+                            figure_dir = diagrams_dir if figure_type in ['chart', 'diagram'] else tables_dir
+                            figure_path = figure_analyzer.save_figure(
+                                original_img, figure_data, figure_dir, output_basename
+                            )
+                            
+                            if figure_path:
+                                # Create figure record in database
+                                db_figure = Figure(
+                                    page_id=page.id,
+                                    figure_type=figure_type,
+                                    image_path=figure_path,
+                                    description=description,
+                                    region=str(region)
+                                )
+                                db.session.add(db_figure)
+                                
+                                # If translation is available, translate description
+                                if openai_api_key:
+                                    translated_desc = translation_manager.translate_text(
+                                        description, purpose="figure_description")
+                                    db_figure.translated_description = translated_desc
+                                
+                                processed_figures.append({
+                                    'type': figure_type,
+                                    'region': region,
+                                    'description': description,
+                                    'image_path': figure_path
+                                })
+                        
+                        # Create document structure
+                        # Организуем хранение улучшенного английского и оригинального текста
+                        # Разделим их на параграфы для обработки
+                        english_paragraphs = enhanced_text.split('\n\n') if enhanced_text else []
+                        original_paragraphs = original_english_text.split('\n\n') if original_english_text else []
+                        
+                        document_structure = {
+                            'page_number': page.page_number,
+                            'original_image': page.image_path,
+                            'processed_image': debug_image_path,
+                            'paragraphs': english_paragraphs,  # Улучшенный английский текст в параграфах
+                            'original_paragraphs': original_paragraphs,  # Оригинальный текст без OCR исправлений 
+                            'original_text': original_english_text,  # Полный исходный текст без улучшений
+                            'enhanced_text': enhanced_text,  # Полный улучшенный текст
+                            'figures': processed_figures
+                        }
+                        
+                        # Save document structure
+                        structure_path = os.path.join(text_dir, f"{output_basename}_structure.json")
+                        utils.save_to_json(document_structure, structure_path)
+                        
+                        # Translate content if OpenAI API key is available
+                        if openai_api_key and translation_manager._test_openai_connection():
+                            try:
+                                translated_structure = translation_manager.translate_document(document_structure)
+                                
+                                # Save translated structure
+                                translated_path = os.path.join(translated_dir, f"{output_basename}_translated.json")
+                                utils.save_to_json(translated_structure, translated_path)
+                                
+                                # Save translated content to database
+                                page.translated_content = '\n\n'.join(
+                                    translated_structure.get('paragraphs', []))
+                                
+                                document_structure['translated'] = translated_structure
+                            except Exception as e:
+                                logger.error(f"Error translating document: {str(e)}")
+                                # Create empty translated structure to avoid errors
+                                document_structure['translated'] = {
+                                    'paragraphs': [f"[Перевод недоступен: {str(e)}]"]
+                                }
+                                # Save minimal translation to database
+                                page.translated_content = f"[Перевод недоступен: {str(e)}]"
+                        else:
+                            logger.info("OpenAI API not available for translation.")
+                            # Create empty translated structure to avoid errors
+                            document_structure['translated'] = {
+                                'paragraphs': ["[Перевод недоступен: API недоступно]"]
+                            }
+                            # Save minimal translation to database
+                            page.translated_content = "[Перевод недоступен: API недоступно]"
+                        
+                        processed_documents.append(document_structure)
+                        
+                        # Update page status
+                        page.status = 'processed'
+                        db.session.commit()
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing page {page.id}: {str(e)}")
+                        traceback.print_exc()
+                        page.status = 'error'
+                        db.session.commit()
+            
+            # Create book structure for PDF generation
+            book_structure = {
+                'title': book.title,
+                'pages': processed_documents,
+                'language': 'en'
+            }
+            
+            # Save book structure with a safe filename
+            # Use just first word of title or first 15 chars to avoid path-too-long errors
+            safe_title = book.title.split()[0] if book.title and ' ' in book.title else book.title[:15]
+            safe_title = re.sub(r'[^\w\s-]', '', safe_title).strip().replace(' ', '_')
+            if len(safe_title) > 15:
+                safe_title = safe_title[:15]
+                
+            book_structure_path = os.path.join(text_dir, f"{safe_title}_structure.json")
+            utils.save_to_json(book_structure, book_structure_path)
+            
+            # Ensure PDF output directory exists
+            pdf_dir = os.path.join(output_dir, 'pdf')
+            os.makedirs(pdf_dir, exist_ok=True)
+            
+            # Generate PDFs
+            english_pdf = None
+            russian_pdf = None
+            
+            # Generate English PDF
+            try:
+                logger.info(f"Generating English PDF for book: {book.title}")
+                english_pdf = generate_pdf(pdf_generator, book_structure, 'en')
+                
+                # Verify the file exists and update job
+                if english_pdf and os.path.exists(english_pdf):
+                    # Log success and absolute paths for debugging
+                    abs_path = os.path.abspath(english_pdf)
+                    logger.info(f"English PDF successfully generated at: {english_pdf}")
+                    logger.info(f"Absolute path: {abs_path}")
+                    
+                    # Save path to job
+                    job.result_file_en = english_pdf
+                    # Commit immediately to ensure it's saved
+                    db.session.commit()
+                    
+                    # Verify path was saved to the database
+                    job_check = ProcessingJob.query.get(job.id)
+                    logger.info(f"Saved path verification: {job_check.result_file_en}")
+                else:
+                    logger.error(f"English PDF was not created at expected path: {english_pdf}")
+                    
+                    # Try to create a test file to debug directory/permission issues
+                    test_path = os.path.join(pdf_dir, 'test_en.pdf')
+                    try:
+                        with open(test_path, 'w') as f:
+                            f.write("Test file")
+                        logger.info(f"Test file created successfully at: {test_path}")
+                        job.result_file_en = test_path
+                        db.session.commit()
+                    except Exception as test_error:
+                        logger.error(f"Could not create test file: {str(test_error)}")
+                        
+            except Exception as e:
+                logger.error(f"Error generating English PDF: {str(e)}")
+                traceback.print_exc()
+            
+            # Generate Russian PDF (always try to generate, even with placeholders for missing translations)
