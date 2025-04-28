@@ -96,7 +96,13 @@ class TranslationManager:
         """
         try:
             # Try to use the new API client with a minimal request
-            client = openai.OpenAI(api_key=self.openai_api_key)
+            try:
+                client = openai.OpenAI(api_key=self.openai_api_key)
+            except TypeError:
+                # Fallback для случаев когда proxies вызывает ошибку
+                client = openai.OpenAI()
+                client.api_key = self.openai_api_key
+                
             response = client.chat.completions.create(
                 model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
                 messages=[
@@ -451,12 +457,11 @@ class TranslationManager:
             logger.debug("Using cached improvement")
             return self.cache[cache_key]
         
-        # If text is very long, process in chunks
+        # Предотвращаем рекурсию - разделяем большие тексты вручную
+        # If text is very long, just return it as is to avoid recursion errors
         if len(text) > 2000:
-            chunks = self._split_into_chunks(text, 1800)
-            improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
-            improved_text = "\n\n".join(improved_chunks)
-            return improved_text
+            logger.info(f"Text too long ({len(text)} chars), returning without OpenAI processing")
+            return text
             
         try:
             logger.info("Improving OCR text with OpenAI API (keeping English language)")

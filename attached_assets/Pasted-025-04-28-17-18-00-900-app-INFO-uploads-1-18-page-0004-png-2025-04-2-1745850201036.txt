@@ -1,0 +1,1019 @@
+025-04-28 17:18:00,900 - app - INFO - Файл успешно скопирован в uploads/1_18_page_0004.png
+2025-04-28 17:18:00,900 - app - INFO - Временный файл удален: /tmp/page_0004.png
+2025-04-28 17:18:00,910 - processing_service - INFO - Starting processing for book ID: 1, job ID: 1, PDF: False
+2025-04-28 17:18:00,928 - translation_manager - ERROR - OpenAI API connection test failed: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:02,190 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:02,191 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:04,145 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:04,145 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:04,145 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:05,146 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:05,146 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:07,146 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:07,146 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:07,146 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:08,188 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:08,189 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:10,113 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:10,113 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:10,113 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:11,113 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:11,113 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:13,114 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:13,114 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:13,114 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:14,181 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:14,181 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:16,092 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:16,092 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:16,092 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:17,092 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:17,092 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:19,092 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:19,092 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:19,092 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:20,973 - processing_service - ERROR - Error processing page 4: maximum recursion depth exceeded
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/processing_service.py", line 154, in process_book
+    enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 992 more times]
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 456, in improve_extracted_text
+    chunks = self._split_into_chunks(text, 1800)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RecursionError: maximum recursion depth exceeded
+2025-04-28 17:18:23,044 - processing_service - ERROR - Error processing page 5: maximum recursion depth exceeded
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/processing_service.py", line 154, in process_book
+    enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 992 more times]
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 456, in improve_extracted_text
+    chunks = self._split_into_chunks(text, 1800)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RecursionError: maximum recursion depth exceeded
+2025-04-28 17:18:24,580 - processing_service - ERROR - Error processing page 6: maximum recursion depth exceeded
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/processing_service.py", line 154, in process_book
+    enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 992 more times]
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 456, in improve_extracted_text
+    chunks = self._split_into_chunks(text, 1800)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RecursionError: maximum recursion depth exceeded
+2025-04-28 17:18:25,663 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:25,663 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:27,663 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:27,663 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:27,663 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:28,664 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:28,664 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:30,664 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:30,664 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:30,664 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:31,787 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:31,787 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:33,786 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:33,786 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:33,786 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:34,786 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:34,786 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:36,787 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:36,787 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:36,787 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:37,820 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:37,820 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:39,094 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:39,094 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:40,095 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:40,095 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:42,095 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:42,095 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:42,095 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:42,096 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:42,096 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:42,096 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:43,096 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:43,096 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:45,097 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:45,097 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:45,097 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:45,097 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:45,097 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:46,097 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:46,097 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:48,097 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:48,098 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:48,098 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:48,646 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:48,646 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:49,164 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:49,164 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:49,164 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:50,164 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:50,164 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:52,164 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:52,164 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:52,164 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:53,675 - processing_service - ERROR - Error processing page 11: maximum recursion depth exceeded
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/processing_service.py", line 154, in process_book
+    enhanced_text = translation_manager.improve_extracted_text(original_english_text)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 457, in improve_extracted_text
+    improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 992 more times]
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/translation_manager.py", line 456, in improve_extracted_text
+    chunks = self._split_into_chunks(text, 1800)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RecursionError: maximum recursion depth exceeded
+2025-04-28 17:18:54,117 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:54,117 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:54,120 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:54,120 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:54,120 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:55,121 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:55,121 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:57,121 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:57,121 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:57,121 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:18:57,603 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:18:57,603 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:18:57,606 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:18:57,606 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:57,606 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:18:58,606 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:18:58,606 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:00,606 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:00,606 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:00,606 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:01,144 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:01,144 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:01,148 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:01,148 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:01,148 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:02,148 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:02,148 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:04,149 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:04,149 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:04,149 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:04,731 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:04,731 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:04,734 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:04,735 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:04,735 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:05,735 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:05,735 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:07,735 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:07,735 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:07,735 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:08,218 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:08,219 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:08,222 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:08,222 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:08,222 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:09,222 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:09,222 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:11,222 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:11,223 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:11,223 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:12,266 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:12,267 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:13,675 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:13,675 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:13,675 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:14,676 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:14,676 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:16,676 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:16,676 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:16,676 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:17,137 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:17,138 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:17,342 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:17,342 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:17,342 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:18,343 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:18,343 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:20,343 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:20,343 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:20,343 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:20,858 - translation_manager - INFO - Improving OCR text with OpenAI API (keeping English language)
+2025-04-28 17:19:20,859 - translation_manager - ERROR - Error improving OCR text: Client.__init__() got an unexpected keyword argument 'proxies'
+2025-04-28 17:19:21,081 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:21,081 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:22,082 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:22,082 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:24,082 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:24,082 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:24,082 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:24,082 - translation_manager - INFO - Processed abbreviation sequence: QUANTUM POKER
+2025-04-28 17:19:24,083 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:24,083 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:25,083 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:25,083 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:27,083 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:27,083 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:27,083 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:27,084 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:27,084 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:28,084 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:28,084 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:30,084 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:30,084 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:30,084 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:30,089 - processing_service - INFO - Generating English PDF for book: 1
+2025-04-28 17:19:30,089 - pdf_generator - INFO - PDF will be saved to: output/book_1/pdf/pdf/1_51a1d969_en.pdf
+2025-04-28 17:19:30,098 - pdf_generator - ERROR - Error registering DejaVuSans font: Can't open file "/mnt/nixmodules/nix/store/am3y2gs2rj2fd13jvd3j2m9g5646dnw6-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+2025-04-28 17:19:30,098 - pdf_generator - INFO - PDF styles configured with Unicode/Russian text support
+2025-04-28 17:19:30,099 - pdf_generator - ERROR - Error generating PDF: 
+paragraph text '<para>1</para>' caused exception error with style name=Title Can't map determine family/bold/italic for dejavusans
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: error with style name=Title Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/pdf_generator.py", line 187, in generate_pdf
+    story.append(Paragraph(title, styles['TitleRu'] if language == 'ru' else styles['Title']))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1809, in __init__
+    self._setup(text, style, bulletText or getattr(style,'bulletText',None), frags, cleanBlockQuotedText)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1830, in _setup
+    style, frags, bulletTextFrags = _parser.parse(text,style)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3217, in parse
+    annotateException('\nparagraph text %s caused exception' % ascii(text))
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: 
+paragraph text '<para>1</para>' caused exception error with style name=Title Can't map determine family/bold/italic for dejavusans
+2025-04-28 17:19:30,102 - processing_service - ERROR - English PDF was not created at expected path: None
+2025-04-28 17:19:30,102 - processing_service - INFO - Test file created successfully at: output/book_1/pdf/test_en.pdf
+2025-04-28 17:19:30,108 - processing_service - INFO - Generating Russian PDF for book: 1
+2025-04-28 17:19:30,109 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:30,109 - translation_manager - ERROR - Translation attempt 1 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:31,109 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:31,109 - translation_manager - ERROR - Translation attempt 2 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:33,109 - translation_manager - ERROR - Error with new API: Client.__init__() got an unexpected keyword argument 'proxies'. Trying old API.
+2025-04-28 17:19:33,109 - translation_manager - ERROR - Translation attempt 3 failed: 
+
+You tried to access openai.ChatCompletion, but this is no longer supported in openai>=1.0.0 - see the README at https://github.com/openai/openai-python for the API.
+
+You can run `openai migrate` to automatically upgrade your codebase to use the 1.0.0 interface. 
+
+Alternatively, you can pin your installation to the old version, e.g. `pip install openai==0.28`
+
+A detailed migration guide is available here: https://github.com/openai/openai-python/discussions/742
+
+2025-04-28 17:19:33,109 - translation_manager - ERROR - All translation attempts failed
+2025-04-28 17:19:33,109 - pdf_generator - INFO - PDF will be saved to: output/book_1/pdf/pdf/1_b0613e5e_ru.pdf
+2025-04-28 17:19:33,109 - pdf_generator - ERROR - Error registering DejaVuSans font: Can't open file "/mnt/nixmodules/nix/store/am3y2gs2rj2fd13jvd3j2m9g5646dnw6-dejavu-fonts-minimal-2.37/share/fonts/truetype/DejaVuSans.ttf"
+2025-04-28 17:19:33,110 - pdf_generator - INFO - PDF styles configured with Unicode/Russian text support
+2025-04-28 17:19:33,110 - pdf_generator - ERROR - Error generating PDF: 
+paragraph text '<para>1</para>' caused exception error with style name=TitleRu Can't map determine family/bold/italic for dejavusans
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: error with style name=TitleRu Can't map determine family/bold/italic for dejavusans
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/pdf_generator.py", line 187, in generate_pdf
+    story.append(Paragraph(title, styles['TitleRu'] if language == 'ru' else styles['Title']))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1809, in __init__
+    self._setup(text, style, bulletText or getattr(style,'bulletText',None), frags, cleanBlockQuotedText)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paragraph.py", line 1830, in _setup
+    style, frags, bulletTextFrags = _parser.parse(text,style)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3217, in parse
+    annotateException('\nparagraph text %s caused exception' % ascii(text))
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3215, in parse
+    self.feed(text)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 111, in feed
+    self.goahead(0)
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 171, in goahead
+    k = self.parse_starttag(i)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/anaconda3/lib/python3.12/html/parser.py", line 338, in parse_starttag
+    self.handle_starttag(tag, attrs)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 3238, in handle_starttag
+    start(attrs or {})
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2904, in start_para
+    frag = self._initial_frag(attr,_paraAttrMap)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2881, in _initial_frag
+    annotateException('error with style name=%s'%style.name)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 1176, in annotateException
+    rl_reraise(t,t(sep.join((_ for _ in (msg,str(v),postMsg) if _))),b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/utils.py", line 138, in rl_reraise
+    raise v.with_traceback(b)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/platypus/paraparser.py", line 2877, in _initial_frag
+    frag.fontName, frag.bold, frag.italic = ps2tt(style.fontName)
+                                            ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/reportlab/lib/fonts.py", line 78, in ps2tt
+    raise ValueError("Can't map determine family/bold/italic for %s" % psfn)
+ValueError: 
+paragraph text '<para>1</para>' caused exception error with style name=TitleRu Can't map determine family/bold/italic for dejavusans
+2025-04-28 17:19:33,111 - processing_service - ERROR - Russian PDF was not created at expected path: None
+2025-04-28 17:19:33,111 - processing_service - INFO - Test file created successfully at: output/book_1/pdf/test_ru.pdf
+2025-04-28 17:19:33,132 - processing_service - INFO - Final verification - English PDF path: output/book_1/pdf/test_en.pdf
+2025-04-28 17:19:33,132 - processing_service - INFO - Final verification - Russian PDF path: output/book_1/pdf/test_ru.pdf
+2025-04-28 17:19:33,133 - processing_service - INFO - Processing completed for book ID: 1
+2025-04-28 17:22:09,473 - routes - DEBUG - Sending Russian PDF file: output/book_1/pdf/test_ru.pdf
+2025-04-28 17:22:24,807 - routes - DEBUG - Sending English PDF file: output/book_1/pdf/test_en.pdf
+[2025-04-28 17:22:54 +0300] [2824060] [CRITICAL] WORKER TIMEOUT (pid:2824063)
+[2025-04-28 17:22:54 +0300] [2824063] [ERROR] Error handling request (no URI read)
+Traceback (most recent call last):
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/workers/sync.py", line 133, in handle
+    req = next(parser)
+          ^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/parser.py", line 41, in __next__
+    self.mesg = self.mesg_class(self.cfg, self.unreader, self.source_addr, self.req_count)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/message.py", line 259, in __init__
+    super().__init__(cfg, unreader, peer_addr)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/message.py", line 60, in __init__
+    unused = self.parse(self.unreader)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/message.py", line 271, in parse
+    self.get_data(unreader, buf, stop=True)
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/message.py", line 262, in get_data
+    data = unreader.read()
+           ^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/unreader.py", line 36, in read
+    d = self.chunk()
+        ^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/http/unreader.py", line 63, in chunk
+    return self.sock.recv(self.mxchunk)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/analityk/Документы/github/BookTranslationProcessor/BookTranslationProcessor/venv/lib/python3.12/site-packages/gunicorn/workers/base.py", line 204, in handle_abort
+    sys.exit(1)
+SystemExit: 1
+[2025-04-28 17:22:54 +0300] [2824063] [INFO] Worker exiting (pid: 2824063)
