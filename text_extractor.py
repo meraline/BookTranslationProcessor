@@ -43,28 +43,70 @@ class TextExtractor:
             str: Extracted text
         """
         try:
-            # Load image with OpenCV (faster than PIL for this specific use)
-            image = cv2.imread(image_path)
-            if image is None:
-                logger.warning(f"Could not load image: {image_path}")
+            logger.info(f"Начинаем быстрое извлечение текста из: {image_path}")
+            
+            # Проверка существования файла
+            if not os.path.exists(image_path):
+                logger.error(f"Файл не существует: {image_path}")
                 return ""
                 
-            # Convert to grayscale
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # Проверка размера файла
+            file_size = os.path.getsize(image_path)
+            logger.info(f"Размер файла: {file_size} байт")
             
-            # Simple threshold for faster processing
-            _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            
-            # Extract text with default config (faster)
-            # Убираем параметр lang, так как он может быть не поддержан или вызывать ошибки
-            text = pytesseract.image_to_string(thresh)
-            
-            # Clean text
-            text = text.strip()
-            return text
+            if file_size == 0:
+                logger.error(f"Файл имеет нулевой размер: {image_path}")
+                return ""
+                
+            # Последовательно пробуем разные методы чтения изображения
+            # 1. Попытка с OpenCV
+            try:
+                # Load image with OpenCV (faster than PIL for this specific use)
+                image = cv2.imread(image_path)
+                if image is not None:
+                    # Convert to grayscale
+                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    
+                    # Simple threshold for faster processing
+                    _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                    
+                    # Extract text with default config (faster)
+                    logger.info("Используем OpenCV для извлечения текста")
+                    text = pytesseract.image_to_string(thresh)
+                    
+                    if text and len(text.strip()) > 0:
+                        logger.info(f"Успешно извлечено {len(text.strip())} символов с помощью OpenCV")
+                        return text.strip()
+                    else:
+                        logger.warning("OpenCV метод не извлек текст, пробуем PIL")
+                else:
+                    logger.warning(f"OpenCV не смог загрузить изображение: {image_path}, пробуем PIL")
+            except Exception as cv_error:
+                logger.error(f"Ошибка при использовании OpenCV: {str(cv_error)}")
+                
+            # 2. Попытка с PIL
+            try:
+                from PIL import Image as PILImage
+                
+                logger.info("Используем PIL для извлечения текста")
+                pil_image = PILImage.open(image_path)
+                text = pytesseract.image_to_string(pil_image)
+                
+                if text and len(text.strip()) > 0:
+                    logger.info(f"Успешно извлечено {len(text.strip())} символов с помощью PIL")
+                    return text.strip()
+                else:
+                    logger.warning("PIL метод не извлек текст")
+            except Exception as pil_error:
+                logger.error(f"Ошибка при использовании PIL: {str(pil_error)}")
+                
+            # Если не удалось получить текст обоими методами
+            logger.error("Не удалось извлечь текст ни одним из методов")
+            return ""
             
         except Exception as e:
-            logger.error(f"Error in quick text extraction: {str(e)}")
+            logger.error(f"Критическая ошибка в quick_extract_text: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return ""
         
     def extract_text(self, img, region=None, force_mode=None):

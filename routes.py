@@ -147,9 +147,31 @@ def upload_book():
                             try:
                                 # Запускаем OCR для проверки дубликатов
                                 app.logger.info(f"Выполняем OCR для файла: {temp_filename}")
-                                from text_extractor import TextExtractor
-                                text_extractor = TextExtractor()
-                                page_text = text_extractor.quick_extract_text(temp_filepath)
+                                try:
+                                    from text_extractor import TextExtractor
+                                    text_extractor = TextExtractor()
+                                    # Проверяем, существует ли файл перед обработкой
+                                    if os.path.exists(temp_filepath):
+                                        app.logger.info(f"Файл существует: {temp_filepath}, размер: {os.path.getsize(temp_filepath)} байт")
+                                        # Используем более надежный и простой метод извлечения текста
+                                        image = cv2.imread(temp_filepath)
+                                        if image is not None:
+                                            # Конвертируем в оттенки серого
+                                            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                                            # Простое распознавание через pytesseract
+                                            page_text = pytesseract.image_to_string(gray)
+                                            app.logger.info(f"OCR успешно извлечено {len(page_text)} символов")
+                                        else:
+                                            app.logger.error(f"Не удалось прочитать изображение: {temp_filepath}")
+                                            page_text = "OCR не удалось (ошибка чтения изображения)"
+                                    else:
+                                        app.logger.error(f"Файл не найден: {temp_filepath}")
+                                        page_text = "OCR не удалось (файл не найден)"
+                                except Exception as ocr_error:
+                                    app.logger.error(f"Ошибка при выполнении OCR: {str(ocr_error)}")
+                                    # Записываем полный стек трейс для отладки
+                                    app.logger.error(f"Traceback: {traceback.format_exc()}")
+                                    page_text = "OCR текст недоступен из-за ошибки"
                                 
                                 # Отключаем проверку дубликатов по тексту
                                 is_duplicate = False
@@ -201,20 +223,43 @@ def upload_book():
                         # Пробуем запасной вариант через OCR из-за проблем с tesseract
                         try:
                             app.logger.info(f"Используем запасной вариант OCR для файла: {temp_filename}")
-                            from text_extractor import TextExtractor
-                            text_extractor = TextExtractor()
                             
-                            # Пытаемся получить текст агрессивным режимом
-                            image = cv2.imread(temp_filepath)
-                            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                            page_text = pytesseract.image_to_string(gray)
-                            
-                            app.logger.info(f"Получен текст из OCR: {len(page_text)} символов")
+                            # Проверяем, существует ли файл перед обработкой
+                            if os.path.exists(temp_filepath):
+                                app.logger.info(f"Файл существует для запасного OCR: {temp_filepath}, размер: {os.path.getsize(temp_filepath)} байт")
+                                
+                                try:
+                                    # Попытка 1: Используем PIL для чтения изображения
+                                    from PIL import Image
+                                    pil_image = Image.open(temp_filepath)
+                                    page_text = pytesseract.image_to_string(pil_image)
+                                    app.logger.info(f"PIL: Получен текст из OCR: {len(page_text)} символов")
+                                except Exception as pil_error:
+                                    app.logger.error(f"Ошибка PIL OCR: {str(pil_error)}")
+                                    
+                                    try:
+                                        # Попытка 2: Используем OpenCV
+                                        image = cv2.imread(temp_filepath)
+                                        if image is not None:
+                                            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                                            page_text = pytesseract.image_to_string(gray)
+                                            app.logger.info(f"OpenCV: Получен текст из OCR: {len(page_text)} символов")
+                                        else:
+                                            app.logger.error(f"OpenCV не смог загрузить изображение: {temp_filepath}")
+                                            page_text = "Не удалось распознать изображение"
+                                    except Exception as cv_error:
+                                        app.logger.error(f"Ошибка OpenCV OCR: {str(cv_error)}")
+                                        page_text = "Ошибка распознавания OpenCV"
+                            else:
+                                app.logger.error(f"Файл не найден для запасного OCR: {temp_filepath}")
+                                page_text = "Файл не найден для OCR"
+                                
                             is_duplicate = False  # Принудительно считаем уникальным
                             similar_text = None
                             similarity = 0.0
                         except Exception as e2:
                             app.logger.error(f"Ошибка при запасном OCR: {str(e2)}")
+                            app.logger.error(f"Traceback: {traceback.format_exc()}")
                             page_text = "OCR текст недоступен из-за ошибки"
                             # Оставляем значения по умолчанию
                     
