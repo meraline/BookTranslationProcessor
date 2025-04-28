@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import logging
 import traceback
 import cv2
@@ -304,8 +305,50 @@ def process_book(book_id, job_id, is_pdf=False):
                     # Create translated book structure
                     translated_pages = []
                     for document in processed_documents:
+                        # Проверяем, есть ли у документа переведенные данные
                         if 'translated' in document:
-                            translated_pages.append(document['translated'])
+                            # Берем переведенный вариант документа
+                            translated_doc = document['translated']
+                            
+                            # Если это словарь, копируем в него оригинальные пути к изображениям
+                            if isinstance(translated_doc, dict):
+                                # Копируем важные, не подлежащие переводу поля
+                                if 'original_image' in document and 'original_image' not in translated_doc:
+                                    translated_doc['original_image'] = document['original_image']
+                                if 'processed_image' in document and 'processed_image' not in translated_doc:
+                                    translated_doc['processed_image'] = document['processed_image']
+                                if 'page_number' in document and 'page_number' not in translated_doc:
+                                    translated_doc['page_number'] = document['page_number']
+                                
+                                # Обработка рисунков
+                                if 'figures' in document and document['figures']:
+                                    # Если в переводе нет фигур или пустой список, скопируем из оригинала
+                                    if ('figures' not in translated_doc) or (not translated_doc.get('figures')):
+                                        translated_doc['figures'] = []
+                                        # Копируем фигуры, заменяя только description на translated_description
+                                        for idx, fig in enumerate(document['figures']):
+                                            # Создаем копию фигуры
+                                            translated_fig = fig.copy()
+                                            # Если у фигуры есть перевод описания, используем его
+                                            if 'translated_description' in fig:
+                                                translated_fig['description'] = fig['translated_description']
+                                            
+                                            # Добавляем в список переведенных фигур
+                                            translated_doc['figures'].append(translated_fig)
+                                
+                            # Добавляем переведенный документ в список
+                            translated_pages.append(translated_doc)
+                        else:
+                            # Если перевода нет, используем оригинал с пометкой
+                            logger.warning(f"Document missing translation data: {document.get('page_number', 'unknown')}")
+                            
+                            # Создаем копию оригинала
+                            translated_doc = document.copy()
+                            if 'paragraphs' in translated_doc:
+                                # Добавляем пометку о неудавшемся переводе
+                                translated_doc['paragraphs'] = ["[Перевод отсутствует. Показан оригинальный текст.]"] + document['paragraphs']
+                            
+                            translated_pages.append(translated_doc)
                     
                     translated_book = {
                         'title': translation_manager.translate_text(book.title),
