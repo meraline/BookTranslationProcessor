@@ -193,19 +193,10 @@ class TranslationManager:
                         temperature=0.1
                     )
                     translated_text = response.choices[0].message.content.strip()
-                # If new API doesn't work, try old API
+                # If new API doesn't work, raise exception to trigger retry
                 except Exception as new_api_error:
-                    logger.error(f"Error with new API: {str(new_api_error)}. Trying old API.")
-                    response = openai.ChatCompletion.create(
-                        model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-                        messages=[
-                            {"role": "system", "content": "Вы специалист по переводу текстов по покеру с английского на русский."},
-                            {"role": "user", "content": prompt}
-                        ],
-                        max_tokens=4000,
-                        temperature=0.1
-                    )
-                    translated_text = response.choices[0].message.content.strip()
+                    logger.error(f"Error with new API: {str(new_api_error)}. Cannot use old API.")
+                    raise ValueError(f"OpenAI API error: {str(new_api_error)}")
                 
                 # Post-process the translation
                 processed_translation = self._post_process_translation(translated_text)
@@ -466,7 +457,12 @@ class TranslationManager:
         try:
             logger.info("Improving OCR text with OpenAI API (keeping English language)")
             
-            client = openai.OpenAI(api_key=self.openai_api_key)
+            try:
+                client = openai.OpenAI(api_key=self.openai_api_key)
+            except TypeError:
+                # Fallback для случаев когда proxies вызывает ошибку
+                client = openai.OpenAI()
+                client.api_key = self.openai_api_key
             
             prompt = f"""Fix OCR errors and improve the following English text from a poker book.
             IMPORTANT: This is ENGLISH text - do NOT translate to any other language.
@@ -493,19 +489,11 @@ class TranslationManager:
                 )
                 improved_text = response.choices[0].message.content.strip()
                 
-            # If new API doesn't work, try old API
+            # If new API doesn't work, return original text
             except Exception as new_api_error:
-                logger.error(f"Error with new API: {str(new_api_error)}. Trying old API.")
-                response = openai.ChatCompletion.create(
-                    model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
-                    messages=[
-                        {"role": "system", "content": "You are an expert at correcting OCR errors in English poker texts. Do not translate the text."},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=4000,
-                    temperature=0.1
-                )
-                improved_text = response.choices[0].message.content.strip()
+                logger.error(f"Error with new API: {str(new_api_error)}. Cannot use old API.")
+                logger.warning("OpenAI API error occurred. Returning original text.")
+                return text
             
             # Cache the result
             self.cache[cache_key] = improved_text
