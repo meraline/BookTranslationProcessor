@@ -1,0 +1,17 @@
+QUANTUM POKER: Plays the same way, very static. They aren't trying to play the player or adjust in any way. They will always just play similar hands the same way. 
+
+**Strength**: Any action that narrows an opponent's range to hands that have a lot of equity/EV, or hands that will not fold.
+
+**Superuser**: A player who can see an opponent's hole cards without anyone knowing; it could even extend as far as knowing the future streets.
+
+**Uncertainty**: The total sum of all variables for which you can't predict the outcome.
+
+**UTG (Under The Gun)**: First to act. Please tell me you know the positions already!
+
+**Utility**: A measure of satisfaction; one's happiness level from gain or loss. You measure utility, so it's an important concept to understand.
+
+**Volatility**: Describes the equity changes of each hand, or hand versus range on this street, the future streets, or just throughout the course of the hand. Determining how many cards will drastically change your opponent's range equity, your range's equity, or your equity will help determine the volatility of the current board texture.
+
+**Weakness**: Any action that narrows an opponent's range to hands that don't have a lot of equity/EV, or hands that will fold to a reasonable bet.
+
+**Whale**: A bad losing player with a lot of money, who consistently comes back into the game.
