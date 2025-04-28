@@ -42,32 +42,37 @@ def index():
 def upload_book():
     """Handle book file upload (images or PDF)"""
     if request.method == 'POST':
-        # Check if book title is provided
-        book_title = request.form.get('book_title', 'Untitled Book')
-        description = request.form.get('description', '')
-        file_type = request.form.get('file_type', 'images')
+        # Check if this is a chunked upload via AJAX
+        is_chunked = request.form.get('chunk_upload', 'false') == 'true'
         
-        # Create new book record
-        new_book = Book(title=book_title, description=description)
-        db.session.add(new_book)
-        db.session.commit()
-        
-        uploaded_count = 0
-        is_pdf = False
-        
-        # Обработка в зависимости от типа файла (изображения или PDF)
-        if file_type == 'images':
-            # Обработка загруженных изображений
-            if 'book_images' not in request.files:
-                flash('Файлы не выбраны', 'error')
-                return redirect(request.url)
+        # For regular POST uploads
+        if not is_chunked:
+            # Check if book title is provided
+            book_title = request.form.get('book_title', 'Untitled Book')
+            description = request.form.get('description', '')
+            file_type = request.form.get('file_type', 'images')
             
-            files = request.files.getlist('book_images')
+            # Create new book record
+            new_book = Book(title=book_title, description=description)
+            db.session.add(new_book)
+            db.session.commit()
             
-            # Check if at least one file is selected
-            if len(files) == 0 or files[0].filename == '':
-                flash('Не выбрано ни одного файла', 'error')
-                return redirect(request.url)
+            uploaded_count = 0
+            is_pdf = False
+            
+            # Обработка в зависимости от типа файла (изображения или PDF)
+            if file_type == 'images':
+                # Обработка загруженных изображений
+                if 'book_images' not in request.files:
+                    flash('Файлы не выбраны', 'error')
+                    return redirect(request.url)
+            
+                files = request.files.getlist('book_images')
+            
+                # Check if at least one file is selected
+                if len(files) == 0 or files[0].filename == '':
+                    flash('Не выбрано ни одного файла', 'error')
+                    return redirect(request.url)
             
             # Import necessary modules for duplicate detection
             from text_extractor import TextExtractor
