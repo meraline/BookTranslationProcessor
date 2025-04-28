@@ -51,6 +51,7 @@ def upload_book():
             book_title = request.form.get('book_title', 'Untitled Book')
             description = request.form.get('description', '')
             file_type = request.form.get('file_type', 'images')
+            translate_to_russian = request.form.get('translate_to_russian') == 'yes'
             
             # Create new book record
             new_book = Book(title=book_title, description=description)
@@ -491,8 +492,8 @@ def upload_book():
             db.session.add(job)
             db.session.commit()
             
-            # Start processing in background
-            thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf))
+            # Start processing in background with translation flag
+            thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf, translate_to_russian))
             thread.daemon = True
             thread.start()
             
@@ -537,8 +538,12 @@ def reprocess_book(book_id):
     if book.pages and book.pages[0].image_path:
         is_pdf = book.pages[0].image_path.lower().endswith('.pdf')
     
-    # Start processing in background
-    thread = threading.Thread(target=process_book, args=(book.id, job.id, is_pdf))
+    # По умолчанию используем перевод при повторной обработке
+    # В будущем можно добавить выбор этой опции в форму повторной обработки
+    translate_to_russian = True
+    
+    # Start processing in background with translation flag
+    thread = threading.Thread(target=process_book, args=(book.id, job.id, is_pdf, translate_to_russian))
     thread.daemon = True
     thread.start()
     

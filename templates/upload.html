@@ -64,6 +64,18 @@
                         </div>
                     </div>
                     
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="translate_to_russian" name="translate_to_russian" value="yes" checked>
+                            <label class="form-check-label" for="translate_to_russian">
+                                Переводить на русский язык
+                            </label>
+                            <div class="form-text">
+                                Если отключено, будет создан PDF только с оригинальным текстом без перевода.
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="alert alert-info">
                         <h5>Информация об обработке</h5>
                         
@@ -74,8 +86,8 @@
                             <ul>
                                 <li>Извлечения текста с помощью OCR</li>
                                 <li>Обнаружения и анализа фигур, графиков и таблиц</li>
-                                <li>Перевода содержимого на русский язык</li>
-                                <li>Создания организованных PDF-файлов на обоих языках</li>
+                                <li id="translation-images-item">Перевода содержимого на русский язык</li>
+                                <li>Создания организованных PDF-файлов на языке оригинала <span id="translation-pdfs-images">и на русском</span></li>
                             </ul>
                             <p>
                                 Обработка может занять несколько минут в зависимости от количества и сложности изображений.
@@ -89,8 +101,8 @@
                             <ul>
                                 <li>Извлечения текста со всех страниц</li>
                                 <li>Преобразования изображений и таблиц из PDF в отдельные элементы</li>
-                                <li>Перевода содержимого на русский язык</li>
-                                <li>Создания нового PDF-файла на русском языке</li>
+                                <li id="translation-pdf-item">Перевода содержимого на русский язык</li>
+                                <li>Создания PDF-файла на языке оригинала <span id="translation-pdfs-pdf">и на русском</span></li>
                             </ul>
                             <p>
                                 Обработка может занять несколько минут в зависимости от размера и сложности PDF-файла.
@@ -154,6 +166,35 @@ document.addEventListener('DOMContentLoaded', function() {
     // Слушатели событий
     typeImages.addEventListener('change', toggleUploadType);
     typePdf.addEventListener('change', toggleUploadType);
+    
+    // Обработка флага перевода
+    const translateCheckbox = document.getElementById('translate_to_russian');
+    const translationImagesItem = document.getElementById('translation-images-item');
+    const translationPdfItem = document.getElementById('translation-pdf-item');
+    const translationPdfsImages = document.getElementById('translation-pdfs-images');
+    const translationPdfsPdf = document.getElementById('translation-pdfs-pdf');
+    
+    function toggleTranslationVisibility() {
+        if (translateCheckbox.checked) {
+            // Показываем информацию о переводе
+            translationImagesItem.style.display = 'list-item';
+            translationPdfItem.style.display = 'list-item';
+            translationPdfsImages.style.display = 'inline';
+            translationPdfsPdf.style.display = 'inline';
+        } else {
+            // Скрываем информацию о переводе
+            translationImagesItem.style.display = 'none';
+            translationPdfItem.style.display = 'none';
+            translationPdfsImages.style.display = 'none';
+            translationPdfsPdf.style.display = 'none';
+        }
+    }
+    
+    // Вызываем при загрузке
+    toggleTranslationVisibility();
+    
+    // Слушатель события для чекбокса
+    translateCheckbox.addEventListener('change', toggleTranslationVisibility);
     
     // Обработка изображений
     const imagePreview = document.getElementById('image-preview');
