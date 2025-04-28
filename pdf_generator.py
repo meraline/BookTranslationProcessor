@@ -136,12 +136,25 @@ class PDFGenerator:
             str: Path to the generated PDF
         """
         try:
-            # Create output filename
+            # Create a safe, short output filename using UUID to prevent path-too-long errors
+            import uuid
+            
+            # Get a short prefix from the book title (max 15 chars)
+            prefix = ""
             if book_title:
-                sanitized_title = re.sub(r'[^\w\s-]', '', book_title).replace(' ', '_')
-                filename = f"{sanitized_title}_{language}.pdf"
+                # Take just the first word or first 15 chars
+                first_part = book_title.split()[0] if ' ' in book_title else book_title[:15]
+                prefix = re.sub(r'[^\w\s-]', '', first_part).replace(' ', '_')
+                
+                # Make sure we don't exceed max length
+                if len(prefix) > 15:
+                    prefix = prefix[:15]
             else:
-                filename = f"poker_book_{language}.pdf"
+                prefix = "book"
+                
+            # Generate a short unique filename
+            unique_id = str(uuid.uuid4())[:8]  # Use first 8 chars of UUID
+            filename = f"{prefix}_{unique_id}_{language}.pdf"
                 
             # self.output_dir is something like 'output/book_5'
             os.makedirs(self.output_dir, exist_ok=True)

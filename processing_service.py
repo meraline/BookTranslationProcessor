@@ -241,8 +241,14 @@ def process_book(book_id, job_id, is_pdf=False):
                 'language': 'en'
             }
             
-            # Save book structure
-            book_structure_path = os.path.join(text_dir, f"{book.title.replace(' ', '_')}_structure.json")
+            # Save book structure with a safe filename
+            # Use just first word of title or first 15 chars to avoid path-too-long errors
+            safe_title = book.title.split()[0] if book.title and ' ' in book.title else book.title[:15]
+            safe_title = re.sub(r'[^\w\s-]', '', safe_title).strip().replace(' ', '_')
+            if len(safe_title) > 15:
+                safe_title = safe_title[:15]
+                
+            book_structure_path = os.path.join(text_dir, f"{safe_title}_structure.json")
             utils.save_to_json(book_structure, book_structure_path)
             
             # Ensure PDF output directory exists
