@@ -391,6 +391,93 @@ class TranslationManager:
             
             Перевод на русский:"""
     
+    def improve_extracted_text(self, text):
+        """
+        Improve OCR extracted text using OpenAI API.
+        This function ensures text remains in the original language (English).
+        
+        Args:
+            text (str): Raw OCR text
+            
+        Returns:
+            str: Improved text in English
+        """
+        if not text or not text.strip():
+            return ""
+            
+        if not self.openai_api_key:
+            logger.warning("No OpenAI API key provided, returning original text")
+            return text
+            
+        # Generate cache key
+        cache_key = f"improve_en_{hash(text)}"
+        
+        # Check cache
+        if cache_key in self.cache:
+            logger.debug("Using cached improvement")
+            return self.cache[cache_key]
+        
+        # If text is very long, process in chunks
+        if len(text) > 2000:
+            chunks = self._split_into_chunks(text, 1800)
+            improved_chunks = [self.improve_extracted_text(chunk) for chunk in chunks]
+            improved_text = "\n\n".join(improved_chunks)
+            return improved_text
+            
+        try:
+            logger.info("Improving OCR text with OpenAI API (keeping English language)")
+            
+            client = openai.OpenAI(api_key=self.openai_api_key)
+            
+            prompt = f"""Fix OCR errors and improve the following English text from a poker book.
+            IMPORTANT: This is ENGLISH text - do NOT translate to any other language.
+            Maintain the original English language, fix spelling, and correct formatting.
+            If sentences are incomplete or garbled, do your best to reconstruct them.
+            Do not add new information or content not present in the original.
+            ALWAYS KEEP THE TEXT IN ENGLISH - DO NOT TRANSLATE.
+            
+            Original OCR text:
+            {text}
+            
+            Improved English text:"""
+            
+            # Try with new API
+            try:
+                response = client.chat.completions.create(
+                    model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                    messages=[
+                        {"role": "system", "content": "You are an expert at correcting OCR errors in English poker texts. Do not translate the text."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=4000,
+                    temperature=0.1
+                )
+                improved_text = response.choices[0].message.content.strip()
+                
+            # If new API doesn't work, try old API
+            except Exception as new_api_error:
+                logger.error(f"Error with new API: {str(new_api_error)}. Trying old API.")
+                response = openai.ChatCompletion.create(
+                    model="gpt-4o",  # the newest OpenAI model is "gpt-4o" which was released May 13, 2024.
+                    messages=[
+                        {"role": "system", "content": "You are an expert at correcting OCR errors in English poker texts. Do not translate the text."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    max_tokens=4000,
+                    temperature=0.1
+                )
+                improved_text = response.choices[0].message.content.strip()
+            
+            # Cache the result
+            self.cache[cache_key] = improved_text
+            self._save_cache()
+            
+            return improved_text
+            
+        except Exception as e:
+            logger.error(f"Error improving OCR text: {str(e)}")
+            return text  # Return original text on error
+    
     def _post_process_translation(self, translation):
         """
         Apply post-processing to the translation.

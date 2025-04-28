@@ -146,17 +146,20 @@ def process_book(book_id, job_id, is_pdf=False):
                         with open(raw_text_path, 'w', encoding='utf-8') as f:
                             f.write(full_text)
                         
-                        # Improve OCR result with OpenAI if available
+                        # Store the original English text first (before any correction or translation)
+                        original_english_text = full_text
+                        
+                        # Improve OCR result with OpenAI if available - using specific method to keep text in English
                         if openai_api_key:
-                            enhanced_text = translation_manager.translate_text(full_text, purpose="ocr_correction")
+                            enhanced_text = translation_manager.improve_extracted_text(original_english_text)
                             corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
                             with open(corrected_text_path, 'w', encoding='utf-8') as f:
                                 f.write(enhanced_text)
                         else:
-                            enhanced_text = full_text
+                            enhanced_text = original_english_text
                         
-                        # Save text content to database
-                        page.text_content = enhanced_text
+                        # Save original English text content to database
+                        page.text_content = original_english_text
                         
                         # Detect figures and diagrams
                         figures = figure_analyzer.detect_figures(processed_img, original_img)
