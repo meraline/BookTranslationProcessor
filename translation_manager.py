@@ -18,6 +18,8 @@ class TranslationManager:
     # Словарь покерных терминов для проверки и замены
     POKER_GLOSSARY = {
         "EV": "Expected Value (математическое ожидание)",
+        "AEV": "Average Expected Value (среднее математическое ожидание)",
+        "AFV": "Average Function Value (функция среднего значения)",
         "pot odds": "pot odds (шансы банка)",
         "implied odds": "implied odds (потенциальные шансы)",
         "GTO": "Game Theory Optimal (оптимальная игра по теории игр)",
@@ -27,9 +29,18 @@ class TranslationManager:
         "4-bet": "4-bet (4-бет, ререйз на 3-бет)",
         "WTSD": "Went To Showdown (дошел до вскрытия)",
         "MTTTL": "Move To The Top Level (переход на высший уровень)",
-        "SWASED": "SWASED (система анализа в покере)",
-        "ECD": "ECD (аббревиатура в покере)",
-        "CEE": "CEE (термин из покера)",
+        
+        # Расширенные определения для SWASED и других терминов
+        "SWASED": "SWASED (Система анализа покерных решений - Street, WTSD, Actualization, Sizing, EV, Downstream)",
+        "ECD": "ECD (Execution, Calculation, Decision - компоненты принятия решений в покере)",
+        "CEE": "CEE (Calculation, Execution, Evaluation - методика оценки игры)",
+        "Eo": "Eo (Equity optimization - оптимизация эквити)",
+        "ea": "ea (equity awareness - осознание эквити)",
+        "Fn": "Fn (Function notation - функциональная нотация)",
+        "i": "i (iteration - итерация)",
+        "Do": "Do (Downstream optimization - оптимизация последующих действий)",
+        "CD": "CD (Calculation and Decision - расчеты и принятие решений)",
+        
         "UTG": "Under The Gun (первая позиция после блайндов)",
         "BB": "Big Blind (большой блайнд)",
         "SB": "Small Blind (малый блайнд)",
@@ -38,6 +49,11 @@ class TranslationManager:
         "HJ": "Hijack (позиция хайджека)",
         "MP": "Middle Position (средняя позиция)",
         "EP": "Early Position (ранняя позиция)",
+        "Barrel": "Barrel (ставка, обычно делаемая после ставки на предыдущей улице)",
+        "10,000 Hour Rule": "10,000 Hour Rule (правило 10,000 часов - для становления экспертом в любой области)",
+        "Actualization": "Actualization (актуализация - способность полностью и точно рассчитать наилучший курс действий сейчас и в будущем)",
+        "Autopilot": "Autopilot (автопилот - действия без реального обдумывания)",
+        "Average Enumerated Value": "Average Enumerated Value (среднее перечисляемое значение)",
     }
     
     def __init__(self, openai_api_key=None, target_language='ru', cache_dir=None):
@@ -260,11 +276,47 @@ class TranslationManager:
                     # Заменим только первое вхождение
                     text = text.replace(original_match, translation, 1)
         
-        # Поиск и обработка последовательностей аббревиатур (например, "SWASED ECD CEE")
+        # Специальная обработка для последовательности аббревиатур SWASED ECD CEE и т.д.
+        # Этот паттерн часто встречается в покерной литературе и нужна особая обработка
+        special_swased_pattern = r'\bSWASED\s+ECD\s+CEE(?:\s+Eo)?(?:\s+ea)?(?:\s+Fn)?(?:\s+i)?(?:\s+Do)?(?:\s+CD)?\b'
+        swased_match = re.search(special_swased_pattern, text)
+        
+        if swased_match:
+            full_match = swased_match.group(0)
+            logger.info(f"Found special SWASED sequence: {full_match}")
+            
+            # Создаем расширенное объяснение последовательности
+            replacement = "SWASED (Система анализа покерных решений - Street, WTSD, Actualization, Sizing, EV, Downstream), "
+            replacement += "ECD (Execution, Calculation, Decision - компоненты принятия решений в покере), "
+            replacement += "CEE (Calculation, Execution, Evaluation - методика оценки игры)"
+            
+            # Добавляем остальные элементы, если они есть в исходной последовательности
+            if "Eo" in full_match:
+                replacement += ", Eo (Equity optimization - оптимизация эквити)"
+            if "ea" in full_match:
+                replacement += ", ea (equity awareness - осознание эквити)"
+            if "Fn" in full_match:
+                replacement += ", Fn (Function notation - функциональная нотация)"
+            if "i" in full_match and " i " in full_match:  # Проверяем, что это отдельное слово
+                replacement += ", i (iteration - итерация)"
+            if "Do" in full_match:
+                replacement += ", Do (Downstream optimization - оптимизация последующих действий)"
+            if "CD" in full_match:
+                replacement += ", CD (Calculation and Decision - расчеты и принятие решений)"
+            
+            # Заменяем весь блок аббревиатур на развернутое объяснение
+            text = text.replace(full_match, replacement)
+            logger.info(f"Replaced SWASED sequence with expanded explanation")
+            
+        # Обработка других последовательностей аббревиатур (для общего случая)
         abbr_pattern = r'\b([A-Z]{2,}(?:\s+[A-Z]{2,})+)\b'
-        abbr_matches = re.finditer(abbr_pattern, text)
+        abbr_matches = list(re.finditer(abbr_pattern, text))
         
         for match in abbr_matches:
+            # Проверяем, не обработали ли мы уже эту последовательность выше
+            if swased_match and swased_match.start() <= match.start() <= swased_match.end():
+                continue
+                
             abbr_sequence = match.group(0)
             # Разделим последовательность на отдельные аббревиатуры
             abbrs = abbr_sequence.split()
@@ -281,6 +333,7 @@ class TranslationManager:
             # Заменим всю последовательность
             replacement = " ".join(processed_abbrs)
             text = text.replace(abbr_sequence, replacement)
+            logger.info(f"Processed abbreviation sequence: {abbr_sequence}")
         
         return text
     
