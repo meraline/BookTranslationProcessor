@@ -561,12 +561,17 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                 original_english_text = full_text
                 
                 # Improve text with OpenAI if available
-                if openai_api_key:
-                    enhanced_text = translation_manager.translate_text(full_text, purpose="ocr_correction")
-                    corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
-                    with open(corrected_text_path, 'w', encoding='utf-8') as f:
-                        f.write(enhanced_text)
+                if openai_api_key and translation_manager._test_openai_connection():
+                    try:
+                        enhanced_text = translation_manager.translate_text(full_text, purpose="ocr_correction")
+                        corrected_text_path = os.path.join(text_dir, f"{output_basename}_corrected.txt")
+                        with open(corrected_text_path, 'w', encoding='utf-8') as f:
+                            f.write(enhanced_text)
+                    except Exception as e:
+                        logger.error(f"Error improving text with OpenAI: {str(e)}")
+                        enhanced_text = full_text
                 else:
+                    logger.info("OpenAI API not available. Using original text.")
                     enhanced_text = full_text
                 
                 # Save text content to database - for PDF processing, use original text for English version
@@ -598,10 +603,14 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                         db.session.add(db_figure)
                         
                         # If translation is available, translate description
-                        if openai_api_key:
-                            translated_desc = translation_manager.translate_text(
-                                description, purpose="figure_description")
-                            db_figure.translated_description = translated_desc
+                        if openai_api_key and translation_manager._test_openai_connection():
+                            try:
+                                translated_desc = translation_manager.translate_text(
+                                    description, purpose="figure_description")
+                                db_figure.translated_description = translated_desc
+                            except Exception as e:
+                                logger.error(f"Error translating figure description: {str(e)}")
+                                db_figure.translated_description = description
                         
                         processed_figures.append({
                             'type': figure_type,
@@ -625,18 +634,25 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                 utils.save_to_json(document_structure, structure_path)
                 
                 # Translate content if OpenAI API key is available
-                if openai_api_key:
-                    translated_structure = translation_manager.translate_document(document_structure)
-                    
-                    # Save translated structure
-                    translated_path = os.path.join(translated_dir, f"{output_basename}_translated.json")
-                    utils.save_to_json(translated_structure, translated_path)
-                    
-                    # Save translated content to database
-                    db_page.translated_content = '\n\n'.join(
-                        translated_structure.get('paragraphs', []))
-                    
-                    document_structure['translated'] = translated_structure
+                if openai_api_key and translation_manager._test_openai_connection():
+                    try:
+                        translated_structure = translation_manager.translate_document(document_structure)
+                        
+                        # Save translated structure
+                        translated_path = os.path.join(translated_dir, f"{output_basename}_translated.json")
+                        utils.save_to_json(translated_structure, translated_path)
+                        
+                        # Save translated content to database
+                        db_page.translated_content = '\n\n'.join(
+                            translated_structure.get('paragraphs', []))
+                        
+                        document_structure['translated'] = translated_structure
+                    except Exception as e:
+                        logger.error(f"Error translating document: {str(e)}")
+                        # Create empty translated structure to avoid errors
+                        document_structure['translated'] = {
+                            'paragraphs': [f"[Перевод недоступен: {str(e)}]"]
+                        }
                 
                 processed_documents.append(document_structure)
                 
