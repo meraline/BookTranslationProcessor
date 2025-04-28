@@ -623,19 +623,65 @@ def download_pdf(job_id, language):
     job = ProcessingJob.query.get_or_404(job_id)
     
     if language == 'en' and job.result_file_en:
-        logger.debug(f"Sending English PDF file: {job.result_file_en}")
-        if not os.path.exists(job.result_file_en):
-            logger.error(f"Файл не существует: {job.result_file_en}")
+        pdf_path = job.result_file_en
+        
+        # Исправление проблемы с дублирующимися pdf в пути
+        if 'pdf/pdf' in pdf_path:
+            corrected_path = pdf_path.replace('pdf/pdf', 'pdf')
+            logger.debug(f"Correcting path from {pdf_path} to {corrected_path}")
+            pdf_path = corrected_path
+        
+        logger.debug(f"Sending English PDF file: {pdf_path}")
+        
+        if not os.path.exists(pdf_path):
+            logger.error(f"Файл не существует: {pdf_path}")
+            # Пробуем альтернативные пути для обратной совместимости
+            alt_paths = [
+                job.result_file_en,  # Оригинальный путь из БД
+                job.result_file_en.replace('pdf/pdf', 'pdf'),  # Исправленный путь
+                job.result_file_en.replace('/pdf/', '/'),  # Путь с удаленным pdf/
+            ]
+            
+            for alt_path in alt_paths:
+                if os.path.exists(alt_path):
+                    logger.info(f"Найден альтернативный путь к файлу: {alt_path}")
+                    return send_file(alt_path, as_attachment=True)
+            
+            # Если файл не найден ни по одному из путей
             flash('Файл не найден на сервере', 'error')
             return redirect(url_for('view_book', book_id=job.book_id))
-        return send_file(job.result_file_en, as_attachment=True)
+            
+        return send_file(pdf_path, as_attachment=True)
     elif language == 'ru' and job.result_file_ru:
-        logger.debug(f"Sending Russian PDF file: {job.result_file_ru}")
-        if not os.path.exists(job.result_file_ru):
-            logger.error(f"Файл не существует: {job.result_file_ru}")
+        pdf_path = job.result_file_ru
+        
+        # Исправление проблемы с дублирующимися pdf в пути
+        if 'pdf/pdf' in pdf_path:
+            corrected_path = pdf_path.replace('pdf/pdf', 'pdf')
+            logger.debug(f"Correcting path from {pdf_path} to {corrected_path}")
+            pdf_path = corrected_path
+        
+        logger.debug(f"Sending Russian PDF file: {pdf_path}")
+        
+        if not os.path.exists(pdf_path):
+            logger.error(f"Файл не существует: {pdf_path}")
+            # Пробуем альтернативные пути для обратной совместимости
+            alt_paths = [
+                job.result_file_ru,  # Оригинальный путь из БД
+                job.result_file_ru.replace('pdf/pdf', 'pdf'),  # Исправленный путь
+                job.result_file_ru.replace('/pdf/', '/'),  # Путь с удаленным pdf/
+            ]
+            
+            for alt_path in alt_paths:
+                if os.path.exists(alt_path):
+                    logger.info(f"Найден альтернативный путь к файлу: {alt_path}")
+                    return send_file(alt_path, as_attachment=True)
+            
+            # Если файл не найден ни по одному из путей
             flash('Файл не найден на сервере', 'error')
             return redirect(url_for('view_book', book_id=job.book_id))
-        return send_file(job.result_file_ru, as_attachment=True)
+            
+        return send_file(pdf_path, as_attachment=True)
     else:
         flash('Файл не доступен', 'error')
         return redirect(url_for('view_book', book_id=job.book_id))
