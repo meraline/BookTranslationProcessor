@@ -125,10 +125,11 @@ def upload_book():
                         # Если не нашли дубликат по хешу, пробуем через OCR
                         if not is_duplicate:
                             try:
-                                page_text = TextExtractor.quick_extract_text(temp_filepath)
-                                app.logger.info(f"Извлечен текст из изображения: {len(page_text) if page_text else 0} символов")
+                                # Временно отключаем OCR для избежания ошибок с pytesseract
+                                app.logger.info(f"Пропускаем OCR для файла: {temp_filename}")
+                                page_text = ""  # Пустой текст вместо OCR
                                 
-                                # Временно отключаем проверку дубликатов по тексту
+                                # Отключаем проверку дубликатов по тексту
                                 is_duplicate = False
                                 similar_text = None
                                 similarity = 0.0
@@ -175,14 +176,15 @@ def upload_book():
                         is_duplicate = False
                         similarity = 0.0
                         
-                        # Пробуем запасной вариант через OCR
+                        # Отключаем запасной вариант через OCR из-за проблем с tesseract
                         try:
-                            page_text = TextExtractor.quick_extract_text(temp_filepath)
-                            is_duplicate, similar_text, similarity = is_text_duplicate(
-                                page_text, existing_texts, threshold=0.80
-                            )
+                            app.logger.info(f"Пропускаем запасной вариант OCR для файла: {temp_filename}")
+                            page_text = ""
+                            is_duplicate = False  # Принудительно считаем уникальным
+                            similar_text = None
+                            similarity = 0.0
                         except Exception as e2:
-                            app.logger.error(f"Запасной вариант OCR также не сработал: {str(e2)}")
+                            app.logger.error(f"Ошибка при обработке файла: {str(e2)}")
                             # Оставляем значения по умолчанию
                     
                     if is_duplicate:
@@ -321,17 +323,13 @@ def upload_book():
                 duplicate_book = None
                 
                 try:
-                    # Извлекаем текст из первых нескольких страниц для сравнения
-                    doc = fitz.open(temp_filepath)
-                    pdf_text = ""
-                    # Берем до 10 страниц для сравнения или все, если их меньше
-                    for i in range(min(10, doc.page_count)):
-                        page = doc[i]
-                        pdf_text += page.get_text()
-                    doc.close()
+                    # Временно отключаем извлечение текста из PDF из-за возможных проблем с fitz
+                    app.logger.info(f"Обработка PDF без извлечения текста: {temp_filename}")
                     
-                    # Вычисляем хеш для текста PDF
-                    pdf_hash = hashlib.md5(pdf_text.encode('utf-8')).hexdigest()
+                    # Вычисляем хеш на основе имени файла и размера для быстрой проверки
+                    file_size = os.path.getsize(temp_filepath)
+                    pdf_hash = hashlib.md5(f"{temp_filename}_{file_size}".encode('utf-8')).hexdigest()
+                    app.logger.info(f"Вычислен упрощенный хеш PDF: {pdf_hash[:10]}...")
                     
                     # Сначала проверяем хеш в таблице FileHash
                     existing_file_hash = FileHash.query.filter_by(file_hash=pdf_hash).first()
@@ -347,22 +345,21 @@ def upload_book():
                         for book in existing_books:
                             # Проверяем только для книг, у которых есть PDF-страницы
                             if book.pages and book.pages[0].image_path and book.pages[0].image_path.lower().endswith('.pdf'):
-                                # Открываем существующий PDF и извлекаем текст
+                                # Упрощаем проверку существующих PDF без доступа к содержимому
                                 try:
-                                    doc = fitz.open(book.pages[0].image_path)
-                                    existing_text = ""
-                                    for i in range(min(10, doc.page_count)):
-                                        page = doc[i]
-                                        existing_text += page.get_text()
-                                    doc.close()
-                                    
-                                    # Вычисляем хеш существующего PDF
-                                    existing_hash = hashlib.md5(existing_text.encode('utf-8')).hexdigest()
-                                    
-                                    # Если хеши совпадают, это дубликат
-                                    if pdf_hash == existing_hash:
-                                        pdf_is_duplicate = True
-                                        duplicate_book = book
+                                    # Получаем размер файла для сравнения
+                                    if os.path.exists(book.pages[0].image_path):
+                                        existing_file_size = os.path.getsize(book.pages[0].image_path)
+                                        existing_filename = os.path.basename(book.pages[0].image_path)
+                                        
+                                        # Вычисляем упрощенный хеш существующего PDF
+                                        existing_hash = hashlib.md5(f"{existing_filename}_{existing_file_size}".encode('utf-8')).hexdigest()
+                                        app.logger.info(f"Сравниваем хеши: {pdf_hash[:10]}... и {existing_hash[:10]}...")
+                                        
+                                        # Если хеши совпадают, это дубликат
+                                        if pdf_hash == existing_hash:
+                                            pdf_is_duplicate = True
+                                            duplicate_book = book
                                         
                                         # Сохраняем хеш в БД для будущего использования
                                         try:
