@@ -140,7 +140,24 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                         page.processed_image_path = debug_image_path
                         
                         # Extract text from the entire image
+                        logger.info(f"Извлечение текста для страницы {page.id} (страница {page.page_number})")
                         full_text = text_extractor.extract_text(processed_img)
+                        logger.info(f"Извлечено {len(full_text)} символов текста")
+                        
+                        # Сохраняем результат OCR в логи для отладки
+                        if full_text:
+                            # Сокращаем до 200 символов для логов
+                            preview_text = full_text[:200] + '...' if len(full_text) > 200 else full_text
+                            logger.info(f"Предпросмотр текста: {preview_text}")
+                        else:
+                            logger.warning(f"Не удалось извлечь текст из изображения: {page.image_path}")
+                            # Пытаемся распознать с другими параметрами
+                            logger.info("Повторная попытка с другими параметрами tessaract")
+                            try:
+                                full_text = text_extractor.extract_text(processed_img, force_mode='aggressive')
+                                logger.info(f"Повторно извлечено {len(full_text)} символов")
+                            except Exception as e:
+                                logger.error(f"Ошибка при повторном извлечении: {str(e)}")
                         
                         # Save raw OCR text
                         raw_text_path = os.path.join(text_dir, f"{output_basename}_raw.txt")

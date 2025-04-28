@@ -8,6 +8,7 @@ import pytesseract
 import numpy as np
 import logging
 import re
+import traceback
 from PIL import Image
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -66,25 +67,48 @@ class TextExtractor:
             logger.error(f"Error in quick text extraction: {str(e)}")
             return ""
         
-    def extract_text(self, img, region=None):
+    def extract_text(self, img, region=None, force_mode=None):
         """
         Extract text from an image or a specific region.
         
         Args:
             img: Image to process
             region (tuple, optional): Region to extract text from (x, y, w, h)
+            force_mode (str, optional): Force a specific mode ('standard', 'aggressive')
             
         Returns:
             str: Extracted text
         """
         try:
+            # Если указан специальный режим распознавания
+            config = self.tesseract_config
+            if force_mode == 'aggressive':
+                # Более агрессивные настройки для сложных случаев
+                config = '--oem 1 --psm 3 -c tessedit_char_blacklist=|~^`$#@&*{}[]()<>\'\"\\/ -c page_separator=""'
+                logger.info("Используется агрессивный режим OCR")
+            
+            # Дополнительная предобработка изображения для улучшения OCR
+            processed = img.copy()
+            # Применяем адаптивную бинаризацию
+            if force_mode == 'aggressive':
+                processed = cv2.adaptiveThreshold(processed, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+                                                cv2.THRESH_BINARY, 11, 2)
+                # Увеличиваем контраст
+                alpha = 1.5  # Коэффициент контраста
+                beta = 10    # Яркость
+                processed = cv2.convertScaleAbs(processed, alpha=alpha, beta=beta)
+            
             # If region specified, extract that part of the image
             if region:
                 x, y, w, h = region
-                roi = img[y:y+h, x:x+w]
-                text = pytesseract.image_to_string(roi, config=self.tesseract_config)
+                roi = processed[y:y+h, x:x+w]
+                text = pytesseract.image_to_string(roi, config=config)
             else:
-                text = pytesseract.image_to_string(img, config=self.tesseract_config)
+                text = pytesseract.image_to_string(processed, config=config)
+            
+            # Логируем информацию о распознавании
+            logger.info(f"OCR выполнен с config: {config}")
+            logger.info(f"Результат OCR: {len(text)} символов")
                 
             # Clean up text
             text = self._clean_text(text)
@@ -92,6 +116,7 @@ class TextExtractor:
             
         except Exception as e:
             logger.error(f"Error extracting text: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
             return ""
     
     def extract_numbers_and_formulas(self, img, region=None):

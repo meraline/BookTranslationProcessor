@@ -241,6 +241,24 @@ class PDFGenerator:
                 logger.info("Using translated paragraphs for Russian PDF")
                 paragraphs_source = 'paragraphs'  # Для русского PDF используем переведенные параграфы
             
+            # Log more information about the document structure for debugging
+            logger.info(f"Document structure keys: {list(document_structure.keys())}")
+            if 'enhanced_text' in document_structure:
+                logger.info(f"Enhanced text length: {len(document_structure['enhanced_text'])}")
+            if 'original_text' in document_structure:
+                logger.info(f"Original text length: {len(document_structure['original_text'])}")
+                
+            # Проверяем наличие параграфов
+            if paragraphs_source not in document_structure or not document_structure[paragraphs_source]:
+                logger.warning(f"Параграфы не найдены в документе: {paragraphs_source}")
+                # Пробуем использовать другой источник текста
+                if 'enhanced_text' in document_structure and document_structure['enhanced_text']:
+                    logger.info("Используем enhanced_text как запасной вариант")
+                    document_structure[paragraphs_source] = [document_structure['enhanced_text']]
+                elif 'original_text' in document_structure and document_structure['original_text']:
+                    logger.info("Используем original_text как запасной вариант")
+                    document_structure[paragraphs_source] = [document_structure['original_text']]
+                
             if paragraphs_source in document_structure:
                 for paragraph in document_structure[paragraphs_source]:
                     # Skip empty paragraphs

@@ -3,6 +3,8 @@ import json
 import logging
 import threading
 import traceback
+import cv2
+import pytesseract
 from flask import render_template, request, redirect, url_for, flash, send_file, jsonify, session
 from werkzeug.utils import secure_filename
 from app import app, db
@@ -196,15 +198,24 @@ def upload_book():
                         is_duplicate = False
                         similarity = 0.0
                         
-                        # Отключаем запасной вариант через OCR из-за проблем с tesseract
+                        # Пробуем запасной вариант через OCR из-за проблем с tesseract
                         try:
-                            app.logger.info(f"Пропускаем запасной вариант OCR для файла: {temp_filename}")
-                            page_text = ""
+                            app.logger.info(f"Используем запасной вариант OCR для файла: {temp_filename}")
+                            from text_extractor import TextExtractor
+                            text_extractor = TextExtractor()
+                            
+                            # Пытаемся получить текст агрессивным режимом
+                            image = cv2.imread(temp_filepath)
+                            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                            page_text = pytesseract.image_to_string(gray)
+                            
+                            app.logger.info(f"Получен текст из OCR: {len(page_text)} символов")
                             is_duplicate = False  # Принудительно считаем уникальным
                             similar_text = None
                             similarity = 0.0
                         except Exception as e2:
-                            app.logger.error(f"Ошибка при обработке файла: {str(e2)}")
+                            app.logger.error(f"Ошибка при запасном OCR: {str(e2)}")
+                            page_text = "OCR текст недоступен из-за ошибки"
                             # Оставляем значения по умолчанию
                     
                     if is_duplicate:
