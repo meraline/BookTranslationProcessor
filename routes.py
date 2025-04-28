@@ -177,11 +177,60 @@ def upload_book():
                     # Not a duplicate, save permanently
                     filename = f"{new_book.id}_{idx}_{secure_filename(file.filename)}"
                     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-                    # Copy from temp location to permanent (os.rename может не работать между разными файловыми системами)
-                    import shutil
-                    shutil.copy2(temp_filepath, file_path)
-                    # Удаляем временный файл
-                    os.remove(temp_filepath)
+                    # Проверяем директорию uploads и создаем, если она отсутствует
+                    uploads_folder = app.config['UPLOAD_FOLDER']
+                    if not os.path.exists(uploads_folder):
+                        os.makedirs(uploads_folder, exist_ok=True)
+                        app.logger.info(f"Создана директория для загрузок: {uploads_folder}")
+                    
+                    # Улучшенная обработка копирования файла с проверками
+                    try:
+                        import shutil
+                        # Обеспечиваем безопасное имя файла и не слишком длинный путь
+                        safe_filename = secure_filename(file.filename)
+                        if len(safe_filename) > 50:  # Ограничиваем длину имени файла
+                            extension = safe_filename.rsplit('.', 1)[1] if '.' in safe_filename else ''
+                            safe_filename = safe_filename[:40] + '.' + extension if extension else safe_filename[:50]
+                        
+                        # Формируем окончательный путь к файлу
+                        filename = f"{new_book.id}_{idx}_{safe_filename}"
+                        file_path = os.path.join(uploads_folder, filename)
+                        
+                        # Копируем файл
+                        shutil.copy2(temp_filepath, file_path)
+                        app.logger.info(f"Файл успешно скопирован в {file_path}")
+                        
+                        # Проверяем, что файл действительно был скопирован
+                        if not os.path.exists(file_path):
+                            app.logger.error(f"Файл не был скопирован в {file_path}")
+                            raise Exception("Не удалось скопировать файл")
+                            
+                        # Проверяем права доступа и устанавливаем их, если необходимо
+                        try:
+                            os.chmod(file_path, 0o644)  # rw-r--r--
+                        except Exception as chmod_error:
+                            app.logger.warning(f"Не удалось изменить права доступа: {str(chmod_error)}")
+                            
+                        # Удаляем временный файл
+                        os.remove(temp_filepath)
+                        app.logger.info(f"Временный файл удален: {temp_filepath}")
+                    except Exception as copy_error:
+                        app.logger.error(f"Ошибка при копировании файла: {str(copy_error)}")
+                        # Если возникла ошибка при копировании, пробуем другой метод
+                        try:
+                            with open(temp_filepath, 'rb') as src_file:
+                                file_content = src_file.read()
+                                
+                            with open(file_path, 'wb') as dst_file:
+                                dst_file.write(file_content)
+                                
+                            app.logger.info(f"Файл успешно скопирован альтернативным методом в {file_path}")
+                            
+                            # Удаляем временный файл
+                            os.remove(temp_filepath)
+                        except Exception as alt_copy_error:
+                            app.logger.error(f"Альтернативный метод копирования также не сработал: {str(alt_copy_error)}")
+                            # В случае ошибки продолжаем выполнение, но файл может быть не сохранен
                     
                     # Add to existing texts to check future pages against
                     if page_text:
