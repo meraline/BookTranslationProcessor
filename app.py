@@ -31,7 +31,11 @@ UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'pdf'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['ALLOWED_EXTENSIONS'] = ALLOWED_EXTENSIONS
-app.config['MAX_CONTENT_LENGTH'] = 32 * 1024 * 1024  # 32MB max upload (увеличил для PDF файлов)
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500MB max upload (увеличен для массовой загрузки файлов)
+
+# Увеличиваем максимальное количество файлов и размер запроса для Werkzeug
+app.config['MAX_CONTENT_PATH'] = 1024 * 1024 * 1024  # 1GB для путей
+app.config['MAX_FORM_MEMORY_SIZE'] = 500 * 1024 * 1024  # 500MB для форм
 
 # Ensure upload folder exists
 if not os.path.exists(UPLOAD_FOLDER):
