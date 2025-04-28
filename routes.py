@@ -143,9 +143,11 @@ def upload_book():
                         # Если не нашли дубликат по хешу, пробуем через OCR
                         if not is_duplicate:
                             try:
-                                # Временно отключаем OCR для избежания ошибок с pytesseract
-                                app.logger.info(f"Пропускаем OCR для файла: {temp_filename}")
-                                page_text = ""  # Пустой текст вместо OCR
+                                # Запускаем OCR для проверки дубликатов
+                                app.logger.info(f"Выполняем OCR для файла: {temp_filename}")
+                                from text_extractor import TextExtractor
+                                text_extractor = TextExtractor()
+                                page_text = text_extractor.quick_extract_text(temp_filepath)
                                 
                                 # Отключаем проверку дубликатов по тексту
                                 is_duplicate = False
