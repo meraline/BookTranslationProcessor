@@ -162,24 +162,12 @@ def upload_book():
                                         if image is not None:
                                             # Конвертируем в оттенки серого
                                             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                                            # Устанавливаем таймаут для pytesseract и используем самую простую конфигурацию
-                                            page_text = "Текст не может быть извлечен"  # Значение по умолчанию
-                                            try:
-                                                # Попытка распознавания с самой быстрой конфигурацией
-                                                page_text = pytesseract.image_to_string(
-                                                    gray, 
-                                                    config='--psm 1 --oem 0',
-                                                    timeout=3  # Максимально короткий таймаут
-                                                )
-                                                app.logger.info("OCR успешно завершен с быстрой конфигурацией")
-                                            except Exception as ocr_error:
-                                                app.logger.error(f"OCR не удалось выполнить: {str(ocr_error)}")
-                                                app.logger.warning("Продолжаем без OCR на этапе предпросмотра")
-                                                # Оставляем значение по умолчанию для page_text
+                                            # ОТКЛЮЧАЕМ OCR на этапе загрузки для предотвращения таймаутов
+                                            page_text = "OCR будет выполнен при обработке"  # Значение по умолчанию
+                                            app.logger.info("OCR пропущен на этапе загрузки для предотвращения таймаутов")
                                             
-                                            # Проверяем результат
-                                            if page_text and page_text != "Текст не может быть извлечен":
-                                                app.logger.info(f"OCR успешно извлечено {len(page_text)} символов")
+                                            # Проверяем результат - просто записываем в лог информацию об изображении
+                                            app.logger.info(f"Изображение загружено: {os.path.basename(temp_filepath)}")
                                         else:
                                             app.logger.error(f"Не удалось прочитать изображение: {temp_filepath}")
                                             page_text = "OCR не удалось (ошибка чтения изображения)"
@@ -247,28 +235,9 @@ def upload_book():
                             if os.path.exists(temp_filepath):
                                 app.logger.info(f"Файл существует для запасного OCR: {temp_filepath}, размер: {os.path.getsize(temp_filepath)} байт")
                                 
-                                try:
-                                    # Попытка 1: Используем PIL для чтения изображения
-                                    from PIL import Image
-                                    pil_image = Image.open(temp_filepath)
-                                    page_text = pytesseract.image_to_string(pil_image)
-                                    app.logger.info(f"PIL: Получен текст из OCR: {len(page_text)} символов")
-                                except Exception as pil_error:
-                                    app.logger.error(f"Ошибка PIL OCR: {str(pil_error)}")
-                                    
-                                    try:
-                                        # Попытка 2: Используем OpenCV
-                                        image = cv2.imread(temp_filepath)
-                                        if image is not None:
-                                            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                                            page_text = pytesseract.image_to_string(gray)
-                                            app.logger.info(f"OpenCV: Получен текст из OCR: {len(page_text)} символов")
-                                        else:
-                                            app.logger.error(f"OpenCV не смог загрузить изображение: {temp_filepath}")
-                                            page_text = "Не удалось распознать изображение"
-                                    except Exception as cv_error:
-                                        app.logger.error(f"Ошибка OpenCV OCR: {str(cv_error)}")
-                                        page_text = "Ошибка распознавания OpenCV"
+                                # Полностью отключаем OCR на этапе загрузки
+                                page_text = "OCR отключен на этапе загрузки"
+                                app.logger.info(f"Запасной OCR также отключен для предотвращения таймаутов")
                             else:
                                 app.logger.error(f"Файл не найден для запасного OCR: {temp_filepath}")
                                 page_text = "Файл не найден для OCR"
