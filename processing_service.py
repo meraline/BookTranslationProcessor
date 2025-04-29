@@ -24,7 +24,7 @@ import fitz  # PyMuPDF
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
+def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True, figures_only_mode=False):
     """
     Process a book's pages with OCR
     
@@ -35,8 +35,9 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
         job_id: ID of the processing job
         is_pdf: Whether the upload is a PDF file (True) or images (False)
         translate_to_russian: Whether to translate content to Russian (default: True)
+        figures_only_mode: Whether to process only figures/diagrams/charts (default: False)
     """
-    logger.info(f"Starting processing for book ID: {book_id}, job ID: {job_id}, PDF: {is_pdf}, Translate: {translate_to_russian}")
+    logger.info(f"Starting processing for book ID: {book_id}, job ID: {job_id}, PDF: {is_pdf}, Translate: {translate_to_russian}, Figures only: {figures_only_mode}")
     
     # Import app at function level to avoid circular imports
     from app import app
@@ -317,11 +318,39 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True):
                         db.session.commit()
             
             # Create book structure for PDF generation
-            book_structure = {
-                'title': book.title,
-                'pages': processed_documents,
-                'language': 'en'
-            }
+            # Если figures_only_mode, то генерируем структуру только с фигурами
+            if figures_only_mode:
+                # Собираем только фигуры из всех документов с указанием страницы
+                figures_only_documents = []
+                for i, doc in enumerate(processed_documents):
+                    page_number = i + 1  # Начинаем с 1
+                    
+                    # Проверяем, есть ли фигуры на странице
+                    if 'figures' in doc and doc['figures']:
+                        for figure in doc['figures']:
+                            # Добавляем информацию о странице к каждой фигуре
+                            figure_with_page = figure.copy()
+                            figure_with_page['page_number'] = page_number
+                            figures_only_documents.append({
+                                'type': 'figure',
+                                'content': figure_with_page
+                            })
+                
+                book_structure = {
+                    'title': book.title + ' (только графики и диаграммы)',
+                    'pages': figures_only_documents,
+                    'language': 'en',
+                    'figures_only_mode': True
+                }
+                
+                logger.info(f"Режим только фигур: собрано {len(figures_only_documents)} фигур из {len(processed_documents)} страниц")
+            else:
+                # Обычный режим - все содержимое
+                book_structure = {
+                    'title': book.title,
+                    'pages': processed_documents,
+                    'language': 'en'
+                }
             
             # Save book structure with a safe filename
             # Use just first word of title or first 15 chars to avoid path-too-long errors

@@ -562,8 +562,11 @@ def upload_book():
             db.session.add(job)
             db.session.commit()
             
-            # Start processing in background with translation flag
-            thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf, translate_to_russian))
+            # Получаем значение флага figures_only_mode
+            figures_only_mode = request.form.get('figures_only_mode') == 'yes'
+            
+            # Start processing in background with translation and figures_only flags
+            thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf, translate_to_russian, figures_only_mode))
             thread.daemon = True
             thread.start()
             
@@ -612,8 +615,11 @@ def reprocess_book(book_id):
     # В будущем можно добавить выбор этой опции в форму повторной обработки
     translate_to_russian = True
     
-    # Start processing in background with translation flag
-    thread = threading.Thread(target=process_book, args=(book.id, job.id, is_pdf, translate_to_russian))
+    # По умолчанию не используем режим только фигур при повторной обработке
+    figures_only_mode = False
+    
+    # Start processing in background with translation and figures_only flags
+    thread = threading.Thread(target=process_book, args=(book.id, job.id, is_pdf, translate_to_russian, figures_only_mode))
     thread.daemon = True
     thread.start()
     

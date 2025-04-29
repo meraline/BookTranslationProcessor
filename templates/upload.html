@@ -65,13 +65,23 @@
                     </div>
                     
                     <div class="mb-3">
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch mb-2">
                             <input class="form-check-input" type="checkbox" id="translate_to_russian" name="translate_to_russian" value="yes" checked>
                             <label class="form-check-label" for="translate_to_russian">
                                 Переводить на русский язык
                             </label>
                             <div class="form-text">
                                 Если отключено, будет создан PDF только с оригинальным текстом без перевода.
+                            </div>
+                        </div>
+                        
+                        <div class="form-check form-switch mt-3">
+                            <input class="form-check-input" type="checkbox" id="figures_only_mode" name="figures_only_mode" value="yes">
+                            <label class="form-check-label" for="figures_only_mode">
+                                Только графики и диаграммы
+                            </label>
+                            <div class="form-text">
+                                В этом режиме будут обработаны и сохранены только визуальные элементы (графики, диаграммы, таблицы) с указанием номера страницы.
                             </div>
                         </div>
                     </div>
