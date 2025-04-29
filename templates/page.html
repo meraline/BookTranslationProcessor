@@ -22,6 +22,11 @@
             <div class="card-body text-center">
                 {% if page.image_path %}
                 <img src="{{ url_for('get_image', filename=page.image_path.split('/')[-1]) }}" class="img-fluid" alt="Оригинальное изображение">
+                <div class="mt-3">
+                    <a href="{{ url_for('download_page_image', page_id=page.id) }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Скачать изображение
+                    </a>
+                </div>
                 {% else %}
                 <div class="alert alert-warning">Изображение недоступно</div>
                 {% endif %}
@@ -110,6 +115,11 @@
                     {% if figure.image_path %}
                     <div class="text-center p-3">
                         <img src="{{ url_for('get_output_file', filename=figure.image_path.split('output/')[-1]) }}" class="img-fluid" alt="{{ figure.figure_type }}" style="max-height: 300px;">
+                        <div class="mt-2">
+                            <a href="{{ url_for('download_figure', figure_id=figure.id) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-download"></i> Скачать изображение
+                            </a>
+                        </div>
                     </div>
                     {% endif %}
                     <div class="card-body">

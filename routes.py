@@ -946,6 +946,48 @@ def get_output_file(filename):
         # Return a placeholder image if the requested file doesn't exist
         return send_file(os.path.join('static', 'img', 'image-not-found.png'))
         
+@app.route('/download/figure/<int:figure_id>')
+def download_figure(figure_id):
+    """Download a figure image directly"""
+    figure = Figure.query.get_or_404(figure_id)
+    
+    if not figure.image_path or not os.path.exists(figure.image_path):
+        flash('Изображение фигуры недоступно', 'error')
+        return redirect(url_for('view_page', page_id=figure.page_id))
+    
+    # Get original filename with extension
+    filename = os.path.basename(figure.image_path)
+    # Create more descriptive filename
+    descriptive_filename = f"figure_{figure_id}_{figure.figure_type}.png"
+    
+    return send_file(
+        figure.image_path,
+        as_attachment=True,
+        download_name=descriptive_filename,
+        mimetype='image/png'
+    )
+
+@app.route('/download/page_image/<int:page_id>')
+def download_page_image(page_id):
+    """Download the original page image"""
+    page = BookPage.query.get_or_404(page_id)
+    
+    if not page.image_path or not os.path.exists(page.image_path):
+        flash('Изображение страницы недоступно', 'error')
+        return redirect(url_for('view_page', page_id=page.id))
+    
+    # Get original filename with extension
+    filename = os.path.basename(page.image_path)
+    # Create more descriptive filename
+    file_extension = os.path.splitext(filename)[1] or '.png'
+    descriptive_filename = f"page_{page.page_number}{file_extension}"
+    
+    return send_file(
+        page.image_path,
+        as_attachment=True,
+        download_name=descriptive_filename
+    )
+
 @app.route('/book/<int:book_id>/read')
 def read_book(book_id):
     """Sequential reading mode for the entire book"""
