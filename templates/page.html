@@ -42,6 +42,11 @@
             <div class="card-body text-center">
                 {% if page.processed_image_path %}
                 <img src="{{ url_for('get_output_file', filename=page.processed_image_path.split('output/')[-1]) }}" class="img-fluid" alt="Обработанное изображение">
+                <div class="mt-3">
+                    <a href="{{ url_for('download_processed_image', page_id=page.id) }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> Скачать обработанное изображение
+                    </a>
+                </div>
                 {% else %}
                 <div class="alert alert-warning">
                     {% if page.status == 'pending' or page.status == 'processing' %}

@@ -988,6 +988,27 @@ def download_page_image(page_id):
         download_name=descriptive_filename
     )
 
+@app.route('/download/processed_image/<int:page_id>')
+def download_processed_image(page_id):
+    """Download the processed page image"""
+    page = BookPage.query.get_or_404(page_id)
+    
+    if not page.processed_image_path or not os.path.exists(page.processed_image_path):
+        flash('Обработанное изображение страницы недоступно', 'error')
+        return redirect(url_for('view_page', page_id=page.id))
+    
+    # Get original filename with extension
+    filename = os.path.basename(page.processed_image_path)
+    # Create more descriptive filename
+    file_extension = os.path.splitext(filename)[1] or '.png'
+    descriptive_filename = f"processed_page_{page.page_number}{file_extension}"
+    
+    return send_file(
+        page.processed_image_path,
+        as_attachment=True,
+        download_name=descriptive_filename
+    )
+
 @app.route('/book/<int:book_id>/read')
 def read_book(book_id):
     """Sequential reading mode for the entire book"""
