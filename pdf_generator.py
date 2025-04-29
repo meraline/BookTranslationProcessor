@@ -257,122 +257,133 @@ class PDFGenerator:
             # Collect TOC entries for later
             toc_entries = []
             
-            # Add main text section header
-            main_text_title = "Текст" if language == 'ru' else "Text"
-            story.append(Paragraph(main_text_title, styles['Heading1']))
-            story.append(Spacer(1, 12))
-            toc_entries.append((main_text_title, 1))  # Page numbers are approximate
+            # Проверяем, находимся ли мы в режиме только фигур
+            figures_only_mode = document_structure.get('figures_only_mode', False)
             
-            # Process all text content - deduplicate and organize paragraphs
-            all_paragraphs = []
-            seen_paragraphs = set()
+            if not figures_only_mode:
+                # В обычном режиме добавляем раздел текста
+                main_text_title = "Текст" if language == 'ru' else "Text"
+                story.append(Paragraph(main_text_title, styles['Heading1']))
+                story.append(Spacer(1, 12))
+                toc_entries.append((main_text_title, 1))  # Page numbers are approximate
             
-            # Выбираем источник текста в зависимости от языка
-            paragraphs_source = 'paragraphs'  # По умолчанию - обработанный текст (улучшенный англ. или переведенный рус.)
-            
-            # Для русского языка всегда используем переведенные параграфы
-            # Для английского можем использовать оригинальные или улучшенные параграфы
-            if language == 'en' and 'original_paragraphs' in document_structure:
-                # Используем улучшенные параграфы на английском, не перевод
-                logger.info("Using English paragraphs for English PDF")
-                paragraphs_source = 'paragraphs'  # Это улучшенный английский текст
-            elif language == 'ru':
-                logger.info("Using translated paragraphs for Russian PDF")
-                paragraphs_source = 'paragraphs'  # Для русского PDF используем переведенные параграфы
-            
-            # Log more information about the document structure for debugging
-            logger.info(f"Document structure keys: {list(document_structure.keys())}")
-            if 'enhanced_text' in document_structure:
-                logger.info(f"Enhanced text length: {len(document_structure['enhanced_text'])}")
-            if 'original_text' in document_structure:
-                logger.info(f"Original text length: {len(document_structure['original_text'])}")
+            # Проверяем, если мы не в режиме "только фигуры"
+            if not figures_only_mode:
+                # Process all text content - deduplicate and organize paragraphs
+                all_paragraphs = []
+                seen_paragraphs = set()
                 
-            # Проверяем наличие параграфов
-            if paragraphs_source not in document_structure or not document_structure[paragraphs_source]:
-                logger.warning(f"Параграфы не найдены в документе: {paragraphs_source}")
-                # Пробуем использовать другой источник текста
-                if 'enhanced_text' in document_structure and document_structure['enhanced_text']:
-                    logger.info("Используем enhanced_text как запасной вариант")
-                    # Разбиваем текст на параграфы по двойному переносу строки
-                    enhanced_text = document_structure['enhanced_text']
-                    document_structure[paragraphs_source] = enhanced_text.split('\n\n') if enhanced_text else []
-                    logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из enhanced_text")
-                elif 'original_text' in document_structure and document_structure['original_text']:
-                    logger.info("Используем original_text как запасной вариант")
-                    # Разбиваем текст на параграфы по двойному переносу строки
-                    original_text = document_structure['original_text']
-                    document_structure[paragraphs_source] = original_text.split('\n\n') if original_text else []
-                    logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из original_text")
+                # Выбираем источник текста в зависимости от языка
+                paragraphs_source = 'paragraphs'  # По умолчанию - обработанный текст (улучшенный англ. или переведенный рус.)
                 
-            if paragraphs_source in document_structure:
-                for paragraph in document_structure[paragraphs_source]:
-                    # Skip empty paragraphs
-                    paragraph = paragraph.strip()
-                    if not paragraph:
-                        continue
-                        
-                    # Skip very short paragraphs that are likely artifacts
-                    if len(paragraph) < 10 and not (paragraph.endswith(':') or paragraph.strip().isupper()):
-                        continue
-                        
-                    # Skip if we've seen this paragraph before
-                    paragraph_hash = paragraph[:100]  # Use first 100 chars as "hash"
-                    if paragraph_hash in seen_paragraphs:
-                        continue
-                        
-                    # Add to our list and mark as seen
-                    all_paragraphs.append(paragraph)
-                    seen_paragraphs.add(paragraph_hash)
-            
-            # Process paragraphs
-            section_count = 0
-            for paragraph in all_paragraphs:
-                # Check if this looks like a heading
-                is_heading = False
-                if len(paragraph) < 100 and paragraph.strip().endswith(':'):
-                    is_heading = True
-                elif len(paragraph) < 60 and paragraph.strip().isupper():
-                    is_heading = True
+                # Для русского языка всегда используем переведенные параграфы
+                # Для английского можем использовать оригинальные или улучшенные параграфы
+                if language == 'en' and 'original_paragraphs' in document_structure:
+                    # Используем улучшенные параграфы на английском, не перевод
+                    logger.info("Using English paragraphs for English PDF")
+                    paragraphs_source = 'paragraphs'  # Это улучшенный английский текст
+                elif language == 'ru':
+                    logger.info("Using translated paragraphs for Russian PDF")
+                    paragraphs_source = 'paragraphs'  # Для русского PDF используем переведенные параграфы
+                
+                # Log more information about the document structure for debugging
+                logger.info(f"Document structure keys: {list(document_structure.keys())}")
+                if 'enhanced_text' in document_structure:
+                    logger.info(f"Enhanced text length: {len(document_structure['enhanced_text'])}")
+                if 'original_text' in document_structure:
+                    logger.info(f"Original text length: {len(document_structure['original_text'])}")
                     
-                if is_heading:
-                    # This is a heading - start a new section
-                    section_count += 1
-                    heading_text = paragraph.strip().rstrip(':')
+                # Проверяем наличие параграфов
+                if paragraphs_source not in document_structure or not document_structure[paragraphs_source]:
+                    logger.warning(f"Параграфы не найдены в документе: {paragraphs_source}")
+                    # Пробуем использовать другой источник текста
+                    if 'enhanced_text' in document_structure and document_structure['enhanced_text']:
+                        logger.info("Используем enhanced_text как запасной вариант")
+                        # Разбиваем текст на параграфы по двойному переносу строки
+                        enhanced_text = document_structure['enhanced_text']
+                        document_structure[paragraphs_source] = enhanced_text.split('\n\n') if enhanced_text else []
+                        logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из enhanced_text")
+                    elif 'original_text' in document_structure and document_structure['original_text']:
+                        logger.info("Используем original_text как запасной вариант")
+                        # Разбиваем текст на параграфы по двойному переносу строки
+                        original_text = document_structure['original_text']
+                        document_structure[paragraphs_source] = original_text.split('\n\n') if original_text else []
+                        logger.info(f"Создано {len(document_structure[paragraphs_source])} параграфов из original_text")
                     
-                    # Очищаем текст заголовка от проблемных символов
-                    clean_heading = sanitize_text_for_pdf(heading_text)
-                    
-                    # Add heading and to TOC
-                    story.append(Spacer(1, 10))
-                    story.append(Paragraph(clean_heading, styles['HeadingRu'] if language == 'ru' else styles['Heading2']))
-                    story.append(Spacer(1, 6))
-                    
-                    toc_entries.append((f"    {clean_heading}", 1))  # Page numbers are approximate
-                else:
-                    # Regular paragraph - using NormalRu style for Russian text support
-                    try:
-                        # Заменяем проблемные символы Unicode на их правильные представления
-                        sanitized_text = sanitize_text_for_pdf(paragraph)
-                        if not sanitized_text:
-                            logger.warning(f"Пустой параграф после санитизации: '{paragraph[:50]}...'")
+                if paragraphs_source in document_structure:
+                    for paragraph in document_structure[paragraphs_source]:
+                        # Skip empty paragraphs
+                        paragraph = paragraph.strip()
+                        if not paragraph:
                             continue
+                            
+                        # Skip very short paragraphs that are likely artifacts
+                        if len(paragraph) < 10 and not (paragraph.endswith(':') or paragraph.strip().isupper()):
+                            continue
+                            
+                        # Skip if we've seen this paragraph before
+                        paragraph_hash = paragraph[:100]  # Use first 100 chars as "hash"
+                        if paragraph_hash in seen_paragraphs:
+                            continue
+                            
+                        # Add to our list and mark as seen
+                        all_paragraphs.append(paragraph)
+                        seen_paragraphs.add(paragraph_hash)
+                
+                # Process paragraphs
+                section_count = 0
+                for paragraph in all_paragraphs:
+                    # Check if this looks like a heading
+                    is_heading = False
+                    if len(paragraph) < 100 and paragraph.strip().endswith(':'):
+                        is_heading = True
+                    elif len(paragraph) < 60 and paragraph.strip().isupper():
+                        is_heading = True
                         
-                        # Используем подходящий стиль в зависимости от языка
-                        style_to_use = styles['NormalRu'] if language == 'ru' else styles['Normal']
-                        story.append(Paragraph(sanitized_text, style_to_use))
+                    if is_heading:
+                        # This is a heading - start a new section
+                        section_count += 1
+                        heading_text = paragraph.strip().rstrip(':')
+                        
+                        # Очищаем текст заголовка от проблемных символов
+                        clean_heading = sanitize_text_for_pdf(heading_text)
+                        
+                        # Add heading and to TOC
+                        story.append(Spacer(1, 10))
+                        story.append(Paragraph(clean_heading, styles['HeadingRu'] if language == 'ru' else styles['Heading2']))
                         story.append(Spacer(1, 6))
-                    except Exception as e:
-                        logger.error(f"Error adding paragraph: {str(e)}")
+                        
+                        toc_entries.append((f"    {clean_heading}", 1))  # Page numbers are approximate
+                    else:
+                        # Regular paragraph - using NormalRu style for Russian text support
                         try:
-                            # Пробуем более агрессивную очистку текста
-                            safe_text = aggressive_text_cleanup(paragraph)
-                            story.append(Paragraph(safe_text, styles['Normal']))
+                            # Заменяем проблемные символы Unicode на их правильные представления
+                            sanitized_text = sanitize_text_for_pdf(paragraph)
+                            if not sanitized_text:
+                                logger.warning(f"Пустой параграф после санитизации: '{paragraph[:50]}...'")
+                                continue
+                            
+                            # Используем подходящий стиль в зависимости от языка
+                            style_to_use = styles['NormalRu'] if language == 'ru' else styles['Normal']
+                            story.append(Paragraph(sanitized_text, style_to_use))
                             story.append(Spacer(1, 6))
-                        except Exception as e2:
-                            logger.error(f"Failed even with aggressive cleanup: {str(e2)}")
-                            # Добавляем параграф с простым текстом без форматирования
-                            story.append(Paragraph("Text content was removed due to encoding issues", styles['Normal']))
-                            story.append(Spacer(1, 6))
+                        except Exception as e:
+                            logger.error(f"Error adding paragraph: {str(e)}")
+                            try:
+                                # Пробуем более агрессивную очистку текста
+                                safe_text = aggressive_text_cleanup(paragraph)
+                                story.append(Paragraph(safe_text, styles['Normal']))
+                                story.append(Spacer(1, 6))
+                            except Exception as e2:
+                                logger.error(f"Failed even with aggressive cleanup: {str(e2)}")
+                                # Добавляем параграф с простым текстом без форматирования
+                                story.append(Paragraph("Text content was removed due to encoding issues", styles['Normal']))
+                                story.append(Spacer(1, 6))
+            else:
+                # В режиме "только фигуры" добавляем поясняющий параграф
+                explanation = "В этом документе представлены только графики, диаграммы и таблицы из исходного материала." if language == 'ru' else "This document contains only charts, diagrams, and tables from the source material."
+                story.append(Paragraph(explanation, styles['NormalRu'] if language == 'ru' else styles['Normal']))
+                story.append(Spacer(1, 12))
             
             # Add figures section if any
             if 'figures' in document_structure and document_structure['figures']:
@@ -388,9 +399,13 @@ class PDFGenerator:
                 for figure in document_structure['figures']:
                     figure_count += 1
                     
+                    # Get page number if available (important for figures_only_mode)
+                    page_number = figure.get('page_number', '')
+                    page_info = f" (страница {page_number})" if page_number and language == 'ru' else f" (page {page_number})" if page_number else ""
+                    
                     # Create figure caption
                     description = sanitize_text_for_pdf(figure.get('description', ''))
-                    figure_caption = f"Figure {figure_count}: {description}" if language == 'en' else f"Рисунок {figure_count}: {description}"
+                    figure_caption = f"Figure {figure_count}{page_info}: {description}" if language == 'en' else f"Рисунок {figure_count}{page_info}: {description}"
                     
                     # Get image path and add to PDF
                     image_path = figure.get('path')
@@ -425,9 +440,13 @@ class PDFGenerator:
                 for table in document_structure['tables']:
                     table_count += 1
                     
+                    # Get page number if available (important for figures_only_mode)
+                    page_number = table.get('page_number', '')
+                    page_info = f" (страница {page_number})" if page_number and language == 'ru' else f" (page {page_number})" if page_number else ""
+                    
                     # Create table caption
                     table_description = sanitize_text_for_pdf(table.get('description', ''))
-                    table_caption = f"Table {table_count}: {table_description}" if language == 'en' else f"Таблица {table_count}: {table_description}"
+                    table_caption = f"Table {table_count}{page_info}: {table_description}" if language == 'en' else f"Таблица {table_count}{page_info}: {table_description}"
                     
                     # Get table image or data
                     image_path = table.get('path')

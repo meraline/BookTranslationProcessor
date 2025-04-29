@@ -320,30 +320,40 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True, figur
             # Create book structure for PDF generation
             # Если figures_only_mode, то генерируем структуру только с фигурами
             if figures_only_mode:
-                # Собираем только фигуры из всех документов с указанием страницы
+                # Собираем только фигуры и таблицы из всех документов с указанием страницы
                 figures_only_documents = []
+                all_figures = []
+                all_tables = []
+                
                 for i, doc in enumerate(processed_documents):
                     page_number = i + 1  # Начинаем с 1
                     
-                    # Проверяем, есть ли фигуры на странице
+                    # Собираем фигуры на странице
                     if 'figures' in doc and doc['figures']:
                         for figure in doc['figures']:
                             # Добавляем информацию о странице к каждой фигуре
                             figure_with_page = figure.copy()
                             figure_with_page['page_number'] = page_number
-                            figures_only_documents.append({
-                                'type': 'figure',
-                                'content': figure_with_page
-                            })
+                            all_figures.append(figure_with_page)
+                    
+                    # Собираем таблицы на странице
+                    if 'tables' in doc and doc['tables']:
+                        for table in doc['tables']:
+                            # Добавляем информацию о странице к каждой таблице
+                            table_with_page = table.copy()
+                            table_with_page['page_number'] = page_number
+                            all_tables.append(table_with_page)
                 
+                # Создаем единую структуру с фигурами и таблицами
                 book_structure = {
                     'title': book.title + ' (только графики и диаграммы)',
-                    'pages': figures_only_documents,
+                    'figures': all_figures,
+                    'tables': all_tables,
                     'language': 'en',
                     'figures_only_mode': True
                 }
                 
-                logger.info(f"Режим только фигур: собрано {len(figures_only_documents)} фигур из {len(processed_documents)} страниц")
+                logger.info(f"Режим только фигур: собрано {len(all_figures)} фигур и {len(all_tables)} таблиц из {len(processed_documents)} страниц")
             else:
                 # Обычный режим - все содержимое
                 book_structure = {
