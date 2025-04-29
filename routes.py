@@ -66,6 +66,10 @@ def upload_book():
             description = request.form.get('description', '')
             file_type = request.form.get('file_type', 'images')
             translate_to_russian = request.form.get('translate_to_russian') == 'yes'
+            figures_only_mode = request.form.get('figures_only_mode') == 'yes'
+            
+            # Отладочное логирование
+            app.logger.info(f"Форма получена: translate_to_russian={translate_to_russian}, figures_only_mode={figures_only_mode}")
             
             # Create new book record
             new_book = Book(title=book_title, description=description)
@@ -580,8 +584,8 @@ def upload_book():
             db.session.add(job)
             db.session.commit()
             
-            # Получаем значение флага figures_only_mode
-            figures_only_mode = request.form.get('figures_only_mode') == 'yes'
+            # Используем значение figures_only_mode, определенное ранее
+            app.logger.info(f"Используем значение figures_only_mode={figures_only_mode} для запуска обработки")
             
             # Start processing in background with translation and figures_only flags
             thread = threading.Thread(target=process_book, args=(new_book.id, job.id, is_pdf, translate_to_russian, figures_only_mode))
