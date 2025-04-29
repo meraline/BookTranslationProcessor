@@ -1,0 +1,32 @@
+{
+    "title": "фото (только графики и диаграммы)",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                269,
+                61,
+                573,
+                398
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_43/tables/43_0_page_0157_20250429_051027_image_tables_269_61.png",
+            "page_number": 1
+        },
+        {
+            "type": "image",
+            "region": [
+                1005,
+                70,
+                601,
+                317
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_43/tables/43_1_page_0154_20250429_051037_image_tables_1005_70.png",
+            "page_number": 2
+        }
+    ],
+    "tables": [],
+    "language": "en",
+    "figures_only_mode": true
+}
