@@ -478,11 +478,59 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True, figur
                         logger.error(f"Error translating book title: {str(e)}")
                         translated_title = f"{book.title} [RU]"
                     
-                    translated_book = {
-                        'title': translated_title,
-                        'pages': translated_pages,
-                        'language': 'ru'
-                    }
+                    # Проверяем, находимся ли мы в режиме "только фигуры"
+                    if figures_only_mode:
+                        # Создаем версию структуры с переводами для режима "только фигуры"
+                        translated_figures = []
+                        translated_tables = []
+                        
+                        # Обрабатываем фигуры - сохраняем оригинальные пути и page_number, переводим только описания
+                        for figure in book_structure.get('figures', []):
+                            translated_figure = figure.copy()
+                            
+                            # Переводим описание, если возможно
+                            if 'description' in figure and figure['description']:
+                                try:
+                                    translated_description = translation_manager.translate_text(figure['description']) if openai_api_key else f"[RU] {figure['description']}"
+                                    translated_figure['description'] = translated_description
+                                except Exception as e:
+                                    logger.error(f"Error translating figure description: {str(e)}")
+                                    translated_figure['description'] = f"[RU] {figure['description']}"
+                            
+                            translated_figures.append(translated_figure)
+                        
+                        # Обрабатываем таблицы - сохраняем оригинальные пути и page_number, переводим только описания
+                        for table in book_structure.get('tables', []):
+                            translated_table = table.copy()
+                            
+                            # Переводим описание, если возможно
+                            if 'description' in table and table['description']:
+                                try:
+                                    translated_description = translation_manager.translate_text(table['description']) if openai_api_key else f"[RU] {table['description']}"
+                                    translated_table['description'] = translated_description
+                                except Exception as e:
+                                    logger.error(f"Error translating table description: {str(e)}")
+                                    translated_table['description'] = f"[RU] {table['description']}"
+                            
+                            translated_tables.append(translated_table)
+                        
+                        # Создаем итоговую структуру для Russian PDF
+                        translated_book = {
+                            'title': translated_title + ' (только графики и диаграммы)',
+                            'figures': translated_figures,
+                            'tables': translated_tables,
+                            'language': 'ru',
+                            'figures_only_mode': True
+                        }
+                        
+                        logger.info(f"Создана структура перевода для режима 'только фигуры': {len(translated_figures)} фигур, {len(translated_tables)} таблиц")
+                    else:
+                        # Обычный режим с полным содержимым
+                        translated_book = {
+                            'title': translated_title,
+                            'pages': translated_pages,
+                            'language': 'ru'
+                        }
                     
                     russian_pdf = generate_pdf(pdf_generator, translated_book, 'ru')
                 except Exception as e:
