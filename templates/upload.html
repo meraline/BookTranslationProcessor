@@ -206,6 +206,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Слушатель события для чекбокса
     translateCheckbox.addEventListener('change', toggleTranslationVisibility);
     
+    // Обработка режима "только фигуры"
+    const figuresOnlyCheckbox = document.getElementById('figures_only_mode');
+    
+    function updateFiguresOnlyMode() {
+        // Здесь можно добавить дополнительную логику для визуализации режима "только фигуры"
+        console.log('Режим "только фигуры":', figuresOnlyCheckbox.checked);
+    }
+    
+    // Вызываем при загрузке
+    updateFiguresOnlyMode();
+    
+    // Слушатель для чекбокса режима фигур
+    figuresOnlyCheckbox.addEventListener('change', updateFiguresOnlyMode);
+    
     // Обработка изображений
     const imagePreview = document.getElementById('image-preview');
     bookImagesInput.addEventListener('change', function() {

@@ -109,7 +109,7 @@ class TextExtractor:
             logger.error(f"Traceback: {traceback.format_exc()}")
             return ""
         
-    def extract_text(self, img, region=None, force_mode=None):
+    def extract_text(self, img, region=None, force_mode=None, config=None, timeout=None):
         """
         Extract text from an image or a specific region.
         
@@ -117,17 +117,23 @@ class TextExtractor:
             img: Image to process
             region (tuple, optional): Region to extract text from (x, y, w, h)
             force_mode (str, optional): Force a specific mode ('standard', 'aggressive')
+            config (str, optional): Specific tesseract configuration to use
+            timeout (int, optional): Timeout in seconds for OCR processing
             
         Returns:
             str: Extracted text
         """
         try:
-            # Если указан специальный режим распознавания
-            config = self.tesseract_config
-            if force_mode == 'aggressive':
-                # Более агрессивные настройки для сложных случаев
-                config = '--oem 1 --psm 3 -c tessedit_char_blacklist=|~^`$#@&*{}[]()<>\'\"\\/ -c page_separator=""'
-                logger.info("Используется агрессивный режим OCR")
+            # Используем пользовательский config или выбираем по режиму
+            if config is None:
+                config = self.tesseract_config
+                if force_mode == 'aggressive':
+                    # Более агрессивные настройки для сложных случаев
+                    config = '--oem 1 --psm 3 -c tessedit_char_blacklist=|~^`$#@&*{}[]()<>\'\"\\/ -c page_separator=""'
+                    logger.info("Используется агрессивный режим OCR")
+            
+            # Записываем используемую конфигурацию
+            logger.info(f"OCR будет выполнен с config: {config} и timeout: {timeout}")
             
             # Дополнительная предобработка изображения для улучшения OCR
             processed = img.copy()
@@ -144,9 +150,17 @@ class TextExtractor:
             if region:
                 x, y, w, h = region
                 roi = processed[y:y+h, x:x+w]
-                text = pytesseract.image_to_string(roi, config=config)
+                # Используем timeout, если он указан
+                if timeout:
+                    text = pytesseract.image_to_string(roi, config=config, timeout=timeout)
+                else:
+                    text = pytesseract.image_to_string(roi, config=config)
             else:
-                text = pytesseract.image_to_string(processed, config=config)
+                # Используем timeout, если он указан
+                if timeout:
+                    text = pytesseract.image_to_string(processed, config=config, timeout=timeout)
+                else:
+                    text = pytesseract.image_to_string(processed, config=config)
             
             # Логируем информацию о распознавании
             logger.info(f"OCR выполнен с config: {config}")

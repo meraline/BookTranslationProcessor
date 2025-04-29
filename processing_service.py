@@ -516,7 +516,7 @@ def process_book(book_id, job_id, is_pdf=False, translate_to_russian=True, figur
                         
                         # Создаем итоговую структуру для Russian PDF
                         translated_book = {
-                            'title': translated_title + ' (только графики и диаграммы)',
+                            'title': f"{translated_title} (только графики и диаграммы)",
                             'figures': translated_figures,
                             'tables': translated_tables,
                             'language': 'ru',
@@ -720,8 +720,28 @@ def process_pdf_file(book, output_dir, images_dir, text_dir, diagrams_dir, table
                 # Extract text from the page (using both PyMuPDF and OCR)
                 # First try native PDF text extraction
                 pdf_text = current_page.get_text()
-                # Then try OCR
-                ocr_text = text_extractor.extract_text(processed_img)
+                
+                # Then try OCR с ограничением по времени
+                ocr_text = ""
+                try:
+                    # Настраиваем параметры для OCR с таймаутом
+                    ocr_text = text_extractor.extract_text(
+                        processed_img, 
+                        config='--psm 6 --oem 1 -l eng',
+                        timeout=20  # 20 секунд таймаут
+                    )
+                except Exception as ocr_error:
+                    logger.warning(f"OCR с полными настройками не удалось: {str(ocr_error)}")
+                    # Запасной вариант с минимальными настройками
+                    try:
+                        ocr_text = text_extractor.extract_text(
+                            processed_img, 
+                            config='--psm 1 --oem 0',  # Самая быстрая но неточная конфигурация
+                            timeout=10
+                        )
+                    except Exception as basic_ocr_error:
+                        logger.error(f"Даже базовое OCR не удалось: {str(basic_ocr_error)}")
+                        ocr_text = "OCR не удалось выполнить из-за таймаута"
                 
                 # Use the one with more content
                 full_text = pdf_text if len(pdf_text) > len(ocr_text) else ocr_text

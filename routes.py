@@ -158,8 +158,26 @@ def upload_book():
                                         if image is not None:
                                             # Конвертируем в оттенки серого
                                             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                                            # Простое распознавание через pytesseract
-                                            page_text = pytesseract.image_to_string(gray)
+                                            # Устанавливаем таймаут для pytesseract и используем более простую конфигурацию
+                                            try:
+                                                # Попытка распознавания с ограниченными настройками
+                                                page_text = pytesseract.image_to_string(
+                                                    gray, 
+                                                    config='--psm 6 --oem 1 -l eng',
+                                                    timeout=20  # 20 секунд таймаут
+                                                )
+                                            except Exception as ocr_error:
+                                                app.logger.warning(f"OCR с полными настройками не удалось: {str(ocr_error)}")
+                                                # Запасной вариант с минимальными настройками
+                                                try:
+                                                    page_text = pytesseract.image_to_string(
+                                                        gray, 
+                                                        config='--psm 1 --oem 0',  # Самая быстрая но неточная конфигурация
+                                                        timeout=10
+                                                    )
+                                                except Exception as basic_ocr_error:
+                                                    app.logger.error(f"Даже базовое OCR не удалось: {str(basic_ocr_error)}")
+                                                    page_text = "OCR не удалось выполнить из-за таймаута"
                                             app.logger.info(f"OCR успешно извлечено {len(page_text)} символов")
                                         else:
                                             app.logger.error(f"Не удалось прочитать изображение: {temp_filepath}")
