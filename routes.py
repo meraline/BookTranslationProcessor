@@ -162,27 +162,24 @@ def upload_book():
                                         if image is not None:
                                             # Конвертируем в оттенки серого
                                             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-                                            # Устанавливаем таймаут для pytesseract и используем более простую конфигурацию
+                                            # Устанавливаем таймаут для pytesseract и используем самую простую конфигурацию
+                                            page_text = "Текст не может быть извлечен"  # Значение по умолчанию
                                             try:
-                                                # Попытка распознавания с ограниченными настройками
+                                                # Попытка распознавания с самой быстрой конфигурацией
                                                 page_text = pytesseract.image_to_string(
                                                     gray, 
-                                                    config='--psm 6 --oem 1 -l eng',
-                                                    timeout=20  # 20 секунд таймаут
+                                                    config='--psm 1 --oem 0',
+                                                    timeout=3  # Максимально короткий таймаут
                                                 )
+                                                app.logger.info("OCR успешно завершен с быстрой конфигурацией")
                                             except Exception as ocr_error:
-                                                app.logger.warning(f"OCR с полными настройками не удалось: {str(ocr_error)}")
-                                                # Запасной вариант с минимальными настройками
-                                                try:
-                                                    page_text = pytesseract.image_to_string(
-                                                        gray, 
-                                                        config='--psm 1 --oem 0',  # Самая быстрая но неточная конфигурация
-                                                        timeout=10
-                                                    )
-                                                except Exception as basic_ocr_error:
-                                                    app.logger.error(f"Даже базовое OCR не удалось: {str(basic_ocr_error)}")
-                                                    page_text = "OCR не удалось выполнить из-за таймаута"
-                                            app.logger.info(f"OCR успешно извлечено {len(page_text)} символов")
+                                                app.logger.error(f"OCR не удалось выполнить: {str(ocr_error)}")
+                                                app.logger.warning("Продолжаем без OCR на этапе предпросмотра")
+                                                # Оставляем значение по умолчанию для page_text
+                                            
+                                            # Проверяем результат
+                                            if page_text and page_text != "Текст не может быть извлечен":
+                                                app.logger.info(f"OCR успешно извлечено {len(page_text)} символов")
                                         else:
                                             app.logger.error(f"Не удалось прочитать изображение: {temp_filepath}")
                                             page_text = "OCR не удалось (ошибка чтения изображения)"
