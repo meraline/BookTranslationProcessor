@@ -1,0 +1,7 @@
+QUANTUM POKER: There will be no more decisions to make for the rest of the hand, assuming we are going all the way to the showdown with our hand. But we want to think of each decision as part of a multi-street game because each decision matters. If our opponent folds, we win (XP). When our opponent calls and we win (IX WH), and when our opponent calls and we lose (L XI LLV).
+
+We need to start by thinking about our average equity by street or next street instead of always calculating all the way to showdown. This is important because our decisions on the next street will be based on this information. You want to know how often you have 80% equity (flopped a set), how often you have 35% equity (flopped an OESD), and how often you have different amounts of equity. Knowing future equities is just as important.
+
+I have found there is no program that properly calculates your average EV on the next street, so the best thing we can do is use a graph from propokertools.com, then make some estimations about the Average Function Value—the average equity of a hand (versus a hand or range of hands) on the next street.
+
+Let me give you some brief instructions on how to find the average of that area. The area of this perfect right triangle is 1/2 * base * height. For example, if the base is 100 and the height is 150, then we divide by the interval of the graph in question (0,100). So, 1/2 * 100 * 150 = 7500, and 7500/100 = 75. This makes perfect sense as well.

@@ -1,0 +1,32 @@
+QUANTUM POKER:
+
+- Your opponent’s/opponents' hand range
+- Your hand range
+- The actions you expect your opponent(s) to make on the sum of all possible future streets
+- The optimized decision you will make on all possible future streets
+
+**Decision Options**
+
+There are only four different actions to make at all times (not including bet-sizing): bet/raise (same thing), call, check, and fold. We are, of course, concerned with the EV of each decision: EV of a bet or raise, EV of a call, and EV of a check. If none of these are +EV, then you must fold.
+
+So let's start with a logical condition statement:
+
+1. If (GLA > CLA) and (Ca > SAR), then bet.
+2. If (CR > I) and (Cad > CLAM), then call.
+3. If (ER > Aa) and (kaa > Edi), then check.
+4. If (0 > EH) and (0 > Ea) and (0 > EV), then fold.
+
+This is really straightforward, yet people often make decisions like:
+
+Here is what we have learned throughout the course of the book on the values of EV for single street decisions:
+
+- (ER) = XP + (1-X) WHLLV
+- (Ea) = C/(C3P)
+
+While we haven't officially defined it, I think we can agree that the EV of a check looks something like this:
+
+- (C=) = EV of hand versus range(s) going to the next street * Pot size * % chance of going to the next street without having to put money in the pot + the added value of how your opponent responds differently.
+
+- (CR) = p * IE 22 = o for opponent y and n for each of the n opponents (if there is only one opponent, then n=1), then a multiplication of the chance of each of them checking.
+
+Example: There are two opponents left to act, and each one will check half of their hands: 0.5 * 0.5 = 0.25. If one of the opponents does not...

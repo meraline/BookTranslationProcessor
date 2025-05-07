@@ -1,0 +1,32 @@
+{
+    "page_number": 6,
+    "original_image": "uploads/52_5_page_0056.png",
+    "processed_image": "output/book_52/images/52_5_page_0056_20250429_143758_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: EV of Different Bet Sizes",
+        "EV₁ = 597P + (0.402)(0 - P) = 1P[1]\nEV₁ = 597P + (-0.402P)",
+        "Betting 1.25 PSB wins us the pot 61/82.",
+        "EV₂ = 744P + (0.256)(0 - P) = 1.125P[1]\nEV₂ = 745P + (-0.132P)",
+        "Betting 1.5 PSB wins us the pot 73/98. We see that it is still the most profitable decision to try and bluff our opponent off top pair type hands. Why do you suppose this is? It’s because the number of hands we get to fold increases more than the percent of the pot we risk.",
+        "As we change our bet size (P - we are betting in terms of pot size), we need to get more folds (X). This means if you increase your bet by 50%, you need to get 25% more folds, and as you increase your bet size from 75P to 1.5P in this example, you get more folds than the required 25%.",
+        "This idea may have been something you already knew or intuitively understood; it's commonly understood that if you bluff half pot, you need to win 1/3 of the time to break even, and if you bluff full pot, you need to win 1/2 the time. This linear progression of the change in break-even points is a fundamental concept in poker strategy."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: os EV of Different Bet Sizes EV,=¥597P,+ (:402)(0'P=1P[1]) EV,=¥597P+ (-~402P) ee EV Betting 1:25 PSB wins us the pot 61/82] fr ——r—————— 125 15 175 2 EV,=%744P% (:256)(0!P-1125P{1]), EV,=%745P4 (-132P) Betting 1.5 PSB wins us the pot 73/98: We see that it is still the most profitable’decision to try,and bluff our; EV,=¥89P/¢(:11)(0; PITS (1) [opponentloftloffalljtop/pairgtypelhandsywhy]dojyoulsuppose]thislis] It’s because the number of hands, we get to fold increases more than the EV,=\"89P,+(-1165P) a a rer percentofthe pot we risk?As we change (A) our bet size (P-we are betting in terms of pot size), we need to get SAP folds (X) This means if you increase Let's take a look at those results graphically: your betibyi50%, you'need to geti2S3Imore folds¥and as, youlincrease your, bet size from%75Ptol1!5Pin this example,lyou get more folds than the required '5AP. This idea may have been something you already knew or; intuitively understood; it's commonly understood that if you bluff half pot! you need to win 1s the time to break even,and if you bluff full pot you need! [tolwin]¥z the, timeNThis linear, progression of the change, in breakzeven 1 mines lef 1 chagter P208 52 of 232 « 24% (42 ring Jet In Dock"
+    ],
+    "original_text": "QUANTUM POKER: os EV of Different Bet Sizes EV,=¥597P,+ (:402)(0'P=1P[1]) EV,=¥597P+ (-~402P) ee EV Betting 1:25 PSB wins us the pot 61/82] fr ——r—————— 125 15 175 2 EV,=%744P% (:256)(0!P-1125P{1]), EV,=%745P4 (-132P) Betting 1.5 PSB wins us the pot 73/98: We see that it is still the most profitable’decision to try,and bluff our; EV,=¥89P/¢(:11)(0; PITS (1) [opponentloftloffalljtop/pairgtypelhandsywhy]dojyoulsuppose]thislis] It’s because the number of hands, we get to fold increases more than the EV,=\"89P,+(-1165P) a a rer percentofthe pot we risk?As we change (A) our bet size (P-we are betting in terms of pot size), we need to get SAP folds (X) This means if you increase Let's take a look at those results graphically: your betibyi50%, you'need to geti2S3Imore folds¥and as, youlincrease your, bet size from%75Ptol1!5Pin this example,lyou get more folds than the required '5AP. This idea may have been something you already knew or; intuitively understood; it's commonly understood that if you bluff half pot! you need to win 1s the time to break even,and if you bluff full pot you need! [tolwin]¥z the, timeNThis linear, progression of the change, in breakzeven 1 mines lef 1 chagter P208 52 of 232 « 24% (42 ring Jet In Dock",
+    "enhanced_text": "QUANTUM POKER: EV of Different Bet Sizes\n\nEV₁ = 597P + (0.402)(0 - P) = 1P[1]\nEV₁ = 597P + (-0.402P)\n\nBetting 1.25 PSB wins us the pot 61/82.\n\nEV₂ = 744P + (0.256)(0 - P) = 1.125P[1]\nEV₂ = 745P + (-0.132P)\n\nBetting 1.5 PSB wins us the pot 73/98. We see that it is still the most profitable decision to try and bluff our opponent off top pair type hands. Why do you suppose this is? It’s because the number of hands we get to fold increases more than the percent of the pot we risk.\n\nAs we change our bet size (P - we are betting in terms of pot size), we need to get more folds (X). This means if you increase your bet by 50%, you need to get 25% more folds, and as you increase your bet size from 75P to 1.5P in this example, you get more folds than the required 25%.\n\nThis idea may have been something you already knew or intuitively understood; it's commonly understood that if you bluff half pot, you need to win 1/3 of the time to break even, and if you bluff full pot, you need to win 1/2 the time. This linear progression of the change in break-even points is a fundamental concept in poker strategy.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                1012,
+                61,
+                587,
+                347
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_5_page_0056_20250429_143758_image_tables_1012_61.png"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+QUANTUM POKER: Chapter 1 - The Introduction
+
+Poker is a complex decision-based investment game where your cards and information gathering determine your equity, and it is up to you to make the proper decisions to ensure the highest possible return on each decision, both consciously and subconsciously, due to your base of experience, memory recall, mood, and ability to recognize similar situations. Intuition can result in good and close-to-correct decisions but is missing many key factors and doesn’t utilize some of the fundamental mathematics and combinatorics found in the game. 
+
+The second aspect is complex math that takes all factors into account and correctly determines the best decision given your inputs. This is ideal but impractical because no one can solve such a problem in their head, and they are confined by the amount of time allowed in a hand. So, let's start by acknowledging that perfection will always be at arm's length: we can get close to it, but we will never truly reach it. 
+
+Between this truth and the truth that there is a sucker born every minute (just meaning people with poor decision-making speed), throughout this book, I intend to teach and reinforce specific mathematical and logical procedures that should help you better balance intuition and reinforce your decision-making process.

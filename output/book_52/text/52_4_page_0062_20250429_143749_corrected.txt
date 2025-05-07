@@ -1,0 +1,15 @@
+QUANTUM POKER: Variance Simulator by evplusplus.com
+
+Variance Simulator by evplusplus.com
+
+Parameters: {1.00 bb/100, 3d=20.00 bb/100, nhands=1,000,000, nruns=20}
+
+{#.r.=3.00 bb/100}
+
+Notice: All samples could feasibly play this many hands in a year, about 10% off 1 bb/100.
+
+1 minute left in chapter D208
+
+Page 60 of 232
+
+28% 39 minutes left in Dock

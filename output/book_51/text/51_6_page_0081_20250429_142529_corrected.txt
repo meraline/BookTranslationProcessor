@@ -1,0 +1,13 @@
+QUANTUM POKER: Preflop
+
+This can be used to help define whether or not opening KJo preflop is +EV or -EV. Anytime you are trying to determine your opening ranges, you should group hands like this rather than with specific hole cards.
+
+Here we have a very specific flop where we have a backdoor flush draw. That will change our equity when we run out the calculation, and every little bit of equity is very important when trying to make an accurate calculation. Make sure you get your facts right when remembering and writing out a hand.
+
+Fold, check/bet, call/raise, and most rarely fold/raise or fold/call/raise. In order to ensure you spend your time learning while you study, try and narrow down your options to the two most suitable actions, then look to enumerate those.
+
+You must enumerate more than one action in order to be making a full decision. If you are just enumerating one action, then you are just making a more pertinent decision in question.
+
+Opponent Frequencies
+
+Let's write out what opponent frequencies look like logically: when it's pretty commonly accepted as such, just so that you can get to the main point.

@@ -1,0 +1,28 @@
+{
+    "page_number": 11,
+    "original_image": "uploads/52_10_page_0044.png",
+    "processed_image": "output/book_52/images/52_10_page_0044_20250429_143850_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Chapter 32 - Advanced Concepts",
+        "When analyzing specific hand ranges and opponent tendencies, it's important to break down each action into ranges and enumerate the cards that can come out, along with all the actions each person is likely to make on all future streets.",
+        "This figure, from the program Cardrunners EV, is a rough example of the decision tree. Every poker player is intuitively trying to get the results that Cardrunners EV organizes, enumerates, and presents. That is what makes it such a powerful tool, even though it is a slow and sometimes boring process."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: [Chapter;32¥Advanced Concepts I FE Te an NEI you Ee Tork Lor PLdiCiine ll Frere Soc omes IT EE EEO EHD ER DET IDE EY [line¥givenspecific,hand ranges and opponent tendenciesSi know many] re an se he oo ar peer Yana comenes event cealllin) [decisionsYit helps, break down each'action into rangesyand enumerates the cards that can come out and all the actions each person is likely to make, on all the future streets) 1 rinuea lek 1 chapter Page 001 232 IW) [Figured This figure; from the program Cardrunners EV, is a rough example of the tree of im a ky Cm Gm 6 frm Cn i) Cr 0 (Everyfpokerfplayerfislintuitivelyftryingltol getlat{thelresultsfthat} Cardrunners EV, organizes; enumerates;and presentsyThat is what makes’ fitTsuchlalpowerfulltool¥andleven{thoughlitlislalslow)boring process) (44 min Jet In Dock"
+    ],
+    "original_text": "QUANTUM POKER: [Chapter;32¥Advanced Concepts I FE Te an NEI you Ee Tork Lor PLdiCiine ll Frere Soc omes IT EE EEO EHD ER DET IDE EY [line¥givenspecific,hand ranges and opponent tendenciesSi know many] re an se he oo ar peer Yana comenes event cealllin) [decisionsYit helps, break down each'action into rangesyand enumerates the cards that can come out and all the actions each person is likely to make, on all the future streets) 1 rinuea lek 1 chapter Page 001 232 IW) [Figured This figure; from the program Cardrunners EV, is a rough example of the tree of im a ky Cm Gm 6 frm Cn i) Cr 0 (Everyfpokerfplayerfislintuitivelyftryingltol getlat{thelresultsfthat} Cardrunners EV, organizes; enumerates;and presentsyThat is what makes’ fitTsuchlalpowerfulltool¥andleven{thoughlitlislalslow)boring process) (44 min Jet In Dock",
+    "enhanced_text": "QUANTUM POKER: Chapter 32 - Advanced Concepts\n\nWhen analyzing specific hand ranges and opponent tendencies, it's important to break down each action into ranges and enumerate the cards that can come out, along with all the actions each person is likely to make on all future streets.\n\nThis figure, from the program Cardrunners EV, is a rough example of the decision tree. Every poker player is intuitively trying to get the results that Cardrunners EV organizes, enumerates, and presents. That is what makes it such a powerful tool, even though it is a slow and sometimes boring process.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                984,
+                61,
+                643,
+                413
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_10_page_0044_20250429_143850_image_tables_984_61.png"
+        }
+    ]
+}

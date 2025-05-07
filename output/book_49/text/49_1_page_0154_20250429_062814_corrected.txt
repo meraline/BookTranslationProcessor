@@ -1,0 +1,9 @@
+QUANTUM POKER: Quizzes and simulations will help your short-stack game and your Cardrunners EV. Obviously, I think very highly of this program because it quite simply defines all the answers in poker. While it is very slow-moving and a bit complicated to use, you need to get this and spend a day or two messing around in it. It will probably be boring but totally worth it.
+
+Flopzilla: This program is an equity calculator that can be handy for understanding hand strength on future streets. Instead of a mean value, rectangle equity analysis, this program tells you the frequency of your hand's different strengths (top pair, flush, etc.) by each street, all the way to showdown. This is helpful in understanding good bluffing situations and spots where you may be value betting too thinly.
+
+Propokertools.com: This site has an awesome equity calculator that is a must-use for advanced calculations, like determining if calling a 3-bet preflop is going to pay off frequently enough to be worth it.
+
+The Pyramid Effect: Chapter Page 175 of 202
+
+While nosebleed stakes players, rich businessmen, whales, and the upper class dominate tournament winnings, high-stakes players model the upper class. Medium stakes players contribute to the pyramid effect, which is meant to describe where the money in poker comes from. There are many people feeding the poker economy (and in turn, my expensive tastes in booze and clothes!). Some of the money is wagered against some of the best players in the game, and will almost certainly be lost.

@@ -1,0 +1,15 @@
+QUANTUM POKER: EV of Different Bet Sizes
+
+EV₁ = 597P + (0.402)(0 - P) = 1P[1]
+EV₁ = 597P + (-0.402P)
+
+Betting 1.25 PSB wins us the pot 61/82.
+
+EV₂ = 744P + (0.256)(0 - P) = 1.125P[1]
+EV₂ = 745P + (-0.132P)
+
+Betting 1.5 PSB wins us the pot 73/98. We see that it is still the most profitable decision to try and bluff our opponent off top pair type hands. Why do you suppose this is? It’s because the number of hands we get to fold increases more than the percent of the pot we risk.
+
+As we change our bet size (P - we are betting in terms of pot size), we need to get more folds (X). This means if you increase your bet by 50%, you need to get 25% more folds, and as you increase your bet size from 75P to 1.5P in this example, you get more folds than the required 25%.
+
+This idea may have been something you already knew or intuitively understood; it's commonly understood that if you bluff half pot, you need to win 1/3 of the time to break even, and if you bluff full pot, you need to win 1/2 the time. This linear progression of the change in break-even points is a fundamental concept in poker strategy.

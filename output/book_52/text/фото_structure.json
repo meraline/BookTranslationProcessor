@@ -1,0 +1,104 @@
+{
+    "title": "фото 21-30 (только графики и диаграммы)",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                277,
+                62,
+                558,
+                136
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_0_page_0104_20250429_143704_image_tables_277_62.png",
+            "page_number": 1
+        },
+        {
+            "type": "image",
+            "region": [
+                980,
+                61,
+                650,
+                493
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_4_page_0062_20250429_143749_image_tables_980_61.png",
+            "page_number": 5
+        },
+        {
+            "type": "image",
+            "region": [
+                231,
+                61,
+                650,
+                493
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_4_page_0062_20250429_143749_image_tables_231_61.png",
+            "page_number": 5
+        },
+        {
+            "type": "image",
+            "region": [
+                1012,
+                61,
+                587,
+                347
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_5_page_0056_20250429_143758_image_tables_1012_61.png",
+            "page_number": 6
+        },
+        {
+            "type": "image",
+            "region": [
+                245,
+                160,
+                622,
+                467
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_7_page_0051_20250429_143816_image_tables_245_160.png",
+            "page_number": 8
+        },
+        {
+            "type": "image",
+            "region": [
+                1033,
+                61,
+                545,
+                437
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_9_page_0047_20250429_143835_image_tables_1033_61.png",
+            "page_number": 10
+        },
+        {
+            "type": "image",
+            "region": [
+                984,
+                61,
+                643,
+                413
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_10_page_0044_20250429_143850_image_tables_984_61.png",
+            "page_number": 11
+        },
+        {
+            "type": "image",
+            "region": [
+                1092,
+                369,
+                426,
+                334
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_11_page_0015_20250429_143859_image_tables_1092_369.png",
+            "page_number": 12
+        }
+    ],
+    "tables": [],
+    "language": "en",
+    "figures_only_mode": true
+}

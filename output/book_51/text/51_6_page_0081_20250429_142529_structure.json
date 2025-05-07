@@ -1,0 +1,32 @@
+{
+    "page_number": 7,
+    "original_image": "uploads/51_6_page_0081.png",
+    "processed_image": "output/book_51/images/51_6_page_0081_20250429_142529_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Preflop",
+        "This can be used to help define whether or not opening KJo preflop is +EV or -EV. Anytime you are trying to determine your opening ranges, you should group hands like this rather than with specific hole cards.",
+        "Here we have a very specific flop where we have a backdoor flush draw. That will change our equity when we run out the calculation, and every little bit of equity is very important when trying to make an accurate calculation. Make sure you get your facts right when remembering and writing out a hand.",
+        "Fold, check/bet, call/raise, and most rarely fold/raise or fold/call/raise. In order to ensure you spend your time learning while you study, try and narrow down your options to the two most suitable actions, then look to enumerate those.",
+        "You must enumerate more than one action in order to be making a full decision. If you are just enumerating one action, then you are just making a more pertinent decision in question.",
+        "Opponent Frequencies",
+        "Let's write out what opponent frequencies look like logically: when it's pretty commonly accepted as such, just so that you can get to the main point."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: 7} ua 'preflop This can be used to help define whether or;not opening KJo preflop,is +EV or EV, and any time you are trying to determine your opening ranges you should group hands like this rather than with 'specific hole cards) EVA) 8 (ZpiopsasseatV*) Here we have a very specific flop where we have a backdoor flush draw. That,will change our,equity,whenwe run out the calculation’and every, liittlelbitlof equityjislveryimportantiwhen trying tolmakelanlaccurate} calculationYMake sure you getyyour, facts rightiwhen'remembering and) writing out a hand} d 13 chapter: Page 68 of 232 < IW) fold, check/bet,call/raise; and most rarely fold/raise or fold/call/raise’In] order to ensure you spend your time learning while you study, try and narrow down your options to the two most suitable actions then look to enumeratethose} B Sfiopea scat?\" ar CS et 1s ca EVEREX) Jroulmustlenumeratelmorelthanlonelaction]in{order]tolbel making} fal decisionY1ffyoulare]justlenumeratinglonelactiony thenyyoulare]just] more pertinent decision inquestion Opponent Frequencies Let's write out what opponent frequencies looks like logically: when it's pretty commonly accepted as such)just so that you can get to the, 34 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: 7} ua 'preflop This can be used to help define whether or;not opening KJo preflop,is +EV or EV, and any time you are trying to determine your opening ranges you should group hands like this rather than with 'specific hole cards) EVA) 8 (ZpiopsasseatV*) Here we have a very specific flop where we have a backdoor flush draw. That,will change our,equity,whenwe run out the calculation’and every, liittlelbitlof equityjislveryimportantiwhen trying tolmakelanlaccurate} calculationYMake sure you getyyour, facts rightiwhen'remembering and) writing out a hand} d 13 chapter: Page 68 of 232 < IW) fold, check/bet,call/raise; and most rarely fold/raise or fold/call/raise’In] order to ensure you spend your time learning while you study, try and narrow down your options to the two most suitable actions then look to enumeratethose} B Sfiopea scat?\" ar CS et 1s ca EVEREX) Jroulmustlenumeratelmorelthanlonelaction]in{order]tolbel making} fal decisionY1ffyoulare]justlenumeratinglonelactiony thenyyoulare]just] more pertinent decision inquestion Opponent Frequencies Let's write out what opponent frequencies looks like logically: when it's pretty commonly accepted as such)just so that you can get to the, 34 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: Preflop\n\nThis can be used to help define whether or not opening KJo preflop is +EV or -EV. Anytime you are trying to determine your opening ranges, you should group hands like this rather than with specific hole cards.\n\nHere we have a very specific flop where we have a backdoor flush draw. That will change our equity when we run out the calculation, and every little bit of equity is very important when trying to make an accurate calculation. Make sure you get your facts right when remembering and writing out a hand.\n\nFold, check/bet, call/raise, and most rarely fold/raise or fold/call/raise. In order to ensure you spend your time learning while you study, try and narrow down your options to the two most suitable actions, then look to enumerate those.\n\nYou must enumerate more than one action in order to be making a full decision. If you are just enumerating one action, then you are just making a more pertinent decision in question.\n\nOpponent Frequencies\n\nLet's write out what opponent frequencies look like logically: when it's pretty commonly accepted as such, just so that you can get to the main point.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                975,
+                237,
+                258,
+                150
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_6_page_0081_20250429_142529_image_tables_975_237.png"
+        }
+    ]
+}

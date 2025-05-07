@@ -1,0 +1,5 @@
+QUANTUM POKER: There are 47 different turn cards, and we have broken them down. Let's now calculate the value of each permutation that stems from the continuation. In this chapter, we will discuss the 21 cards we will bet and the 26 cards we will check. Starting with betting the turn (refer back to the diagram to follow along or just take my word for it), there are 21 turn cards that we will bet out of the 47 possible. 
+
+On the flop, we bet and were called, so the pot is 3P. Of this, 2P is profit (it was already our money). So we win 2P, not 3P, 14/47 or 29.79% of the time. We win 2P if all-in, let's say it’s 6P on average (assuming we always win or assuming our equity is 6P). 
+
+31/47 or 65.96% of the time, we will bet the river with these cards: 25, 45, 55, 65, 75, 85, 95, J5, Qs. These are the turn cards, and there are 12 other cards. 26/47 x 56.5% of the time, our opponent calls 4P, and we win 2P + 2P, plus our 2P + 4P.

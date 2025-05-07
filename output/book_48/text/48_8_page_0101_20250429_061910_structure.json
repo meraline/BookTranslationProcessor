@@ -1,0 +1,26 @@
+{
+    "page_number": 9,
+    "original_image": "uploads/48_8_page_0101.png",
+    "processed_image": "output/book_48/images/48_8_page_0101_20250429_061910_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: This diagram looks much less confusing than the previous one. Many people don’t plan properly for the next street; they just bet blindly or check-call without thinking about it in depth—just using an instinctive approach. When you write out the decision process like this, you can begin to see which strategy is fitting for which card, and how each street benefits you. You won't be caught off guard or unprepared anymore. Now, let's add in the next street with similar assumptions, except we need to consider additional factors."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: {This diagram) looks much less eonfusing thanythe previous wotand] [2mns het chap) Page 112 of 232 45H) this, but many people don’t plan properly for the next street, they just bet blindly or check called without thinking about it in'depth’=just using an {When'youlwritelout the decision process like,thisyyou can! begin to] see which strategy, is fitting for,which card, and how each street benefits! you will make because of that} You won't be caught off guard or unprepared anymore Now, let's add in the next street, with similar,assumptionsSexcept,we NE 130 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: {This diagram) looks much less eonfusing thanythe previous wotand] [2mns het chap) Page 112 of 232 45H) this, but many people don’t plan properly for the next street, they just bet blindly or check called without thinking about it in'depth’=just using an {When'youlwritelout the decision process like,thisyyou can! begin to] see which strategy, is fitting for,which card, and how each street benefits! you will make because of that} You won't be caught off guard or unprepared anymore Now, let's add in the next street, with similar,assumptionsSexcept,we NE 130 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: This diagram looks much less confusing than the previous one. Many people don’t plan properly for the next street; they just bet blindly or check-call without thinking about it in depth—just using an instinctive approach. When you write out the decision process like this, you can begin to see which strategy is fitting for which card, and how each street benefits you. You won't be caught off guard or unprepared anymore. Now, let's add in the next street with similar assumptions, except we need to consider additional factors.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                262,
+                50,
+                587,
+                592
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_48/tables/48_8_page_0101_20250429_061910_image_tables_262_50.png"
+        }
+    ]
+}

@@ -1,0 +1,37 @@
+{
+    "page_number": 5,
+    "original_image": "uploads/51_4_page_0087.png",
+    "processed_image": "output/book_51/images/51_4_page_0087_20250429_142503_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Now let's add in our own Mean Value Rectangles: [Figure 4] In real-life situations, there will never be a straight-line equity distribution going to the next street; so we will have to estimate by making our own Mean Value Rectangles. Personally, I make visual estimations that square up the area of an integral on a graph for all similar equity situations. For instance, when set mining, you will have very low flopped equity about 7/8 of the time, but you will have very high equity about 1/8 of the time. Let’s find out what your average equity is versus AA with 66. Here is a mines left chapter on page 94 of 232."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: Now let's add in our own Mean Value Rectangles: [Figure £4] Butlinlreal llifelsituationstherelwill neverbelalstraightllinelequity] distribution going to the next street; so we will have to estimate by making; fourlown]MeanjValue Rectangles = personally, madevisuallestimations that square up the area of an integral on'a graph’=for,all similar equity, [situations [For instance{when'set mining you will have,very low, flopped ‘equity, about)7/8 of the time) but you will have very high'equity,about}1/8 the} timeSLet’s find out what your average equity is versus’AA with 66. Here is’ 1 mines lef 1 chagter Pag8 94 of 232 « 40W 33 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: Now let's add in our own Mean Value Rectangles: [Figure £4] Butlinlreal llifelsituationstherelwill neverbelalstraightllinelequity] distribution going to the next street; so we will have to estimate by making; fourlown]MeanjValue Rectangles = personally, madevisuallestimations that square up the area of an integral on'a graph’=for,all similar equity, [situations [For instance{when'set mining you will have,very low, flopped ‘equity, about)7/8 of the time) but you will have very high'equity,about}1/8 the} timeSLet’s find out what your average equity is versus’AA with 66. Here is’ 1 mines lef 1 chagter Pag8 94 of 232 « 40W 33 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: Now let's add in our own Mean Value Rectangles: [Figure 4] In real-life situations, there will never be a straight-line equity distribution going to the next street; so we will have to estimate by making our own Mean Value Rectangles. Personally, I make visual estimations that square up the area of an integral on a graph for all similar equity situations. For instance, when set mining, you will have very low flopped equity about 7/8 of the time, but you will have very high equity about 1/8 of the time. Let’s find out what your average equity is versus AA with 66. Here is a mines left chapter on page 94 of 232.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                374,
+                138,
+                363,
+                343
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_4_page_0087_20250429_142503_image_tables_374_138.png"
+        },
+        {
+            "type": "image",
+            "region": [
+                947,
+                59,
+                596,
+                358
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_4_page_0087_20250429_142503_image_tables_947_59.png"
+        }
+    ]
+}

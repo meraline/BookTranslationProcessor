@@ -1,0 +1,44 @@
+{
+    "page_number": 5,
+    "original_image": "uploads/52_4_page_0062.png",
+    "processed_image": "output/book_52/images/52_4_page_0062_20250429_143749_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Variance Simulator by evplusplus.com",
+        "Variance Simulator by evplusplus.com",
+        "Parameters: {1.00 bb/100, 3d=20.00 bb/100, nhands=1,000,000, nruns=20}",
+        "{#.r.=3.00 bb/100}",
+        "Notice: All samples could feasibly play this many hands in a year, about 10% off 1 bb/100.",
+        "1 minute left in chapter D208",
+        "Page 60 of 232",
+        "28% 39 minutes left in Dock"
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: Variance Simulator by evpluzplus.com Varlance Simulator by evplusplus.com {1.=1.00bb1100, 3d=20,00bb7100, nhards=1000000, nruns=20) {#.r.=3.00bb/100. Cmte) FH F ¥ El 3: 3 Hi fare al3bb/100, (estimated) winnep in the same gamed Notice all samples] fcould feasibly; play; thisimany/hands!inlalyear)Yabout}1 0%Zoff1bb/100] 1 mines lef 1 chagter D208 60 of 232 « 28% 39 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: Variance Simulator by evpluzplus.com Varlance Simulator by evplusplus.com {1.=1.00bb1100, 3d=20,00bb7100, nhards=1000000, nruns=20) {#.r.=3.00bb/100. Cmte) FH F ¥ El 3: 3 Hi fare al3bb/100, (estimated) winnep in the same gamed Notice all samples] fcould feasibly; play; thisimany/hands!inlalyear)Yabout}1 0%Zoff1bb/100] 1 mines lef 1 chagter D208 60 of 232 « 28% 39 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: Variance Simulator by evplusplus.com\n\nVariance Simulator by evplusplus.com\n\nParameters: {1.00 bb/100, 3d=20.00 bb/100, nhands=1,000,000, nruns=20}\n\n{#.r.=3.00 bb/100}\n\nNotice: All samples could feasibly play this many hands in a year, about 10% off 1 bb/100.\n\n1 minute left in chapter D208\n\nPage 60 of 232\n\n28% 39 minutes left in Dock",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                980,
+                61,
+                650,
+                493
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_4_page_0062_20250429_143749_image_tables_980_61.png"
+        },
+        {
+            "type": "image",
+            "region": [
+                231,
+                61,
+                650,
+                493
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_52/tables/52_4_page_0062_20250429_143749_image_tables_231_61.png"
+        }
+    ]
+}

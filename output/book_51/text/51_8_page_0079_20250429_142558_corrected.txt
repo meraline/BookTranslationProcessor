@@ -1,0 +1,5 @@
+QUANTUM POKER: Adding enumeration to your EV calculations can help you understand the difference in expected value (EV) decisions. The better your opponent is, the less of an advantage you will have going to future streets, and the less EV they will have with a well-balanced range for each action. Every decision you make in poker is governed by the information you have and your predictions about how each of your decisions will affect the future.
+
+In a hand of poker, there are a large number of actions to consider. We symbolize the average enumeration of all of those actions given one certain action. Even though "EV" is two letters, it is just one term because we are looking for the expected value of each action in question, not just a list of actions. The term "average" in math cannot simply use the mean of actions because we are not enumerating the EV of the average action; we are enumerating the EV of all actions and then averaging them. This is the enumeration of all permutations (paths or lines) with which this hand can continue, given action 'A'. This is actually what Z symbolizes.
+
+Part of a Cardrunners EV Simulation.

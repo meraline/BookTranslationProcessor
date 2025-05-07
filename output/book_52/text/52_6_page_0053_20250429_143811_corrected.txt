@@ -1,0 +1,11 @@
+QUANTUM POKER: Missed Opportunities and Folding Frequencies
+
+Now, betting 3/4 pot-sized bet (PSB) wins us the pot 22 out of 82 times. So our expected value (EV) is calculated as follows:
+
+EV = (268P) + (0.731)(0 - 0.25P)
+
+EV = 268P + (-183P)
+
+EV = 304P + (-521P)
+
+(Note: This is a simplified example from Chapter 1 of the book.)

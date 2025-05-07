@@ -1,0 +1,9 @@
+QUANTUM POKER: 10% of Hands
+
+This graph represents the true value of KQs. 20% of the time, you will flop a very strong hand, like top pair or better, which is often the best hand. Another 20% of the time, you will flop a draw with some overcards. After that, there is always some wiggle room for bluffing. Already being able to play back at 40% of flops sounds pretty good to me, even though some situations put KQs into the trouble hand category. There is a lot of strength to the hand when not against the tightest range.
+
+Using graphs like this is how I try to actualize the value of my hand. I try to mentally estimate how often I have over 30%, over 50%, and over 80% equity. This helps all of my decisions, including set mining, calling a 3-bet, knowing when to float the flop, and knowing when a bluff or semi-bluff raise can be profitable. If I am looking at my equity versus a range and see that KQs is over 40% with just two overcards and a backdoor flush draw, it seems like a good time to float or raise. Many players make clear mistakes by just folding the hand because they whiffed (no pair, no clear draw). It's important to utilize your equity and not forfeit it. This will lead to higher variance, but more importantly, it will lead to a higher win rate and more money in your pocket.
+
+Let's take a look at the same hand, but against the top 5% of hands. It has 30%+ equity on only 25% of flops.
+
+This exemplifies the power of correctly analyzing an opponent's range. If you think someone is 3-betting 10%, but they are actually 3-betting 5%, you can be making an incorrect call. So pay attention to your opponents! Your equity going from street to street (like flop to turn) are two different things. The first can be easily calculated in PokerStove, and the second requires more nuanced judgment.

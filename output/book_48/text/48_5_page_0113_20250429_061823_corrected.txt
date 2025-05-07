@@ -1,0 +1,22 @@
+QUANTUM POKER: 36.8% is the odds we are getting on our call; so any time we have more than this percentage, we should consider calling. 
+
+Minimum Amount of Maximum Amount of Uncertainty:
+- T9o vs 88+, AQo+ = T9o vs 22+, A7s+, KJs+, A8o+, KQo = 29.3% - Cannot Call
+- 38.6% - Can Call
+
+KTo vs 88+, AQo+ = KTo vs 22+, A7s+, KJs+, A8o+, KQo = 35.9% - Cannot Call
+
+T7s+, 97s+, 87s, A2o+, K8o+, Q8o+, J8o+, T9o = 32.5% - Cannot Call
+50.9% - Can Call
+
+88 vs 88+, AQo+ = 88 vs 22+, A7s+, KJs+, A8o+, KQo = 33.7% - Cannot Call
+58% - Can Call
+
+99 vs 88+, AQo+ = 99 vs 22+, A7s+, KJs+, A8o+, KQo = 39.9% - Can Call
+62% - Can Call
+
+KTo vs 88+, AQo+ = KTo vs 22+, A7s+, KJs+, A8o+, KQo = 88 vs 88+, AQo+ = 88 vs 22+, A7s+, KJs+, A8o+, KQo = 99 vs 88+, AQo+ = 99 vs 22+, A7s+, KJs+, A8o+, KQo
+
+1 minute left in chapter
+Page 124
+01212 + 50M. 25 min Jet In Dock

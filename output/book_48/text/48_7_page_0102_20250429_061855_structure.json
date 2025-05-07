@@ -1,0 +1,28 @@
+{
+    "page_number": 8,
+    "original_image": "uploads/48_7_page_0102.png",
+    "processed_image": "output/book_48/images/48_7_page_0102_20250429_061855_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: There are 47 different turn cards, and we have broken them down. Let's now calculate the value of each permutation that stems from the continuation. In this chapter, we will discuss the 21 cards we will bet and the 26 cards we will check. Starting with betting the turn (refer back to the diagram to follow along or just take my word for it), there are 21 turn cards that we will bet out of the 47 possible. ",
+        "On the flop, we bet and were called, so the pot is 3P. Of this, 2P is profit (it was already our money). So we win 2P, not 3P, 14/47 or 29.79% of the time. We win 2P if all-in, let's say it’s 6P on average (assuming we always win or assuming our equity is 6P). ",
+        "31/47 or 65.96% of the time, we will bet the river with these cards: 25, 45, 55, 65, 75, 85, 95, J5, Qs. These are the turn cards, and there are 12 other cards. 26/47 x 56.5% of the time, our opponent calls 4P, and we win 2P + 2P, plus our 2P + 4P."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: {There are 47, different turn cards and we have broken them'down into Let's now calculate the value of each permutation that stems from the c= 1 rinuea lek 1 chapter Page 112 of 232 45H) the 21 cards we will bet and 26 cards we will check? Starting with betting the turn (take a look back at the diagram to follow,along or just take my; frherelaref2 ftumYcards]thatlwelwilllbetYoutlofjthela ZA possible] GD @& © [25,45,55,65,75,85,95,)5,Qs1 {and §12] [cardsTOn the flop we bet Rand were called fso the pot is:3PY1 Eof this 324 las profit (it was already our money) Sovwe win 2 (not3P) 14/4 7,230%] [of the timeSWe win 2BgefallinZlet's say it’s 6B on average (so assuming] (welalways winor assuming ourjequity is 6P)31/a7/<l2%0f the time [will] [toYaYriverjbetRwith Ys] [25,45,55,65,75,85,95,J5,Qs)=1 [of] 25,45,55,63,75,85,9s] [(because]it's[thelturnYcard) and f12] other 26/46 x.56.5% of the time our opponent calls 4P.and we win 2P+2P, + our 2P+ 4P."
+    ],
+    "original_text": "QUANTUM POKER: {There are 47, different turn cards and we have broken them'down into Let's now calculate the value of each permutation that stems from the c= 1 rinuea lek 1 chapter Page 112 of 232 45H) the 21 cards we will bet and 26 cards we will check? Starting with betting the turn (take a look back at the diagram to follow,along or just take my; frherelaref2 ftumYcards]thatlwelwilllbetYoutlofjthela ZA possible] GD @& © [25,45,55,65,75,85,95,)5,Qs1 {and §12] [cardsTOn the flop we bet Rand were called fso the pot is:3PY1 Eof this 324 las profit (it was already our money) Sovwe win 2 (not3P) 14/4 7,230%] [of the timeSWe win 2BgefallinZlet's say it’s 6B on average (so assuming] (welalways winor assuming ourjequity is 6P)31/a7/<l2%0f the time [will] [toYaYriverjbetRwith Ys] [25,45,55,65,75,85,95,J5,Qs)=1 [of] 25,45,55,63,75,85,9s] [(because]it's[thelturnYcard) and f12] other 26/46 x.56.5% of the time our opponent calls 4P.and we win 2P+2P, + our 2P+ 4P.",
+    "enhanced_text": "QUANTUM POKER: There are 47 different turn cards, and we have broken them down. Let's now calculate the value of each permutation that stems from the continuation. In this chapter, we will discuss the 21 cards we will bet and the 26 cards we will check. Starting with betting the turn (refer back to the diagram to follow along or just take my word for it), there are 21 turn cards that we will bet out of the 47 possible. \n\nOn the flop, we bet and were called, so the pot is 3P. Of this, 2P is profit (it was already our money). So we win 2P, not 3P, 14/47 or 29.79% of the time. We win 2P if all-in, let's say it’s 6P on average (assuming we always win or assuming our equity is 6P). \n\n31/47 or 65.96% of the time, we will bet the river with these cards: 25, 45, 55, 65, 75, 85, 95, J5, Qs. These are the turn cards, and there are 12 other cards. 26/47 x 56.5% of the time, our opponent calls 4P, and we win 2P + 2P, plus our 2P + 4P.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                259,
+                61,
+                594,
+                486
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_48/tables/48_7_page_0102_20250429_061855_image_tables_259_61.png"
+        }
+    ]
+}

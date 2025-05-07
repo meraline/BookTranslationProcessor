@@ -1,0 +1,29 @@
+{
+    "page_number": 1,
+    "original_image": "uploads/51_0_page_0097.png",
+    "processed_image": "output/book_51/images/51_0_page_0097_20250429_142411_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Single street calculations like fold equity or pot odds equations, even though they are incorrect and incomplete.",
+        "Basic Enumeration Process Example: We have raised with AsKs in middle position and the button has called. We want to understand the value of c-betting the flop of Ts 3s 2d with more possibilities to complete the big picture. Here are steps 1 and 2 going to the turn only.",
+        "Step 1: Flop Ts 3s 2d",
+        "[Figure 12] Let nop 130 ming Jet In Dock."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: single street calculations like the fold equity or; pot odds equation; even though they are incorrect and incomplete 'A'Basic Enumeration Process Example {We have raised /AsKs in Mand the button has called use want to} understand the value of c-betting thelflop of FlopiTsI3s 2d witha flush] more possibilities to complete the big picture’Here is step 1'and 2 going to, [the turn only] Step] {Flops 35 2d] H [Figure iz} let nop 130 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: single street calculations like the fold equity or; pot odds equation; even though they are incorrect and incomplete 'A'Basic Enumeration Process Example {We have raised /AsKs in Mand the button has called use want to} understand the value of c-betting thelflop of FlopiTsI3s 2d witha flush] more possibilities to complete the big picture’Here is step 1'and 2 going to, [the turn only] Step] {Flops 35 2d] H [Figure iz} let nop 130 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: Single street calculations like fold equity or pot odds equations, even though they are incorrect and incomplete.\n\nBasic Enumeration Process Example: We have raised with AsKs in middle position and the button has called. We want to understand the value of c-betting the flop of Ts 3s 2d with more possibilities to complete the big picture. Here are steps 1 and 2 going to the turn only.\n\nStep 1: Flop Ts 3s 2d\n\n[Figure 12] Let nop 130 ming Jet In Dock.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                1029,
+                61,
+                552,
+                666
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_0_page_0097_20250429_142411_image_tables_1029_61.png"
+        }
+    ]
+}

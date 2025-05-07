@@ -1,0 +1,3 @@
+QUANTUM POKER: Now, we need to visually estimate what percent of flops have what mean percentage of equity. For example, 73% equity might occur in 12% of flops. [Figure 2.7] If we wanted, we could find the area of all rectangles and then divide by the interval length of 100, but we could also just multiply each frequency by each equity to do the same thing. Since 12 is 12% of the (0,100) interval length, and 0.06 is 6% of the (0,100), etc.
+
+Each situation is a huge factor in what makes one player better than another. Drawing out mean value rectangles can be very helpful. Keep in mind when using the enumeration process, you can clearly see how each situation contributes to the overall strategy.

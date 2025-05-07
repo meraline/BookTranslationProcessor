@@ -1,0 +1,39 @@
+{
+    "page_number": 10,
+    "original_image": "uploads/48_9_page_0098.png",
+    "processed_image": "output/book_48/images/48_9_page_0098_20250429_061918_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Here is a representation of many of the possible ways the hand will play out on the turn. In order to better understand what our opponent is likely to do on the turn, we will use step two and a basic understanding of our opponent's tendencies to complete the puzzle a bit more, as well as add in some possible turn cards. ",
+        "[Figure: 13a]",
+        "Page 109 of 232 (30 mins left in book)"
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: Here is a representation of many of the possible ways the hand will play; [Figure:13a} out on the turn’In order to better understand what our opponent is likely, Step 2 Continued) to do on the turn iwe will use step two and a basic understanding of our; opponent's tendencies to complete the puzzle a bit more; as well as add in some possible turn cards [2 mins tet in chagrecd Page 109 0 232 « 44M. (30 ming lett In book"
+    ],
+    "original_text": "QUANTUM POKER: Here is a representation of many of the possible ways the hand will play; [Figure:13a} out on the turn’In order to better understand what our opponent is likely, Step 2 Continued) to do on the turn iwe will use step two and a basic understanding of our; opponent's tendencies to complete the puzzle a bit more; as well as add in some possible turn cards [2 mins tet in chagrecd Page 109 0 232 « 44M. (30 ming lett In book",
+    "enhanced_text": "QUANTUM POKER: Here is a representation of many of the possible ways the hand will play out on the turn. In order to better understand what our opponent is likely to do on the turn, we will use step two and a basic understanding of our opponent's tendencies to complete the puzzle a bit more, as well as add in some possible turn cards. \n\n[Figure: 13a]\n\nPage 109 of 232 (30 mins left in book)",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                443,
+                314,
+                225,
+                507
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_48/tables/48_9_page_0098_20250429_061918_image_tables_443_314.png"
+        },
+        {
+            "type": "image",
+            "region": [
+                1155,
+                133,
+                300,
+                688
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_48/tables/48_9_page_0098_20250429_061918_image_tables_1155_133.png"
+        }
+    ]
+}

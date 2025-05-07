@@ -1,0 +1,38 @@
+{
+    "page_number": 4,
+    "original_image": "uploads/51_3_page_0089.png",
+    "processed_image": "output/book_51/images/51_3_page_0089_20250429_142448_preprocessed.png",
+    "paragraphs": [
+        "QUANTUM POKER: Now, we need to visually estimate what percent of flops have what mean percentage of equity. For example, 73% equity might occur in 12% of flops. [Figure 2.7] If we wanted, we could find the area of all rectangles and then divide by the interval length of 100, but we could also just multiply each frequency by each equity to do the same thing. Since 12 is 12% of the (0,100) interval length, and 0.06 is 6% of the (0,100), etc.",
+        "Each situation is a huge factor in what makes one player better than another. Drawing out mean value rectangles can be very helpful. Keep in mind when using the enumeration process, you can clearly see how each situation contributes to the overall strategy."
+    ],
+    "original_paragraphs": [
+        "QUANTUM POKER: Now, we need to visually estimate what percent of flops have what mean % of Flops I Equity 73% 12 EI EE [Figure 2.7) 1f we wanted, we could find the area of all rectangles and then divide by; 1 rinuea lek 1 chapter Page 95 of 232 40M) the interval length of 100, but we could also just multiply each frequency; with'each'equity,to do, the same, thing Ysincel12is}12% of, the,(0,100) interval lengthX.06 is 69 of the (0,100); etc) 12) Epo Rbam ENED Bb ba immpenmEDin EERE fT CRE CAD RE CED CTR GERRI CRD © Cam Cf) and Co (Em FD Fn Em mel eNO ay [eachlsituation}isfalhugelfactor]inlwhatimakeslone]playerbettersthan] [another Drawingfoutfmean{valuelrectanglesfcan]befveryJhelpfullin] [Keeplinlmind when using thejenumerationprocess)you/canclearly} Cy CTD Et) TD Ce Gard (en) CF GED pes Bet) oF EDR pra EH ol Rly Cp Gonmtn a 33 ming Jet In Dock]"
+    ],
+    "original_text": "QUANTUM POKER: Now, we need to visually estimate what percent of flops have what mean % of Flops I Equity 73% 12 EI EE [Figure 2.7) 1f we wanted, we could find the area of all rectangles and then divide by; 1 rinuea lek 1 chapter Page 95 of 232 40M) the interval length of 100, but we could also just multiply each frequency; with'each'equity,to do, the same, thing Ysincel12is}12% of, the,(0,100) interval lengthX.06 is 69 of the (0,100); etc) 12) Epo Rbam ENED Bb ba immpenmEDin EERE fT CRE CAD RE CED CTR GERRI CRD © Cam Cf) and Co (Em FD Fn Em mel eNO ay [eachlsituation}isfalhugelfactor]inlwhatimakeslone]playerbettersthan] [another Drawingfoutfmean{valuelrectanglesfcan]befveryJhelpfullin] [Keeplinlmind when using thejenumerationprocess)you/canclearly} Cy CTD Et) TD Ce Gard (en) CF GED pes Bet) oF EDR pra EH ol Rly Cp Gonmtn a 33 ming Jet In Dock]",
+    "enhanced_text": "QUANTUM POKER: Now, we need to visually estimate what percent of flops have what mean percentage of equity. For example, 73% equity might occur in 12% of flops. [Figure 2.7] If we wanted, we could find the area of all rectangles and then divide by the interval length of 100, but we could also just multiply each frequency by each equity to do the same thing. Since 12 is 12% of the (0,100) interval length, and 0.06 is 6% of the (0,100), etc.\n\nEach situation is a huge factor in what makes one player better than another. Drawing out mean value rectangles can be very helpful. Keep in mind when using the enumeration process, you can clearly see how each situation contributes to the overall strategy.",
+    "figures": [
+        {
+            "type": "image",
+            "region": [
+                403,
+                556,
+                306,
+                166
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_3_page_0089_20250429_142448_image_tables_403_556.png"
+        },
+        {
+            "type": "image",
+            "region": [
+                311,
+                61,
+                489,
+                375
+            ],
+            "description": "Image in poker book",
+            "image_path": "output/book_51/tables/51_3_page_0089_20250429_142448_image_tables_311_61.png"
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+QUANTUM POKER: Single street calculations like fold equity or pot odds equations, even though they are incorrect and incomplete.
+
+Basic Enumeration Process Example: We have raised with AsKs in middle position and the button has called. We want to understand the value of c-betting the flop of Ts 3s 2d with more possibilities to complete the big picture. Here are steps 1 and 2 going to the turn only.
+
+Step 1: Flop Ts 3s 2d
+
+[Figure 12] Let nop 130 ming Jet In Dock.

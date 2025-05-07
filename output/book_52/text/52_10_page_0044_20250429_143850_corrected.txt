@@ -1,0 +1,5 @@
+QUANTUM POKER: Chapter 32 - Advanced Concepts
+
+When analyzing specific hand ranges and opponent tendencies, it's important to break down each action into ranges and enumerate the cards that can come out, along with all the actions each person is likely to make on all future streets.
+
+This figure, from the program Cardrunners EV, is a rough example of the decision tree. Every poker player is intuitively trying to get the results that Cardrunners EV organizes, enumerates, and presents. That is what makes it such a powerful tool, even though it is a slow and sometimes boring process.
